@@ -11,6 +11,7 @@ import Chart from "./pages/Chart";
 import MyTravel from "./pages/MyTravel";
 import MyPage from "./pages/MyPage";
 import GoodsDetail from "./pages/GoodsDetail";
+import Cart from "./pages/Cart";
 
 const App = () => {
   return (
@@ -31,6 +32,7 @@ const App = () => {
           <Route path="/chart" element={<Chart />} />
           <Route path="/mytravel" element={<MyTravel />} />
           <Route path="/mypage" element={<MyPage />} />
+          <Route path="/cart" element={<Cart />} />
         </Routes>
       </Layout>
     </>
