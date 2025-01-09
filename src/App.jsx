@@ -1,20 +1,18 @@
-import { Route, Routes } from 'react-router';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import TouristAttraction from './pages/TouristAttraction';
-import Statistics from './pages/Statistics';
-import Goods from './pages/Goods';
+import { Route, Routes } from "react-router-dom";
+import Home from "./pages/Home";
+import TouristAttraction from "./pages/TouristAttraction";
+import Detail from "./pages/Detail";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 const App = () => {
   return (
     <Routes>
-      <Route path='/' element={<Home />} />
-      <Route path='/login' element={<Login />} />
-      <Route path='/signup' element={<Signup />} />
-      <Route path='/tourist-attraction' element={<TouristAttraction />} />
-      <Route path='/statistics' element={<Statistics />} />
-      <Route path='/goods' element={<Goods />} />
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/tourist-attraction" element={<TouristAttraction />} />
+      <Route path="/tourist-attraction/:id" element={<Detail />} />
     </Routes>
   );
 };
