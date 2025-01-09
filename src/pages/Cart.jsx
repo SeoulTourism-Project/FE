@@ -163,11 +163,12 @@ export default Cart;
 const CartContainer = styled.div`
   display: flex;
   justify-content: center; /* 가로 중앙 정렬 */
-  align-items: center; /* 세로 중앙 정렬 */
+  align-items: flex-start; /* 세로 중앙 정렬 */
   min-height: 100vh; /* 화면 최소 높이를 100vh로 설정 */
   padding: 20px;
   gap: 20px; /* 왼쪽과 오른쪽 사이에 여백을 추가 */
   flex-wrap: wrap; /* 화면 크기에 맞게 내용이 줄어들 때 항목들이 아래로 내려가도록 설정 */
+  overflow: auto; /* 전체 컨테이너에서 스크롤 허용 */
 `;
 
 const CartItems = styled.div`
@@ -276,4 +277,5 @@ const Button = styled.button`
 const QuantityButton = styled(Button)`
   padding: 6px 12px; /* 동일한 패딩으로 버튼 크기 균일화 */
   font-size: 14px; /* 동일한 폰트 크기 */
+  margin: 0 8px; /* 양쪽 간격 추가 */
 `;
