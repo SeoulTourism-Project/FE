@@ -1,0 +1,142 @@
+[
+  {
+    "id": 1,
+    "name": "경복궁",
+    "description": "조선 시대의 대표 궁궐로, 한국 전통 건축물의 아름다움을 감상할 수 있는 곳입니다.",
+    "address": "서울특별시 종로구 사직로 161",
+    "image": "images/gyeongbokgung.jpg"
+  },
+  {
+    "id": 2,
+    "name": "N서울타워",
+    "description": "서울의 랜드마크로, 전망대에서 서울 전경을 한눈에 볼 수 있는 곳입니다.",
+    "address": "서울특별시 용산구 남산공원길 105",
+    "image": "images/nseoultower.jpg"
+  },
+  {
+    "id": 3,
+    "name": "북촌 한옥마을",
+    "description": "전통 한옥이 모여 있는 마을로, 한국의 전통 문화를 체험할 수 있습니다.",
+    "address": "서울특별시 종로구 계동길 37",
+    "image": "images/bukchon.jpg"
+  },
+  {
+    "id": 4,
+    "name": "동대문 디자인 플라자(DDP)",
+    "description": "혁신적인 건축 디자인과 다양한 문화 행사가 열리는 공간입니다.",
+    "address": "서울특별시 중구 을지로 281",
+    "image": "images/ddp.jpg"
+  },
+  {
+    "id": 5,
+    "name": "이태원",
+    "description": "다양한 외국 문화와 음식을 체험할 수 있는 국제적인 거리입니다.",
+    "address": "서울특별시 용산구 이태원로",
+    "image": "images/itaewon.jpg"
+  },
+  {
+    "id": 6,
+    "name": "한강공원",
+    "description": "서울 시민의 휴식처로, 자전거 타기와 피크닉을 즐기기 좋은 곳입니다.",
+    "address": "서울특별시 강남구 압구정로 39",
+    "image": "images/dummyImage.jpg"
+  },
+  {
+    "id": 7,
+    "name": "인사동",
+    "description": "전통 공예품과 현대 예술이 공존하는 예술의 거리입니다.",
+    "address": "서울특별시 종로구 인사동길",
+    "image": "images/dummyImage.jpg"
+  },
+  {
+    "id": 8,
+    "name": "홍대 거리",
+    "description": "예술과 젊음의 에너지가 넘치는 거리로, 다양한 음식점과 카페를 만날 수 있습니다.",
+    "address": "서울특별시 마포구 홍익로",
+    "image": "images/dummyImage.jpg"
+  },
+  {
+    "id": 9,
+    "name": "청계천",
+    "description": "서울 도심을 가로지르는 하천으로, 산책과 휴식에 적합한 곳입니다.",
+    "address": "서울특별시 종로구 청계천로",
+    "image": "images/dummyImage.jpg"
+  },
+  {
+    "id": 10,
+    "name": "남산 공원",
+    "description": "도심 속 자연을 느낄 수 있는 공원으로, 남산타워와 연결되어 있습니다.",
+    "address": "서울특별시 중구 소월로 126",
+    "image": "images/dummyImage.jpg"
+  },
+  {
+    "id": 11,
+    "name": "광장시장",
+    "description": "한국 전통 시장으로, 다양한 길거리 음식을 맛볼 수 있는 곳입니다.",
+    "address": "서울특별시 종로구 창경궁로 88",
+    "image": "images/dummyImage.jpg"
+  },
+  {
+    "id": 12,
+    "name": "코엑스",
+    "description": "대규모 쇼핑몰과 전시 공간이 있는 복합 문화 공간입니다.",
+    "address": "서울특별시 강남구 영동대로 513",
+    "image": "images/dummyImage.jpg"
+  },
+  {
+    "id": 13,
+    "name": "롯데월드",
+    "description": "서울의 대표적인 테마파크로, 실내외 놀이시설을 즐길 수 있습니다.",
+    "address": "서울특별시 송파구 올림픽로 240",
+    "image": "images/dummyImage.jpg"
+  },
+  {
+    "id": 14,
+    "name": "서울숲",
+    "description": "서울 도심 속 대형 공원으로, 자연을 느낄 수 있는 힐링 공간입니다.",
+    "address": "서울특별시 성동구 뚝섬로 273",
+    "image": "images/dummyImage.jpg"
+  },
+  {
+    "id": 15,
+    "name": "명동",
+    "description": "쇼핑과 먹거리를 즐길 수 있는 서울의 대표 번화가입니다.",
+    "address": "서울특별시 중구 명동8길",
+    "image": "images/dummyImage.jpg"
+  },
+  {
+    "id": 16,
+    "name": "삼청동",
+    "description": "전통과 현대가 조화롭게 공존하는 서울의 매력적인 동네입니다.",
+    "address": "서울특별시 종로구 삼청로",
+    "image": "images/dummyImage.jpg"
+  },
+  {
+    "id": 17,
+    "name": "잠실 석촌호수",
+    "description": "호수 주변 산책로가 아름다워 사진 찍기에 좋은 명소입니다.",
+    "address": "서울특별시 송파구 잠실로 148",
+    "image": "images/dummyImage.jpg"
+  },
+  {
+    "id": 18,
+    "name": "63빌딩",
+    "description": "서울의 스카이라인을 대표하는 빌딩으로, 전망대에서 도시 전경을 감상할 수 있습니다.",
+    "address": "서울특별시 영등포구 여의대로 50",
+    "image": "images/dummyImage.jpg"
+  },
+  {
+    "id": 19,
+    "name": "덕수궁",
+    "description": "서울 한복판에서 고즈넉한 전통 궁궐을 만날 수 있는 곳입니다.",
+    "address": "서울특별시 중구 세종대로 99",
+    "image": "images/dummyImage.jpg"
+  },
+  {
+    "id": 20,
+    "name": "국립중앙박물관",
+    "description": "한국의 역사와 문화를 깊이 있게 이해할 수 있는 대표 박물관입니다.",
+    "address": "서울특별시 용산구 서빙고로 137",
+    "image": "images/dummyImage.jpg"
+  }
+]

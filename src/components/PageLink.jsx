@@ -45,8 +45,7 @@ export default PageLink;
 
 const LinkArea = styled.section`
   width: 1280px;
-  margin: auto;
-  padding: 20px;
+  margin-top: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -55,10 +54,7 @@ const LinkArea = styled.section`
 const LinkList = styled.ul`
   display: flex;
   width: 100%;
-
-  & li {
-    width: 100%;
-  }
+  justify-content: space-between;
 `;
 
 const StyledLink = styled(Link)`
@@ -67,9 +63,8 @@ const StyledLink = styled(Link)`
   justify-content: center;
   gap: 20px;
   text-decoration: none;
-  margin-top: 50px;
   color: black;
-  transition: all 0.5s;
+  transition: all 0.3s;
 
   & h3 {
     font-size: 1.5rem;
@@ -78,7 +73,7 @@ const StyledLink = styled(Link)`
   }
 
   &:hover {
-    transform: scale(1.2);
+    transform: scale(1.1);
   }
 
   &:visited {
