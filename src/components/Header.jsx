@@ -4,9 +4,13 @@ import { Link, useLocation } from "react-router";
 import styled from "styled-components";
 import Navbar from "./Navbar";
 import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setLanguage } from "../features/languageSlice";
 
 const Header = () => {
   const { pathname } = useLocation();
+  const dispatch = useDispatch();
+  const language = useSelector((state) => state.language.language);
 
   let navbar = <Navbar />;
 
@@ -28,7 +32,7 @@ const Header = () => {
     const observer = new MutationObserver(() => {
       const langAttr = document.querySelector("html").getAttribute("lang");
       if (langAttr) {
-        console.log(`현재 번역된 언어: ${langAttr}`);
+        dispatch(setLanguage(langAttr));
       }
     });
 
