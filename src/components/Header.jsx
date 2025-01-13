@@ -1,25 +1,25 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGlobe } from '@fortawesome/free-solid-svg-icons';
-import { Link, useLocation } from 'react-router';
-import styled from 'styled-components';
-import Navbar from './Navbar';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGlobe } from "@fortawesome/free-solid-svg-icons";
+import { Link, useLocation } from "react-router";
+import styled from "styled-components";
+import Navbar from "./Navbar";
 
 const Header = () => {
   const { pathname } = useLocation();
 
   let navbar = <Navbar />;
 
-  if (pathname === '/login' || pathname === '/signup') {
+  if (pathname === "/login" || pathname === "/signup") {
     navbar = undefined;
   }
   return (
     <>
       <HeaderArea>
         <TItle>
-          <Link to={'/'}>안녕 서울!</Link>
+          <Link to={"/"}>안녕 서울!</Link>
         </TItle>
         <LanguageArea>
-          <FontAwesomeIcon icon={faGlobe} size='2x' />
+          <FontAwesomeIcon icon={faGlobe} size="2x" />
           <select>
             <option>번역 기능</option>
           </select>
