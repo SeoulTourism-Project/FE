@@ -46,7 +46,7 @@ const GoogleMap = ({ place, restaurants }) => {
     if (!mapElement) return;
 
     const options = {
-      center: { lat: 37.5665, lng: 126.978 }, // 서울
+      center: { lat: place.lat, lng: place.lng }, // 서울
       zoom: 16,
     };
 
