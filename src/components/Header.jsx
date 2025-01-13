@@ -23,6 +23,20 @@ const Header = () => {
       },
       "google_translate_element"
     );
+
+    // 번역된 언어 추적
+    const observer = new MutationObserver(() => {
+      const langAttr = document.querySelector("html").getAttribute("lang");
+      if (langAttr) {
+        console.log(`현재 번역된 언어: ${langAttr}`);
+      }
+    });
+
+    // HTML lang 속성을 감시
+    observer.observe(document.querySelector("html"), {
+      attributes: true,
+      attributeFilter: ["lang"],
+    });
   };
 
   useEffect(() => {
