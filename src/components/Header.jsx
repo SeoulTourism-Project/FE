@@ -3,6 +3,7 @@ import { faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { Link, useLocation } from 'react-router';
 import styled from 'styled-components';
 import Navbar from './Navbar';
+import { useEffect } from 'react';
 
 const Header = () => {
   const { pathname } = useLocation();
@@ -12,6 +13,29 @@ const Header = () => {
   if (pathname === '/login' || pathname === '/signup') {
     navbar = undefined;
   }
+
+  const googleTranslateElementInit = () => {
+    new window.google.translate.TranslateElement(
+      {
+        pageLanguage: 'ko',
+        autoDisplay: false,
+        includedLanguages: 'en,ko,ja,zh-CN,zh-TW',
+      },
+      'google_translate_element'
+    );
+  };
+
+  useEffect(() => {
+    let addScript = document.createElement('script');
+    addScript.setAttribute('src', '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit');
+    document.body.appendChild(addScript);
+    window.googleTranslateElementInit = googleTranslateElementInit;
+
+    return () => {
+      document.body.removeChild(addScript);
+    };
+  }, []);
+
   return (
     <>
       <HeaderArea>
@@ -20,9 +44,7 @@ const Header = () => {
         </TItle>
         <LanguageArea>
           <FontAwesomeIcon icon={faGlobe} size='2x' />
-          <select>
-            <option>번역 기능</option>
-          </select>
+          <div id='google_translate_element'></div>
         </LanguageArea>
         {navbar}
       </HeaderArea>
