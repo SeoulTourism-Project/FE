@@ -9,7 +9,7 @@ const TouristAttractionList = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [touristAttractionsPerPage, setTouristAttractionsPerPage] = useState(15);
+  const [touristAttractionsPerPage, setTouristAttractionsPerPage] = useState(12);
 
   const fetchTouristAttraction = async () => {
     try {
@@ -85,17 +85,21 @@ const SubTitleContainer = styled.div`
 
 const CardContainer = styled.div`
   width: 1280px;
+  min-height: 839px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `;
 
 const CardList = styled.ul`
+  width: 100%;
   display: flex;
+  justify-content: space-between;
   flex-wrap: wrap;
-  gap: 20px;
-  min-height: 700px;
 `;
 
 const LoadingText = styled.div`
-  min-height: 700px;
+  min-height: 760px;
   display: flex;
   align-items: center;
   justify-content: center;

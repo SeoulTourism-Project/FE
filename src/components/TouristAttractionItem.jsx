@@ -24,8 +24,8 @@ export default TouristAttractionItem;
 const Card = styled.li`
   display: flex;
   flex-direction: column;
-  width: 240px;
-  height: 220px;
+  width: calc(25% - 20px);
+  max-height: 300px;
   position: relative;
   cursor: pointer;
   transition: all 0.3s;
@@ -36,6 +36,7 @@ const Card = styled.li`
 `;
 
 const CardBadge = styled.span`
+  max-width: 278px;
   position: absolute;
   top: 10px;
   left: 10px;
@@ -43,17 +44,21 @@ const CardBadge = styled.span`
   color: #fff;
   padding: 10px;
   border-radius: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const CardImage = styled.img`
   display: block;
   width: 100%;
-  height: 180px;
+  height: 200px;
   border-radius: 8px;
+  object-fit: cover;
 `;
 
 const CardLocation = styled.div`
-  margin-top: 10px;
+  margin: 10px 0 30px;
 
   & span {
     margin-left: 10px;
