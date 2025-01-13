@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
-const GoogleMap = ({ place, restaurants }) => {
+const SEOUL_CITY_HALL = {
+  name: "서울 시청",
+  lat: 37.5665,
+  lng: 126.978,
+};
+
+const GoogleMap = ({ place = SEOUL_CITY_HALL, restaurants = [] }) => {
   const language = useSelector((state) => state.language.language);
   //   const [language, setLanguage] = useState("en"); // 기본 언어: 영어
   const [map, setMap] = useState(null); // 지도 객체
@@ -46,7 +52,7 @@ const GoogleMap = ({ place, restaurants }) => {
     if (!mapElement) return;
 
     const options = {
-      center: { lat: place.lat, lng: place.lng }, // 서울
+      center: { lat: place.lat, lng: place.lng },
       zoom: 17,
     };
 
