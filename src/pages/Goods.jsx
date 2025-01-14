@@ -1,5 +1,11 @@
+import GoodsList from '../components/GoodsList';
+
 const Goods = () => {
-  return <div>Goods</div>;
+  return (
+    <>
+      <GoodsList />
+    </>
+  );
 };
 
 export default Goods;

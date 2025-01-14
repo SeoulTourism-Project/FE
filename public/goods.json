@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "image_url": "https://example.com/images/hanbok_keychain.jpg",
+    "title": "한복 키체인",
+    "price": 8000
+  },
+  {
+    "id": 2,
+    "image_url": "https://example.com/images/traditional_mask.jpg",
+    "title": "전통 탈 모형",
+    "price": 12000
+  },
+  {
+    "id": 3,
+    "image_url": "https://example.com/images/korean_fan.jpg",
+    "title": "한국 전통 부채",
+    "price": 7000
+  },
+  {
+    "id": 4,
+    "image_url": "https://example.com/images/hanji_notebook.jpg",
+    "title": "한지 노트",
+    "price": 10000
+  },
+  {
+    "id": 5,
+    "image_url": "https://example.com/images/korean_tea_cup.jpg",
+    "title": "전통 다기 세트",
+    "price": 15000
+  },
+  {
+    "id": 6,
+    "image_url": "https://example.com/images/lucky_pouch.jpg",
+    "title": "복주머니",
+    "price": 5000
+  },
+  {
+    "id": 7,
+    "image_url": "https://example.com/images/traditional_lantern.jpg",
+    "title": "전통 등 모형",
+    "price": 20000
+  },
+  {
+    "id": 8,
+    "image_url": "https://example.com/images/bojagi_cloth.jpg",
+    "title": "보자기 천",
+    "price": 12000
+  },
+  {
+    "id": 9,
+    "image_url": "https://example.com/images/hahoetal_magnet.jpg",
+    "title": "하회탈 자석",
+    "price": 6000
+  },
+  {
+    "id": 10,
+    "image_url": "https://example.com/images/hanok_model.jpg",
+    "title": "한옥 모형",
+    "price": 35000
+  },
+  {
+    "id": 11,
+    "image_url": "https://example.com/images/korean_painting_poster.jpg",
+    "title": "민화 포스터",
+    "price": 8000
+  },
+  {
+    "id": 12,
+    "image_url": "https://example.com/images/traditional_stamp.jpg",
+    "title": "전통 도장 세트",
+    "price": 18000
+  },
+  {
+    "id": 13,
+    "image_url": "https://example.com/images/korean_hat_pin.jpg",
+    "title": "갓 모양 브로치",
+    "price": 9000
+  },
+  {
+    "id": 14,
+    "image_url": "https://example.com/images/hanji_lamp.jpg",
+    "title": "한지 램프",
+    "price": 25000
+  },
+  {
+    "id": 15,
+    "image_url": "https://example.com/images/traditional_drum_model.jpg",
+    "title": "장구 모형",
+    "price": 22000
+  },
+  {
+    "id": 16,
+    "image_url": "https://example.com/images/korean_pattern_scarf.jpg",
+    "title": "전통 문양 스카프",
+    "price": 30000
+  },
+  {
+    "id": 17,
+    "image_url": "https://example.com/images/blue_and_white_porcelain.jpg",
+    "title": "청화백자 미니어처",
+    "price": 40000
+  },
+  {
+    "id": 18,
+    "image_url": "https://example.com/images/korean_calligraphy_set.jpg",
+    "title": "서예 도구 세트",
+    "price": 28000
+  },
+  {
+    "id": 19,
+    "image_url": "https://example.com/images/traditional_mirror.jpg",
+    "title": "전통 손거울",
+    "price": 11000
+  },
+  {
+    "id": 20,
+    "image_url": "https://example.com/images/korean_doll.jpg",
+    "title": "전통 인형",
+    "price": 32000
+  }
+]
