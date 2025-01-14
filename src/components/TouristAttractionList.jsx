@@ -85,7 +85,7 @@ const SubTitleContainer = styled.div`
 
 const CardContainer = styled.div`
   width: 1280px;
-  min-height: 839px;
+  min-height: 1110px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -94,15 +94,15 @@ const CardContainer = styled.div`
 const CardList = styled.ul`
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  gap: 10px;
   flex-wrap: wrap;
 `;
 
 const LoadingText = styled.div`
-  min-height: 760px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 const ErrorText = styled(LoadingText)``;

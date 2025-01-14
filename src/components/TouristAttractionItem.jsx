@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
+import { faLocationDot, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router';
 
@@ -7,12 +7,22 @@ const TouristAttractionItem = ({ touristAttraction }) => {
   const navigate = useNavigate();
   const location = touristAttraction.address.slice(6, 9);
 
+  const handleMoveDetail = () => {
+    navigate(`/tourist-attraction/${touristAttraction.id}`);
+    window.scrollTo(0, 0);
+  };
+
   return (
-    <Card onClick={() => navigate(`/tourist-attraction/${touristAttraction.id}`)}>
-      <CardBadge>{touristAttraction.name}</CardBadge>
-      <CardImage src={touristAttraction.image} alt='...' />
+    <Card>
+      <ButtonContainer>
+        <button onClick={handleMoveDetail}>
+          <FontAwesomeIcon icon={faMagnifyingGlass} style={{ color: '#fff' }} size='3x' />
+        </button>
+      </ButtonContainer>
+      <img src={touristAttraction.image} alt='...' />
+      <h4>{touristAttraction.name}</h4>
       <CardLocation>
-        <FontAwesomeIcon icon={faLocationDot} size='lg' />
+        <FontAwesomeIcon icon={faLocationDot} />
         <span>{location}</span>
       </CardLocation>
     </Card>
@@ -24,43 +34,61 @@ export default TouristAttractionItem;
 const Card = styled.li`
   display: flex;
   flex-direction: column;
-  width: calc(25% - 20px);
-  max-height: 300px;
+  gap: 20px;
+  width: calc(25% - 10px);
   position: relative;
   cursor: pointer;
+  padding: 10px;
   transition: all 0.3s;
 
-  &:hover {
-    transform: scale(1.1);
+  & img {
+    display: block;
+    width: 100%;
+    height: 240px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  & h4 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    width: 290px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  &:hover div {
+    visibility: visible;
+    opacity: 1;
   }
 `;
 
-const CardBadge = styled.span`
-  max-width: 278px;
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background: #00000050;
-  color: #fff;
-  padding: 10px;
-  border-radius: 8px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
-
-const CardImage = styled.img`
-  display: block;
-  width: 100%;
-  height: 200px;
-  border-radius: 8px;
-  object-fit: cover;
-`;
-
 const CardLocation = styled.div`
-  margin: 10px 0 30px;
-
   & span {
     margin-left: 10px;
+  }
+`;
+
+const ButtonContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #00000080;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.5s;
+
+  & button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
   }
 `;
