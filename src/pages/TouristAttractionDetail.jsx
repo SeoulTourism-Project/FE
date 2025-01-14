@@ -1,10 +1,23 @@
-import { faAngleLeft, faLocationDot } from '@fortawesome/free-solid-svg-icons';
+import { faAngleLeft, faHeart, faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
 const TouristAttractionDetail = () => {
+  const [like, setLike] = useState(false);
+
   const navigate = useNavigate();
+
+  const handleSelectedLike = () => {
+    setLike((prevLike) => !prevLike);
+  };
+
+  let likeIcon = <FontAwesomeIcon icon={faHeart} size='3x' />;
+
+  if (like) {
+    likeIcon = <FontAwesomeIcon icon={faHeart} style={{ color: '#ff4242' }} size='3x' />;
+  }
 
   return (
     <>
@@ -20,6 +33,7 @@ const TouristAttractionDetail = () => {
             <img src='/images/gyeongbokgung.jpg' alt='' />
           </LocationImage>
           <LocationInfo>
+            <LikeButton onClick={handleSelectedLike}>{likeIcon}</LikeButton>
             <h3>경복궁</h3>
             <p>
               <FontAwesomeIcon icon={faLocationDot} />
@@ -78,10 +92,12 @@ const LocationImage = styled.div`
 `;
 
 const LocationInfo = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 20px;
   padding: 20px 0 20px 30px;
+  position: relative;
 
   & h3 {
     font-size: 1.5rem;
@@ -95,8 +111,17 @@ const LocationInfo = styled.div`
   & p:last-child {
     max-height: 278px;
     overflow-y: auto;
-    padding: 1px 0;
+    padding: 2px 0;
   }
+`;
+
+const LikeButton = styled.button`
+  position: absolute;
+  top: 11px;
+  right: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
 `;
 
 const LocationMapArea = styled.div`
@@ -104,6 +129,8 @@ const LocationMapArea = styled.div`
 
   & img {
     display: block;
+    width: 100%;
+    height: 700px;
     border-radius: 8px;
   }
 `;
