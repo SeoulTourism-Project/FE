@@ -4,9 +4,27 @@ import styled from "styled-components"; // styled-components 사용
 const Cart = () => {
   // 상품 목록과 장바구니 상태
   const [cartItems, setCartItems] = useState([
-    { id: 1, name: "상품", price: 0, quantity: 1 },
-    { id: 2, name: "상품", price: 0, quantity: 1 },
-    { id: 3, name: "상품", price: 0, quantity: 1 },
+    {
+      id: 1,
+      name: "상품명",
+      price: 0,
+      quantity: 1,
+      image: "https://via.placeholder.com/150",
+    },
+    {
+      id: 2,
+      name: "상품명",
+      price: 0,
+      quantity: 1,
+      image: "https://via.placeholder.com/150",
+    },
+    {
+      id: 3,
+      name: "상품명",
+      price: 0,
+      quantity: 1,
+      image: "https://via.placeholder.com/150",
+    },
   ]);
 
   const [selectedItems, setSelectedItems] = useState([]);
@@ -67,7 +85,7 @@ const Cart = () => {
       (acc, item) => acc + item.price * item.quantity,
       0
     );
-    const shippingFee = orderAmount >= 50000 ? 0 : 3000;
+    const shippingFee = orderAmount >= 30000 ? 0 : 3000;
     const totalAmount = orderAmount + shippingFee;
 
     return { orderAmount, shippingFee, totalAmount };
@@ -81,12 +99,13 @@ const Cart = () => {
   };
 
   // 결제 정보 영역 스크롤을 맨 오른쪽으로 이동
+  // 결제 정보 스크롤을 맨 오른쪽으로 이동
   useEffect(() => {
     if (paymentSummaryRef.current) {
       paymentSummaryRef.current.scrollLeft =
         paymentSummaryRef.current.scrollWidth;
     }
-  }, [cartItems, selectedItems]); // cartItems와 selectedItems가 변경될 때마다 실행
+  }, [cartItems, selectedItems]); // cartItems 또는 selectedItems가 변경될 때마다 실행
 
   return (
     <CartContainer>
@@ -105,6 +124,11 @@ const Cart = () => {
                 type="checkbox"
                 checked={selectedItems.includes(item.id)}
                 onChange={() => handleItemSelect(item.id)}
+              />
+              <img
+                src={item.image}
+                alt={item.name}
+                style={{ width: "100px", height: "100px", marginRight: "10px" }}
               />
               {item.name}
             </CartItemName>
@@ -159,12 +183,12 @@ const Cart = () => {
 export default Cart;
 
 // 스타일 컴포넌트들
-
 const CartContainer = styled.div`
   display: flex;
-  justify-content: center; /* 가로 중앙 정렬 */
-  align-items: flex-start; /* 세로 중앙 정렬 */
-  min-height: 100vh; /* 화면 최소 높이를 100vh로 설정 */
+  justify-content: flex-start; /* 가로 정렬을 시작점으로 변경 */
+  align-items: flex-start; /* 세로 정렬을 시작점으로 설정 */
+  max-width: 1200px; /* 장바구니 컨테이너 너비를 넓게 설정 */
+  margin: 0 auto;
   padding: 20px;
   gap: 20px; /* 왼쪽과 오른쪽 사이에 여백을 추가 */
   flex-wrap: wrap; /* 화면 크기에 맞게 내용이 줄어들 때 항목들이 아래로 내려가도록 설정 */
@@ -172,27 +196,33 @@ const CartContainer = styled.div`
 `;
 
 const CartItems = styled.div`
-  width: 60%; /* 가로 크기를 60%로 설정 */
-  max-height: 80vh; /* 최대 높이를 화면의 80%로 제한 */
-  overflow-y: auto; /* 세로 스크롤 추가 */
-  flex-grow: 0; /* 크기 자동 변화를 방지 */
-  min-width: 300px; /* 최소 너비 설정 */
+  flex: 2; /* 장바구니 항목을 더 넓게 설정 */
+  min-width: 600px; /* 최소 너비를 넓게 설정 */
 `;
 
 const PaymentSummary = styled.div`
-  width: 35%; /* 가로 크기를 35%로 설정 */
-  border-left: 1px solid #ddd;
+  flex: 1;
+  border-left: 1px solid #ddd; /* 왼쪽 경계선 */
   padding-left: 20px;
+  padding-right: 20px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding-bottom: 20px;
-  flex-grow: 0; /* 크기 자동 변화를 방지 */
-  justify-content: flex-start; /* 결제 정보를 상단으로 맞추기 */
-  white-space: nowrap;
-  min-width: 300px; /* 최소 너비 설정 */
-  max-height: 80vh; /* 최대 높이를 화면의 80%로 제한 */
-  overflow-y: auto; /* 세로 스크롤 추가 */
+  justify-content: flex-start; /* 내용이 위쪽에 정렬 */
+  min-width: 300px;
+  height: auto; /* 높이를 자동 조정 */
+  position: relative; /* 내부 요소를 기준으로 위치 설정 */
+  margin-top: 250px; /* 결제 정보를 아래로 내리기 위해 위쪽 여백 추가 */
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: 280px; /* 위쪽 시작점 */
+    bottom: 0px; /* 아래쪽 끝까지 */
+    left: 0; /* 왼쪽 경계선 위치 */
+    width: 1px;
+    background-color: #ddd; /* 경계선 색상 */
+  }
 `;
 
 const Header = styled.h2`
@@ -200,30 +230,40 @@ const Header = styled.h2`
   display: flex;
   justify-content: center; /* 가로 중앙 정렬 */
   align-items: center; /* 세로 중앙 정렬 */
-  margin-top: 0; /* 헤더와 위쪽 사이의 여백 제거 */
+  margin-top: 120px; /* 헤더와 위쪽 사이의 여백 제거 */
   font-size: 24px; /* 폰트 크기 설정 */
 `;
 
 const PaymentHeader = styled.h2`
-  height: 170px; /* 결제 정보 높이를 170px로 설정 */
   display: flex;
-  justify-content: center; /* 가로 중앙 정렬 */
+  justify-content: flex-start; /* 가로 정렬을 시작점으로 변경 */
   align-items: center; /* 세로 중앙 정렬 */
-  margin-top: 40px; /* 헤더와 위쪽 사이의 여백 제거 */
+  margin: 20px; /* 헤더와 위쪽 사이의 여백 제거 */
   font-size: 24px; /* 폰트 크기 설정 */
+  padding-bottom: 3px; /* 결제 정보와 금액 간 여백 추가 */
 `;
 
 const CartItemHeader = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* 각 텍스트 간 간격 유지 */
   font-weight: bold;
   margin-bottom: 10px;
-`;
 
+  & > div:nth-child(1) {
+    margin-left: 60px; /* 상품명 글자를 오른쪽으로 이동 */
+  }
+
+  & > div:nth-child(2) {
+    margin-left: 180px; /* 수량 글자를 오른쪽으로 이동 */
+  }
+
+  & > div:nth-child(3) {
+    margin-right: 20px; /* 금액 글자를 왼쪽으로 이동 */
+  }
+`;
 const CartItem = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  align-items: center; /* 항목 세로 정렬 */
   margin-bottom: 15px;
   padding: 10px;
   background-color: #f9f9f9;
@@ -234,13 +274,16 @@ const CartItem = styled.div`
 const CartItemName = styled.div`
   display: flex;
   align-items: center;
-  width: 70%;
+  width: 50%; /* 이름 영역 크기 조정 */
 `;
 
 const CartItemQuantity = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
+  text-align: center;
+  flex: 1;
 `;
 
 const CartItemPrice = styled.div`
@@ -278,4 +321,20 @@ const QuantityButton = styled(Button)`
   padding: 6px 12px; /* 동일한 패딩으로 버튼 크기 균일화 */
   font-size: 14px; /* 동일한 폰트 크기 */
   margin: 0 8px; /* 양쪽 간격 추가 */
+`;
+
+const ItemImage = styled.div`
+  width: 150px;
+  height: 150px;
+  background-color: #e0e0e0;
+`;
+
+const ItemInfo = styled.div`
+  flex: 1;
+  padding: 0 10px;
+`;
+
+const QuantityControls = styled.div`
+  display: flex;
+  align-items: center;
 `;
