@@ -4,42 +4,162 @@
     "name": "경복궁",
     "description": "조선 시대의 대표 궁궐로, 한국 전통 건축물의 아름다움을 감상할 수 있는 곳입니다.",
     "address": "서울특별시 종로구 사직로 161",
-    "image": "images/gyeongbokgung.jpg"
+    "image": "images/gyeongbokgung.jpg",
+    "place": {
+      "lat": 37.5796,
+      "lng": 126.977
+    },
+    "restaurants": [
+      {
+        "name": "경복궁식당",
+        "address": "서울특별시 종로구 사직로 161-1",
+        "type": "한식",
+        "lat": 37.5798,
+        "lng": 126.9768
+      },
+      {
+        "name": "청와대맛집",
+        "address": "서울특별시 종로구 사직로 150",
+        "type": "한식",
+        "lat": 37.5791,
+        "lng": 126.9775
+      }
+    ]
   },
   {
     "id": 2,
     "name": "N서울타워",
     "description": "서울의 랜드마크로, 전망대에서 서울 전경을 한눈에 볼 수 있는 곳입니다.",
     "address": "서울특별시 용산구 남산공원길 105",
-    "image": "images/nseoultower.jpg"
+    "image": "images/nseoultower.jpg",
+    "place": {
+      "lat": 37.5512,
+      "lng": 126.9882
+    },
+    "restaurants": [
+      {
+        "name": "N서울타워 레스토랑",
+        "address": "서울특별시 용산구 남산공원길 105",
+        "type": "뷔페",
+        "lat": 37.5513,
+        "lng": 126.9883
+      },
+      {
+        "name": "남산서울타워 카페",
+        "address": "서울특별시 용산구 남산공원길 50",
+        "type": "카페",
+        "lat": 37.5505,
+        "lng": 126.988
+      }
+    ]
   },
   {
     "id": 3,
     "name": "북촌 한옥마을",
     "description": "전통 한옥이 모여 있는 마을로, 한국의 전통 문화를 체험할 수 있습니다.",
     "address": "서울특별시 종로구 계동길 37",
-    "image": "images/bukchon.jpg"
+    "image": "images/bukchon.jpg",
+    "place": {
+      "lat": 37.5823,
+      "lng": 126.9836
+    },
+    "restaurants": [
+      {
+        "name": "북촌삼계탕",
+        "address": "서울특별시 종로구 계동길 23",
+        "type": "한식",
+        "lat": 37.5821,
+        "lng": 126.9832
+      },
+      {
+        "name": "북촌 한옥카페",
+        "address": "서울특별시 종로구 계동길 30",
+        "type": "카페",
+        "lat": 37.5824,
+        "lng": 126.9835
+      }
+    ]
   },
   {
     "id": 4,
     "name": "동대문 디자인 플라자(DDP)",
     "description": "혁신적인 건축 디자인과 다양한 문화 행사가 열리는 공간입니다.",
     "address": "서울특별시 중구 을지로 281",
-    "image": "images/ddp.jpg"
+    "image": "images/ddp.jpg",
+    "place": {
+      "lat": 37.5665,
+      "lng": 127.0091
+    },
+    "restaurants": [
+      {
+        "name": "동대문 디자인플라자 레스토랑",
+        "address": "서울특별시 중구 을지로 281",
+        "type": "퓨전",
+        "lat": 37.5666,
+        "lng": 127.0093
+      },
+      {
+        "name": "DDP 카페",
+        "address": "서울특별시 중구 을지로 290",
+        "type": "카페",
+        "lat": 37.5668,
+        "lng": 127.0094
+      }
+    ]
   },
   {
     "id": 5,
     "name": "이태원",
     "description": "다양한 외국 문화와 음식을 체험할 수 있는 국제적인 거리입니다.",
     "address": "서울특별시 용산구 이태원로",
-    "image": "images/itaewon.jpg"
+    "image": "images/itaewon.jpg",
+    "place": {
+      "lat": 37.534,
+      "lng": 126.9935
+    },
+    "restaurants": [
+      {
+        "name": "이태원 맛집",
+        "address": "서울특별시 용산구 이태원로 21",
+        "type": "양식",
+        "lat": 37.5342,
+        "lng": 126.9936
+      },
+      {
+        "name": "이태원 카페",
+        "address": "서울특별시 용산구 이태원로 59",
+        "type": "카페",
+        "lat": 37.5344,
+        "lng": 126.9938
+      }
+    ]
   },
   {
     "id": 6,
     "name": "한강공원",
     "description": "서울 시민의 휴식처로, 자전거 타기와 피크닉을 즐기기 좋은 곳입니다.",
     "address": "서울특별시 강남구 압구정로 39",
-    "image": "images/dummyImage.jpg"
+    "image": "images/dummyImage.jpg",
+    "place": {
+      "lat": 37.5185,
+      "lng": 127.0246
+    },
+    "restaurants": [
+      {
+        "name": "한강변 레스토랑",
+        "address": "서울특별시 강남구 압구정로 41",
+        "type": "한식",
+        "lat": 37.5186,
+        "lng": 127.0247
+      },
+      {
+        "name": "한강 카페",
+        "address": "서울특별시 강남구 압구정로 50",
+        "type": "카페",
+        "lat": 37.5188,
+        "lng": 127.025
+      }
+    ]
   },
   {
     "id": 7,
