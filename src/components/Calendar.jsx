@@ -4,7 +4,13 @@ import ReactCalendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
 const Calendar = ({ selectedDate, onDateChange, schedules = [] }) => {
-  console.log("selectedDate: ", selectedDate);
+  const tileContent = ({ date }) => {
+    const hasSchedule = schedules.includes(date.toISOString().split("T")[0]); // "YYYY-MM-DD" -> "YYYY-MM-DDTHH:mm:ss.sssZ"
+
+    return hasSchedule ? (
+      <div style={{ color: "yellow", fontWeight: "bold" }}>★</div>
+    ) : null;
+  };
 
   const handleDateChange = (date) => {
     onDateChange(date);
@@ -12,7 +18,11 @@ const Calendar = ({ selectedDate, onDateChange, schedules = [] }) => {
 
   return (
     <CalendarContainer>
-      <ReactCalendar value={selectedDate} onChange={handleDateChange} />
+      <ReactCalendar
+        value={selectedDate}
+        onChange={handleDateChange}
+        tileContent={tileContent}
+      />
     </CalendarContainer>
   );
 };

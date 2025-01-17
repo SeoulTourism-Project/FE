@@ -6,6 +6,8 @@ import styled from "styled-components";
 const Itinerary = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
 
+  const calendarSchedules = ["2024-12-31", "2025-01-01", "2025-01-12"];
+
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
