@@ -33,6 +33,7 @@ const MyTravel = () => {
 };
 
 const Container = styled.div`
+  width: 1280px;
   padding: 20px;
 `;
 
