@@ -1,12 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import Calendar from "./Calendar";
 import Timetable from "./Timetable";
 import styled from "styled-components";
 
 const Itinerary = () => {
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+
   return (
     <Container>
-      <Calendar />
+      <Calendar
+        selectedDate={selectedDate}
+        onDateChange={handleDateChange}
+        schedules={calendarSchedules}
+      />
       <Timetable />
     </Container>
   );

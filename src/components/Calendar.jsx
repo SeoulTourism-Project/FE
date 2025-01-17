@@ -3,10 +3,16 @@ import styled from "styled-components";
 import ReactCalendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
-const Calendar = () => {
+const Calendar = ({ selectedDate, onDateChange, schedules = [] }) => {
+  console.log("selectedDate: ", selectedDate);
+
+  const handleDateChange = (date) => {
+    onDateChange(date);
+  };
+
   return (
     <CalendarContainer>
-      <ReactCalendar />
+      <ReactCalendar value={selectedDate} onChange={handleDateChange} />
     </CalendarContainer>
   );
 };
