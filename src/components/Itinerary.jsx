@@ -26,6 +26,14 @@ const Itinerary = () => {
       time: "06:00 - 08:00",
     },
     {
+      date: "2025-01-01",
+      title: "어딘가...",
+      image: "/images/dummyImage.jpg",
+      address: "서울특별시 영등포구 여의동로 330",
+      memo: "뭐 넣어야 하지...",
+      time: "09:00 - 12:00",
+    },
+    {
       date: "2025-01-12",
       title: "광화문",
       image: "/images/dummyImage.jpg",
