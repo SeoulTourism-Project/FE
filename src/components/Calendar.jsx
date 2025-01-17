@@ -11,6 +11,15 @@ const Calendar = () => {
   );
 };
 
-const CalendarContainer = styled.div``;
+const CalendarContainer = styled.div`
+  .react-calendar {
+    width: 500px;
+    height: auto;
+  }
+
+  .react-calendar__tile {
+    height: 80px !important;
+  }
+`;
 
 export default Calendar;
