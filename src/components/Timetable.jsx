@@ -1,7 +1,11 @@
 import React from "react";
 
 const Timetable = () => {
-  return <div></div>;
+  return (
+    <div>
+      <p>timetable</p>
+    </div>
+  );
 };
 
 export default Timetable;
