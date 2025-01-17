@@ -1,9 +1,10 @@
 import React from "react";
 
-const Timetable = () => {
+const Timetable = ({ date, schedules }) => {
+  console.log(schedules);
   return (
     <div>
-      <p>timetable</p>
+      <h2>{date.toDateString()}</h2>
     </div>
   );
 };
