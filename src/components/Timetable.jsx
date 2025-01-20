@@ -21,6 +21,7 @@ const Timetable = ({ date, schedules }) => {
           <ScheduleContainer key={index}>
             <Figure>
               <Circle value={"black"} />
+              <Line />
             </Figure>
             <ScheduleCard>
               <ScheduleTime>
@@ -93,6 +94,14 @@ const Circle = styled.div`
   border: 2px solid black;
   border-radius: 50%;
   background: ${(props) => props.value};
+`;
+
+const Line = styled.div`
+  display: flex;
+  margin-left: 11.5px;
+
+  border-left: 2px solid black;
+  height: 210px;
 `;
 
 const ScheduleCard = styled.div`
