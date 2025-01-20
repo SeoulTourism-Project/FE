@@ -15,7 +15,8 @@ const Itinerary = () => {
       image: "/images/dummyImage.jpg",
       address: "서울특별시 중구 남산공원길 105",
       memo: "남산타워 야경 보기",
-      time: "18:00 - 21:00",
+      scheduleDate: "2024-12-31T18:00:00",
+      scheduleEndDate: "2024-12-31T21:00:00",
     },
     {
       date: "2025-01-01",
@@ -23,7 +24,8 @@ const Itinerary = () => {
       image: "/images/dummyImage.jpg",
       address: "서울특별시 영등포구 여의동로 330",
       memo: "한강에서 새해맞이",
-      time: "06:00 - 08:00",
+      scheduleDate: "2024-01-01T06:00:00",
+      scheduleEndDate: "2024-01-01T08:00:00",
     },
     {
       date: "2025-01-01",
@@ -31,7 +33,8 @@ const Itinerary = () => {
       image: "/images/dummyImage.jpg",
       address: "서울특별시 영등포구 여의동로 330",
       memo: "뭐 넣어야 하지...",
-      time: "09:00 - 12:00",
+      scheduleDate: "2024-01-01T09:00:00",
+      scheduleEndDate: "2024-01-01T12:00:00",
     },
     {
       date: "2025-01-12",
@@ -39,7 +42,8 @@ const Itinerary = () => {
       image: "/images/dummyImage.jpg",
       address: "서울특별시 종로구 세종대로 175",
       memo: "광화문 역사 탐방",
-      time: "10:00 - 12:00",
+      scheduleDate: "2024-01-12T10:00:00",
+      scheduleEndDate: "2024-01-12T12:00:00",
     },
   ];
 
