@@ -1,17 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import {
-  formatDate,
-  formatTime24,
-  convertToKoreaDate,
-} from "../utils/koreaDateUtils"; // 한국 시간대로 변경
+import { formatDate, convertToKoreaDate } from "../utils/koreaDateUtils";
 import ScheduleCard from "./ScheduleCard";
+import ScheduleAddModal from "./ScheduleAddModal"; // 이름 변경된 모달 컴포넌트 import
 
 const Timetable = ({ date, schedules }) => {
-  // 선택된 날짜와 일치하는 일정 필터링
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const filteredSchedules = schedules.filter(
-    (schedule) => schedule.date === formatDate(date) // 날짜 비교 시 formatDate 활용
+    (schedule) => schedule.date === formatDate(date)
   );
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <TimeTableContainer>
@@ -23,14 +29,20 @@ const Timetable = ({ date, schedules }) => {
                 <Circle value={"black"} />
                 <Line />
               </Figure>
-              <ScheduleCard schedule={schedule} /> {/* ScheduleCard 사용 */}
+              <ScheduleCard schedule={schedule} />
             </ScheduleContainer>
           ))
         : null}
       <ScheduleAddContainer>
         <Circle value={"#f9f9f9"} id="addCircle" />
-        <ScheduleAddButton>+ 추가</ScheduleAddButton>
+        <ScheduleAddButton onClick={handleOpenModal}>+ 추가</ScheduleAddButton>
       </ScheduleAddContainer>
+
+      {isModalOpen && (
+        <ScheduleAddModal onClose={handleCloseModal}>
+          <p>여기에 모달 내용을 추가하세요!</p>
+        </ScheduleAddModal>
+      )}
     </TimeTableContainer>
   );
 };
