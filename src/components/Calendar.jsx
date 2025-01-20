@@ -13,6 +13,24 @@ const Calendar = ({ selectedDate, onDateChange, schedules = [] }) => {
     return hasSchedule ? <div>⭐</div> : <div></div>;
   };
 
+  // 오늘 날짜(한국 시간 기준) 가져오기
+  const getKoreaToday = () => {
+    const now = new Date();
+    return new Date(now.getTime() + 9 * 60 * 60 * 1000);
+  };
+
+  const tileClassName = ({ date }) => {
+    const koreaDate = new Date(date.getTime() + 9 * 60 * 60 * 1000); // UTC+9 변환
+    const koreaToday = getKoreaToday().toISOString().split("T")[0];
+    const formattedDate = koreaDate.toISOString().split("T")[0];
+
+    // 오늘 날짜인 경우 커스텀 클래스 적용
+    if (formattedDate === koreaToday) {
+      return "custom-today";
+    }
+    return null;
+  };
+
   const handleDateChange = (date) => {
     const koreaDate = new Date(date.getTime() + 9 * 60 * 60 * 1000); // UTC+9 적용
 
@@ -25,6 +43,7 @@ const Calendar = ({ selectedDate, onDateChange, schedules = [] }) => {
         value={selectedDate}
         onChange={handleDateChange}
         tileContent={tileContent}
+        tileClassName={tileClassName}
       />
     </CalendarContainer>
   );
@@ -43,6 +62,19 @@ const CalendarContainer = styled.div`
     justify-content: flex-start;
     align-items: center;
     position: relative;
+  }
+
+  /* 기본 "오늘 날짜" 클래스 무시 */
+  .react-calendar__tile--now {
+    background: none !important;
+    color: inherit !important;
+  }
+
+  /* 커스텀 "오늘 날짜" 클래스 */
+  .custom-today {
+    background-color: #ff6f61 !important;
+    color: white !important;
+    font-weight: bold;
   }
 
   .react-calendar__tile div {
