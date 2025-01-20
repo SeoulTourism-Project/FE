@@ -6,6 +6,14 @@ const Timetable = ({ date, schedules }) => {
     (schedule) => schedule.date === date.toISOString().split("T")[0]
   );
 
+  const formatTime = (isoString) => {
+    return new Date(isoString).toLocaleTimeString("ko-KR", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false, // 24시간 형식
+    });
+  };
+
   console.log(schedules);
   return (
     <TimeTableContainer>
@@ -19,7 +27,10 @@ const Timetable = ({ date, schedules }) => {
                 <h3>{schedule.title}</h3>
                 <p>{schedule.address}</p>
                 <p>{schedule.memo}</p>
-                <p>{schedule.time}</p>
+                <p>
+                  {formatTime(schedule.scheduleDate)} -{" "}
+                  {formatTime(schedule.scheduleEndDate)}
+                </p>
               </ScheduleDetails>
             </ScheduleItem>
           </ScheduleContainer>
