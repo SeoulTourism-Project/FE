@@ -5,13 +5,18 @@ import "react-calendar/dist/Calendar.css";
 
 const Calendar = ({ selectedDate, onDateChange, schedules = [] }) => {
   const tileContent = ({ date }) => {
-    const hasSchedule = schedules.includes(date.toISOString().split("T")[0]); // "YYYY-MM-DD" -> "YYYY-MM-DDTHH:mm:ss.sssZ"
+    const koreaDate = new Date(date.getTime() + 9 * 60 * 60 * 1000); // UTC+9 변환
+    const formattedDate = koreaDate.toISOString().split("T")[0]; // YYYY-MM-DD 형식
+
+    const hasSchedule = schedules.includes(formattedDate);
 
     return hasSchedule ? <div>⭐</div> : <div></div>;
   };
 
   const handleDateChange = (date) => {
-    onDateChange(date);
+    const koreaDate = new Date(date.getTime() + 9 * 60 * 60 * 1000); // UTC+9 적용
+
+    onDateChange(koreaDate);
   };
 
   return (
