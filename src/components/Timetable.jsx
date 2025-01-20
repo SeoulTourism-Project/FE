@@ -19,22 +19,27 @@ const Timetable = ({ date, schedules }) => {
       {filteredSchedules.length > 0 ? (
         filteredSchedules.map((schedule, index) => (
           <ScheduleContainer key={index}>
-            <ScheduleTime>
-              {formatTime24(schedule.scheduleDate)} -{" "}
-              {formatTime24(schedule.scheduleEndDate)}
-            </ScheduleTime>
-            <ScheduleItem>
-              <ScheduleImage src={schedule.image} alt={schedule.title} />
-              <ScheduleDetails>
-                <ScheduleName>{schedule.title}</ScheduleName>
-                <ScheduleAddress>{schedule.address}</ScheduleAddress>
-                <ScheduleMemo>
-                  <p>메모</p>
-                  {schedule.memo}{" "}
-                  {/* 메모 40자 이내로 작성 (띄어쓰기 포함함) */}
-                </ScheduleMemo>
-              </ScheduleDetails>
-            </ScheduleItem>
+            <Figure>
+              <Circle value={"black"} />
+            </Figure>
+            <ScheduleCard>
+              <ScheduleTime>
+                {formatTime24(schedule.scheduleDate)} -{" "}
+                {formatTime24(schedule.scheduleEndDate)}
+              </ScheduleTime>
+              <ScheduleItem>
+                <ScheduleImage src={schedule.image} alt={schedule.title} />
+                <ScheduleDetails>
+                  <ScheduleName>{schedule.title}</ScheduleName>
+                  <ScheduleAddress>{schedule.address}</ScheduleAddress>
+                  <ScheduleMemo>
+                    <p>메모</p>
+                    {schedule.memo}{" "}
+                    {/* 메모 40자 이내로 작성 (띄어쓰기 포함함) */}
+                  </ScheduleMemo>
+                </ScheduleDetails>
+              </ScheduleItem>
+            </ScheduleCard>
           </ScheduleContainer>
         ))
       ) : (
@@ -42,6 +47,7 @@ const Timetable = ({ date, schedules }) => {
           <p>일정이 없습니다.</p>
         </EmptySpace>
       )}
+      <Circle value={"#f9f9f9"} id="addCircle" />
     </TimeTableContainer>
   );
 };
@@ -60,24 +66,48 @@ const TimeTableContainer = styled.div`
   h2 {
     font-size: 2rem;
     font-weight: bold;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
+  }
+
+  #addCircle {
+    margin-left: 20px; // = ScheduleContainer margin-left
   }
 `;
 
 const ScheduleContainer = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: flex-start;
-  margin: 0 0 30px 10px;
+  margin: 0 0 50px 20px;
 
   width: 80%;
   height: 180px;
 `;
 
+const Figure = styled.div`
+  margin-right: 35px;
+`;
+
+const Circle = styled.div`
+  width: 25px;
+  height: 25px;
+  border: 2px solid black;
+  border-radius: 50%;
+  background: ${(props) => props.value};
+`;
+
+const ScheduleCard = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  height: 190px;
+  margin-top: 2px;
+`;
+
 const ScheduleTime = styled.div`
   flex: 0 0 auto;
   font-size: 1.2rem;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 `;
 
 const ScheduleItem = styled.div`
