@@ -1,6 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import { formatDate, formatTime24 } from "../utils/koreaDateUtils"; // 한국 시간대로 변경
+import {
+  formatDate,
+  formatTime24,
+  convertToKoreaDate,
+} from "../utils/koreaDateUtils"; // 한국 시간대로 변경
 
 const Timetable = ({ date, schedules }) => {
   // 선택된 날짜와 일치하는 일정 필터링
@@ -10,20 +14,25 @@ const Timetable = ({ date, schedules }) => {
 
   return (
     <TimeTableContainer>
-      <h2>{formatDate(date)}</h2> {/* YYYY-MM-DD 형식으로 날짜 표시 */}
+      <h2>{convertToKoreaDate(date).toDateString()}</h2>{" "}
+      {/* YYYY-MM-DD 형식으로 날짜 표시 */}
       {filteredSchedules.length > 0 ? (
         filteredSchedules.map((schedule, index) => (
           <ScheduleContainer key={index}>
+            <ScheduleTime>
+              {formatTime24(schedule.scheduleDate)} -{" "}
+              {formatTime24(schedule.scheduleEndDate)}
+            </ScheduleTime>
             <ScheduleItem>
               <ScheduleImage src={schedule.image} alt={schedule.title} />
               <ScheduleDetails>
-                <h3>{schedule.title}</h3>
-                <p>{schedule.address}</p>
-                <p>{schedule.memo}</p>
-                <p>
-                  {formatTime24(schedule.scheduleDate)} -{" "}
-                  {formatTime24(schedule.scheduleEndDate)}
-                </p>
+                <ScheduleName>{schedule.title}</ScheduleName>
+                <ScheduleAddress>{schedule.address}</ScheduleAddress>
+                <ScheduleMemo>
+                  <p>메모</p>
+                  {schedule.memo}{" "}
+                  {/* 메모 40자 이내로 작성 (띄어쓰기 포함함) */}
+                </ScheduleMemo>
               </ScheduleDetails>
             </ScheduleItem>
           </ScheduleContainer>
@@ -38,47 +47,96 @@ const Timetable = ({ date, schedules }) => {
 };
 
 const TimeTableContainer = styled.div`
-  width: 600px;
+  width: 680px;
   background: #fff;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+
+  h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+  }
 `;
 
 const ScheduleContainer = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
-  margin-bottom: 20px;
+  margin: 0 0 30px 10px;
+
+  width: 80%;
+  height: 180px;
+`;
+
+const ScheduleTime = styled.div`
+  flex: 0 0 auto;
+  font-size: 1.2rem;
+  margin-bottom: 10px;
 `;
 
 const ScheduleItem = styled.div`
-  background: #f9f9f9;
-  padding: 10px;
-  border-radius: 5px;
   display: flex;
   align-items: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  flex-grow: 1;
+  flex: 1 1 auto; // 남은 크기
+  width: 100%;
+
+  overflow: hidden;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 `;
 
 const ScheduleImage = styled.img`
-  width: 100px;
-  height: 100px;
-  margin-right: 10px;
-  border-radius: 5px;
+  aspect-ratio: 1 / 1;
+  height: 100%;
+  margin-right: 18px;
+  //   border-radius: 5px;
+  object-fit: cover; // conver: 자르기 / contain: 전체 보여주기
 `;
 
 const ScheduleDetails = styled.div`
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+
+  padding-top: 20px;
+  margin-right: 20px;
+`;
+
+const ScheduleName = styled.p`
+  font-size: 1.3rem;
+  font-weight: bold;
+
+  margin-bottom: 5px;
+`;
+
+const ScheduleAddress = styled.p`
+  color: gray;
+
+  margin-bottom: 20px;
+`;
+
+const ScheduleMemo = styled.div`
+  p {
+    font-weight: bold;
+    margin-bottom: 3px;
+  }
 `;
 
 const EmptySpace = styled.div`
-  height: 40px;
+  margin: 0 0 30px 10px;
+
   display: flex;
   align-items: center;
+  height: 40px;
+
+  background: pink;
 `;
 
 export default Timetable;
