@@ -1,23 +1,16 @@
 import React from "react";
 import styled from "styled-components";
+import { formatDate, formatTime24 } from "../utils/koreaDateUtils"; // 한국 시간대로 변경
 
 const Timetable = ({ date, schedules }) => {
+  // 선택된 날짜와 일치하는 일정 필터링
   const filteredSchedules = schedules.filter(
-    (schedule) => schedule.date === date.toISOString().split("T")[0]
+    (schedule) => schedule.date === formatDate(date) // 날짜 비교 시 formatDate 활용
   );
 
-  const formatTime = (isoString) => {
-    return new Date(isoString).toLocaleTimeString("ko-KR", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false, // 24시간 형식
-    });
-  };
-
-  console.log(schedules);
   return (
     <TimeTableContainer>
-      <h2>{date.toDateString()}</h2>
+      <h2>{formatDate(date)}</h2> {/* YYYY-MM-DD 형식으로 날짜 표시 */}
       {filteredSchedules.length > 0 ? (
         filteredSchedules.map((schedule, index) => (
           <ScheduleContainer key={index}>
@@ -28,8 +21,8 @@ const Timetable = ({ date, schedules }) => {
                 <p>{schedule.address}</p>
                 <p>{schedule.memo}</p>
                 <p>
-                  {formatTime(schedule.scheduleDate)} -{" "}
-                  {formatTime(schedule.scheduleEndDate)}
+                  {formatTime24(schedule.scheduleDate)} -{" "}
+                  {formatTime24(schedule.scheduleEndDate)}
                 </p>
               </ScheduleDetails>
             </ScheduleItem>

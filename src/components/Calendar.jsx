@@ -2,32 +2,24 @@ import React from "react";
 import styled from "styled-components";
 import ReactCalendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import { convertToKoreaDate, formatDate } from "../utils/koreaDateUtils"; // 한국 시간대로 변경
 
 const Calendar = ({ selectedDate, onDateChange, schedules = [] }) => {
   const tileContent = ({ date }) => {
-    const koreaDate = new Date(date.getTime() + 9 * 60 * 60 * 1000); // UTC+9 변환
-    const formattedDate = koreaDate.toISOString().split("T")[0]; // YYYY-MM-DD 형식
-
+    const formattedDate = formatDate(date); // YYYY-MM-DD 형식으로 변환
     const hasSchedule = schedules.includes(formattedDate);
 
     return hasSchedule ? <div>⭐</div> : <div></div>;
   };
 
-  // 오늘 날짜(한국 시간 기준) 가져오기
-  const getKoreaToday = () => {
-    const now = new Date();
-    return new Date(now.getTime() + 9 * 60 * 60 * 1000);
-  };
-
   const tileClassName = ({ date }) => {
-    const koreaDate = new Date(date.getTime() + 9 * 60 * 60 * 1000); // UTC+9 변환
-    const koreaToday = getKoreaToday().toISOString().split("T")[0];
-    const formattedDate = koreaDate.toISOString().split("T")[0];
+    const formattedDate = formatDate(date); // YYYY-MM-DD 형식으로 변환
+    const koreaToday = formatDate(new Date()); // 오늘 날짜를 한국 시간대로 변환
 
     const classes = [];
 
     // 클릭한 날짜 스타일 적용
-    if (formattedDate === selectedDate.toISOString().split("T")[0]) {
+    if (formattedDate === formatDate(selectedDate)) {
       classes.push("selected-date");
     }
 
@@ -40,8 +32,7 @@ const Calendar = ({ selectedDate, onDateChange, schedules = [] }) => {
   };
 
   const handleDateChange = (date) => {
-    const koreaDate = new Date(date.getTime() + 9 * 60 * 60 * 1000); // UTC+9 적용
-
+    const koreaDate = convertToKoreaDate(date); // UTC+9 변환
     onDateChange(koreaDate);
   };
 
