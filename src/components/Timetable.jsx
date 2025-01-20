@@ -16,39 +16,38 @@ const Timetable = ({ date, schedules }) => {
     <TimeTableContainer>
       <h2>{convertToKoreaDate(date).toDateString()}</h2>{" "}
       {/* YYYY-MM-DD 형식으로 날짜 표시 */}
-      {filteredSchedules.length > 0 ? (
-        filteredSchedules.map((schedule, index) => (
-          <ScheduleContainer key={index}>
-            <Figure>
-              <Circle value={"black"} />
-              <Line />
-            </Figure>
-            <ScheduleCard>
-              <ScheduleTime>
-                {formatTime24(schedule.scheduleDate)} -{" "}
-                {formatTime24(schedule.scheduleEndDate)}
-              </ScheduleTime>
-              <ScheduleItem>
-                <ScheduleImage src={schedule.image} alt={schedule.title} />
-                <ScheduleDetails>
-                  <ScheduleName>{schedule.title}</ScheduleName>
-                  <ScheduleAddress>{schedule.address}</ScheduleAddress>
-                  <ScheduleMemo>
-                    <p>메모</p>
-                    {schedule.memo}{" "}
-                    {/* 메모 40자 이내로 작성 (띄어쓰기 포함함) */}
-                  </ScheduleMemo>
-                </ScheduleDetails>
-              </ScheduleItem>
-            </ScheduleCard>
-          </ScheduleContainer>
-        ))
-      ) : (
-        <EmptySpace>
-          <p>일정이 없습니다.</p>
-        </EmptySpace>
-      )}
-      <Circle value={"#f9f9f9"} id="addCircle" />
+      {filteredSchedules.length > 0
+        ? filteredSchedules.map((schedule, index) => (
+            <ScheduleContainer key={index}>
+              <Figure>
+                <Circle value={"black"} />
+                <Line />
+              </Figure>
+              <ScheduleCard>
+                <ScheduleTime>
+                  {formatTime24(schedule.scheduleDate)} -{" "}
+                  {formatTime24(schedule.scheduleEndDate)}
+                </ScheduleTime>
+                <ScheduleItem>
+                  <ScheduleImage src={schedule.image} alt={schedule.title} />
+                  <ScheduleDetails>
+                    <ScheduleName>{schedule.title}</ScheduleName>
+                    <ScheduleAddress>{schedule.address}</ScheduleAddress>
+                    <ScheduleMemo>
+                      <p>메모</p>
+                      {schedule.memo}{" "}
+                      {/* 메모 40자 이내로 작성 (띄어쓰기 포함함) */}
+                    </ScheduleMemo>
+                  </ScheduleDetails>
+                </ScheduleItem>
+              </ScheduleCard>
+            </ScheduleContainer>
+          ))
+        : null}
+      <ScheduleAddContainer>
+        <Circle value={"#f9f9f9"} id="addCircle" />
+        <ScheduleAddButton>+ 추가</ScheduleAddButton>
+      </ScheduleAddContainer>
     </TimeTableContainer>
   );
 };
@@ -69,10 +68,6 @@ const TimeTableContainer = styled.div`
     font-weight: bold;
     margin-bottom: 40px;
   }
-
-  #addCircle {
-    margin-left: 20px; // = ScheduleContainer margin-left
-  }
 `;
 
 const ScheduleContainer = styled.div`
@@ -91,16 +86,16 @@ const Figure = styled.div`
 const Circle = styled.div`
   width: 25px;
   height: 25px;
-  border: 2px solid black;
+  border: 1px solid black;
   border-radius: 50%;
   background: ${(props) => props.value};
 `;
 
 const Line = styled.div`
   display: flex;
-  margin-left: 11.5px;
+  margin-left: 12px;
 
-  border-left: 2px solid black;
+  border-left: 1px solid black;
   height: 210px;
 `;
 
@@ -116,6 +111,7 @@ const ScheduleCard = styled.div`
 const ScheduleTime = styled.div`
   flex: 0 0 auto;
   font-size: 1.2rem;
+  font-weight: bold;
   margin-bottom: 20px;
 `;
 
@@ -124,6 +120,7 @@ const ScheduleItem = styled.div`
   align-items: center;
   flex: 1 1 auto; // 남은 크기
   width: 100%;
+  margin-left: 8px;
 
   overflow: hidden;
   border-radius: 5px;
@@ -176,6 +173,30 @@ const EmptySpace = styled.div`
   height: 40px;
 
   background: pink;
+`;
+
+const ScheduleAddContainer = styled.div`
+  display: flex;
+  margin-left: 20px;
+`;
+
+const ScheduleAddButton = styled.button`
+  width: 80px;
+  height: 25px;
+  margin-left: 35px; // = figure - margin-right
+
+  background: #f9f9f9;
+  border: 1px solid black;
+  border-radius: 25px;
+
+  font-size: 1rem;
+
+  &:hover {
+    background: black;
+    color: #f9f9f9;
+  }
+
+  &: ;
 `;
 
 export default Timetable;
