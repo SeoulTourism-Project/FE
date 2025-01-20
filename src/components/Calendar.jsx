@@ -24,11 +24,19 @@ const Calendar = ({ selectedDate, onDateChange, schedules = [] }) => {
     const koreaToday = getKoreaToday().toISOString().split("T")[0];
     const formattedDate = koreaDate.toISOString().split("T")[0];
 
-    // 오늘 날짜인 경우 커스텀 클래스 적용
-    if (formattedDate === koreaToday) {
-      return "custom-today";
+    const classes = [];
+
+    // 클릭한 날짜 스타일 적용
+    if (formattedDate === selectedDate.toISOString().split("T")[0]) {
+      classes.push("selected-date");
     }
-    return null;
+
+    // 오늘 날짜 스타일 적용
+    if (formattedDate === koreaToday) {
+      classes.push("custom-today");
+    }
+
+    return classes.join(" "); // 여러 클래스를 공백으로 구분하여 반환
   };
 
   const handleDateChange = (date) => {
@@ -72,7 +80,14 @@ const CalendarContainer = styled.div`
 
   /* 커스텀 "오늘 날짜" 클래스 */
   .custom-today {
-    background-color: #ff6f61 !important;
+    background-color: rgb(189, 189, 189) !important;
+    color: white !important;
+    font-weight: bold;
+  }
+
+  /* 클릭한 날짜 스타일 */
+  .selected-date {
+    background-color: rgb(0, 0, 0) !important;
     color: white !important;
     font-weight: bold;
   }
