@@ -12,7 +12,7 @@ const Itinerary = () => {
     {
       id: 1,
       date: "2024-12-31",
-      title: "서울타워",
+      name: "서울타워",
       image: "/images/dummyImage.jpg",
       address: "서울특별시 중구 남산공원길 105",
       memo: "남산타워 야경 보기",
@@ -22,7 +22,7 @@ const Itinerary = () => {
     {
       id: 2,
       date: "2025-01-01",
-      title: "한강공원",
+      name: "한강공원",
       image: "/images/dummyImage.jpg",
       address: "서울특별시 영등포구 여의동로 330",
       memo: "한강에서 새해맞이",
@@ -32,7 +32,7 @@ const Itinerary = () => {
     {
       id: 3,
       date: "2025-01-01",
-      title: "어딘가...",
+      name: "어딘가...",
       image: "/images/dummyImage.jpg",
       address: "서울특별시 영등포구 여의동로 330",
       memo: "뭐 넣어야 하지...",
@@ -42,7 +42,7 @@ const Itinerary = () => {
     {
       id: 4,
       date: "2025-01-12",
-      title: "광화문",
+      name: "광화문",
       image: "/images/dummyImage.jpg",
       address: "서울특별시 종로구 세종대로 175",
       memo: "광화문 역사 탐방",
