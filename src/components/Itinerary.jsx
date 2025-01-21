@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Calendar from "./Calendar";
 import Timetable from "./Timetable";
 import styled from "styled-components";
+import { formatDate } from "../utils/koreaDateUtils";
 
 const Itinerary = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -77,8 +78,7 @@ const Itinerary = () => {
       <Timetable
         date={selectedDate}
         schedules={timeTableSchedules.filter(
-          (schedule) =>
-            schedule.date === selectedDate.toISOString().split("T")[0]
+          (schedule) => schedule.date === formatDate(selectedDate)
         )}
         onDeleteSchedule={onDeleteSchedule}
       />

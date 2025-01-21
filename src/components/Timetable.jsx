@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { formatDate, convertToKoreaDate } from "../utils/koreaDateUtils";
+import { convertToKoreaDate } from "../utils/koreaDateUtils";
 import ScheduleCard from "./ScheduleCard";
 import ScheduleAddModal from "./ScheduleAddModal";
 
