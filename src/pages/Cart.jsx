@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import styled from "styled-components"; // styled-components 사용
+import styled from "styled-components";
+import { CartContext } from "./App";
 
 const Cart = () => {
   // 상품 목록과 장바구니 상태
@@ -180,8 +181,6 @@ const Cart = () => {
   );
 };
 
-export default Cart;
-
 // 스타일 컴포넌트들
 const CartContainer = styled.div`
   display: flex;
@@ -287,8 +286,9 @@ const CartItemQuantity = styled.div`
 `;
 
 const CartItemPrice = styled.div`
-  text-align: right;
-  width: 120px;
+  text-align: right; /* 텍스트를 오른쪽 정렬 */
+  padding-right: 10px; /* 오른쪽으로 약간 이동 */
+  width: 120px; /* 텍스트 영역 크기를 유지 */
 `;
 
 const ButtonsContainer = styled.div`
@@ -338,3 +338,5 @@ const QuantityControls = styled.div`
   display: flex;
   align-items: center;
 `;
+
+export default Cart;
