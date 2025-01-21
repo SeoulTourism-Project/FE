@@ -44,7 +44,7 @@ const Timetable = ({ date, schedules, onDeleteSchedule }) => {
       </ScheduleAddContainer>
 
       {isModalOpen && (
-        <ScheduleAddModal onClose={handleCloseModal}>
+        <ScheduleAddModal onClose={handleCloseModal} selectedDate={date}>
           <p>여기에 모달 내용을 추가하세요!</p>
         </ScheduleAddModal>
       )}

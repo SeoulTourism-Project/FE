@@ -1,17 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import StepPlaceSelection from "./StepPlaceSelection";
+import StepScheduleSetup from "./StepScheduleSetup";
 
-const ScheduleAddModal = ({ children, onClose }) => {
-  const handleOverlayClick = (e) => {
-    // 모달 외부 클릭 시 onClose 호출
-    if (e.target === e.currentTarget) {
-      onClose();
+const ScheduleAddModal = ({ onClose, selectedDate }) => {
+  const [step, setStep] = useState(1); // 단계 관리
+  const [selectedPlace, setSelectedPlace] = useState(null); // 선택한 여행지
+
+  const handleNextStep = () => setStep((prev) => prev + 1);
+  const handlePreviousStep = () => setStep((prev) => prev - 1);
+
+  const handleSave = (scheduleData) => {
+    console.log("Schedule saved:", scheduleData);
+    onClose();
+  };
+
+  const renderStep = () => {
+    switch (step) {
+      case 1:
+        return (
+          <StepPlaceSelection
+            selectedPlace={selectedPlace}
+            setSelectedPlace={setSelectedPlace}
+            onNext={handleNextStep}
+          />
+        );
+      case 2:
+        return (
+          <StepScheduleSetup
+            selectedPlace={selectedPlace}
+            selectedDate={selectedDate}
+            onPrevious={handlePreviousStep}
+            onSave={handleSave}
+          />
+        );
+      default:
+        return null;
     }
   };
 
   return (
-    <ModalOverlay onClick={handleOverlayClick}>
-      <ModalContent>{children}</ModalContent>
+    <ModalOverlay onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <ModalContent>{renderStep()}</ModalContent>
     </ModalOverlay>
   );
 };
@@ -35,7 +65,6 @@ const ModalContent = styled.div`
   border-radius: 8px;
   width: 400px;
   text-align: center;
-  position: relative; // 모달 위치 조정 시 필요
 `;
 
 export default ScheduleAddModal;
