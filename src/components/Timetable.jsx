@@ -2,14 +2,10 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { formatDate, convertToKoreaDate } from "../utils/koreaDateUtils";
 import ScheduleCard from "./ScheduleCard";
-import ScheduleAddModal from "./ScheduleAddModal"; // 이름 변경된 모달 컴포넌트 import
+import ScheduleAddModal from "./ScheduleAddModal";
 
-const Timetable = ({ date, schedules }) => {
+const Timetable = ({ date, schedules, onDeleteSchedule }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const filteredSchedules = schedules.filter(
-    (schedule) => schedule.date === formatDate(date)
-  );
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -19,17 +15,26 @@ const Timetable = ({ date, schedules }) => {
     setIsModalOpen(false);
   };
 
+  const handleDelete = (id) => {
+    onDeleteSchedule(id);
+  };
+
   return (
     <TimeTableContainer>
       <h2>{convertToKoreaDate(date).toDateString()}</h2>
-      {filteredSchedules.length > 0
-        ? filteredSchedules.map((schedule, index) => (
+      {schedules.length > 0
+        ? schedules.map((schedule, index) => (
             <ScheduleContainer key={index}>
               <Figure>
                 <Circle value={"black"} />
                 <Line />
               </Figure>
-              <ScheduleCard schedule={schedule} />
+              <ContentContainer>
+                <ScheduleCard schedule={schedule} />
+                <DeleteButton onClick={() => handleDelete(schedule.id)}>
+                  삭제
+                </DeleteButton>
+              </ContentContainer>
             </ScheduleContainer>
           ))
         : null}
@@ -114,8 +119,30 @@ const ScheduleAddButton = styled.button`
     background: black;
     color: #f9f9f9;
   }
+`;
 
-  &: ;
+const ContentContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+const DeleteButton = styled.button`
+  margin-left: 20px;
+  padding: 10px 15px;
+  height: 180px;
+
+  border: none;
+  background: #ff4d4d;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+
+  &:hover {
+    background: #e60000;
+  }
 `;
 
 export default Timetable;
