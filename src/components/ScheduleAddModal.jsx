@@ -61,9 +61,11 @@ const ModalOverlay = styled.div`
 
 const ModalContent = styled.div`
   background: white;
-  padding: 20px;
+  padding: 50px 20px 20px 20px;
   border-radius: 8px;
-  width: 400px;
+  width: 600px;
+  min-height: 600px;
+  height: 80%;
   text-align: center;
 `;
 
