@@ -1,23 +1,27 @@
 import React from "react";
 import styled from "styled-components";
-import { formatTime24 } from "../utils/koreaDateUtils"; // 필요한 유틸 함수 import
+import { formatTime24 } from "../utils/koreaDateUtils";
 
 const ScheduleCard = ({ schedule }) => {
   return (
     <CardContainer>
-      <ScheduleTime>
-        {formatTime24(schedule.scheduleDate)} -{" "}
-        {formatTime24(schedule.scheduleEndDate)}
-      </ScheduleTime>
+      {schedule.scheduleDate && schedule.scheduleEndDate && (
+        <ScheduleTime>
+          {formatTime24(schedule.scheduleDate)} -{" "}
+          {formatTime24(schedule.scheduleEndDate)}
+        </ScheduleTime>
+      )}
       <ScheduleItem>
-        <ScheduleImage src={schedule.image} alt={schedule.title} />
+        <ScheduleImage src={schedule.image} alt={schedule.name} />
         <ScheduleDetails>
-          <ScheduleName>{schedule.title}</ScheduleName>
+          <ScheduleName>{schedule.name}</ScheduleName>
           <ScheduleAddress>{schedule.address}</ScheduleAddress>
-          <ScheduleMemo>
-            <p>메모</p>
-            {schedule.memo}
-          </ScheduleMemo>
+          {schedule.memo && (
+            <ScheduleMemo>
+              <p>메모</p>
+              {schedule.memo}
+            </ScheduleMemo>
+          )}
         </ScheduleDetails>
       </ScheduleItem>
     </CardContainer>
@@ -27,7 +31,6 @@ const ScheduleCard = ({ schedule }) => {
 const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
-
   width: 100%;
   height: 190px;
   margin-top: 2px;
@@ -46,7 +49,6 @@ const ScheduleItem = styled.div`
   flex: 1 1 auto;
   width: 100%;
   margin-left: 8px;
-
   overflow: hidden;
   border-radius: 5px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
@@ -64,7 +66,6 @@ const ScheduleDetails = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
-
   padding-top: 20px;
   margin-right: 20px;
 `;
