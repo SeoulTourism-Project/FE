@@ -1,5 +1,15 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import ScheduleCard from "./ScheduleCard";
+
+const generateTimeOptions24 = () => {
+  const times = [];
+  for (let hour = 0; hour < 24; hour++) {
+    const formattedHour = hour.toString().padStart(2, "0"); // 2자리로 포맷팅 (예: 01, 02, ...)
+    times.push(`${formattedHour}:00`);
+  }
+  return times;
+};
 
 const StepScheduleSetup = ({
   selectedPlace,
@@ -10,6 +20,8 @@ const StepScheduleSetup = ({
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [memo, setMemo] = useState("");
+
+  const timeOptions = generateTimeOptions24(); // 시간 리스트 생성
 
   const handleSave = () => {
     const scheduleData = {
@@ -25,29 +37,35 @@ const StepScheduleSetup = ({
   return (
     <>
       <h2>일정 설정</h2>
-      <SelectedPlace>{selectedPlace}</SelectedPlace>
+      <SelectedPlace>
+        <ScheduleCard schedule={selectedPlace} />
+      </SelectedPlace>
       <SelectedDate>{selectedDate.toDateString()}</SelectedDate>
       <InputContainer>
         <label>
           시작 시간:
-          <select
+          <Select
             value={startTime}
             onChange={(e) => setStartTime(e.target.value)}
           >
-            <option value="">선택</option>
-            <option value="09:00">09:00</option>
-            <option value="10:00">10:00</option>
-            {/* 추가 시간 옵션 */}
-          </select>
+            <option value="">시작 시간 선택</option>
+            {timeOptions.map((time) => (
+              <option key={time} value={time}>
+                {time}
+              </option>
+            ))}
+          </Select>
         </label>
         <label>
           종료 시간:
-          <select value={endTime} onChange={(e) => setEndTime(e.target.value)}>
-            <option value="">선택</option>
-            <option value="11:00">11:00</option>
-            <option value="12:00">12:00</option>
-            {/* 추가 시간 옵션 */}
-          </select>
+          <Select value={endTime} onChange={(e) => setEndTime(e.target.value)}>
+            <option value="">종료 시간 선택</option>
+            {timeOptions.map((time) => (
+              <option key={time} value={time}>
+                {time}
+              </option>
+            ))}
+          </Select>
         </label>
       </InputContainer>
       <MemoInput
@@ -71,12 +89,16 @@ const StepScheduleSetup = ({
 const SelectedPlace = styled.div`
   font-size: 18px;
   margin-bottom: 10px;
+  margin-right: 20px;
+  text-align: left;
+  display: flex;
+  align-items: center;
 `;
 
 const SelectedDate = styled.div`
-  font-size: 16px;
+  font-size: 25px;
+  font-weight: bold;
   margin-bottom: 20px;
-  color: gray;
 `;
 
 const InputContainer = styled.div`
@@ -84,6 +106,21 @@ const InputContainer = styled.div`
   flex-direction: column;
   gap: 10px;
   margin-bottom: 20px;
+`;
+
+const Select = styled.select`
+  width: 120px;
+  padding: 5px;
+  margin-left: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+
+  &:focus {
+    border-color: #007bff;
+    outline: none;
+  }
 `;
 
 const MemoInput = styled.textarea`
