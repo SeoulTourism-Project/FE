@@ -21,10 +21,38 @@ const StepScheduleSetup = ({
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [memo, setMemo] = useState("");
+  const [error, setError] = useState(false);
 
   const timeOptions = generateTimeOptions24();
 
+  // 유효성 검사 함수
+  const validateTime = (start, end) => {
+    if (start && end && end !== "00:00") {
+      const startTimeValue = parseInt(start.replace(":", ""), 10);
+      const endTimeValue = parseInt(end.replace(":", ""), 10);
+
+      if (startTimeValue >= endTimeValue) {
+        setError(true);
+        return false;
+      }
+    }
+    setError(false); // 에러 초기화
+    return true;
+  };
+
+  const handleStartTimeChange = (value) => {
+    setStartTime(value);
+    validateTime(value, endTime); // 옵션 변경 시 유효성 검사
+  };
+
+  const handleEndTimeChange = (value) => {
+    setEndTime(value);
+    validateTime(startTime, value); // 옵션 변경 시 유효성 검사
+  };
+
   const handleSave = () => {
+    if (!validateTime(startTime, endTime)) return; // 유효성 검사 실패 시 저장하지 않음
+
     const scheduleData = {
       date: selectedDate,
       place: selectedPlace,
@@ -61,7 +89,7 @@ const StepScheduleSetup = ({
               <TimeLabel>시작 시간</TimeLabel>
               <Select
                 value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
+                onChange={(e) => handleStartTimeChange(e.target.value)}
               >
                 <option value="">시간 선택</option>
                 {timeOptions.map((time) => (
@@ -76,7 +104,7 @@ const StepScheduleSetup = ({
               <TimeLabel>종료 시간</TimeLabel>
               <Select
                 value={endTime}
-                onChange={(e) => setEndTime(e.target.value)}
+                onChange={(e) => handleEndTimeChange(e.target.value)}
               >
                 <option value="">시간 선택</option>
                 {timeOptions.map((time) => (
@@ -87,6 +115,9 @@ const StepScheduleSetup = ({
               </Select>
             </TimeColumn>
           </InputRow>
+          {error && (
+            <ErrorMessage>끝 시간은 시작 시간보다 커야 합니다.</ErrorMessage>
+          )}
         </Section>
         <Section>
           <h3>메모</h3>
@@ -100,7 +131,10 @@ const StepScheduleSetup = ({
       </ScrollableContent>
       <ButtonContainer>
         <PreviousButton onClick={onPrevious}>이전</PreviousButton>
-        <SaveButton onClick={handleSave} disabled={!startTime || !endTime}>
+        <SaveButton
+          onClick={handleSave}
+          disabled={!startTime || !endTime || error}
+        >
           저장
         </SaveButton>
       </ButtonContainer>
@@ -195,6 +229,12 @@ const Select = styled.select`
     border-color: #007bff;
     outline: none;
   }
+`;
+
+const ErrorMessage = styled.div`
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 5px;
 `;
 
 const MemoInput = styled.textarea`
