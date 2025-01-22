@@ -55,7 +55,7 @@ const StepScheduleSetup = ({
             value={startTime}
             onChange={(e) => setStartTime(e.target.value)}
           >
-            <option value="">시작 시간 선택</option>
+            <option value="">시간 선택</option>
             {timeOptions.map((time) => (
               <option key={time} value={time}>
                 {time}
@@ -66,7 +66,7 @@ const StepScheduleSetup = ({
         <label>
           종료 시간:
           <Select value={endTime} onChange={(e) => setEndTime(e.target.value)}>
-            <option value="">종료 시간 선택</option>
+            <option value="">시간 선택</option>
             {timeOptions.map((time) => (
               <option key={time} value={time}>
                 {time}
