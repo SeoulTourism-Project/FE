@@ -34,6 +34,13 @@ const StepScheduleSetup = ({
     onSave(scheduleData);
   };
 
+  const handleMemoChange = (e) => {
+    const input = e.target.value;
+    if (input.length <= 40) {
+      setMemo(input); // 40자 이하일 때만 상태 업데이트
+    }
+  };
+
   return (
     <>
       <h2>일정 설정</h2>
@@ -69,10 +76,12 @@ const StepScheduleSetup = ({
         </label>
       </InputContainer>
       <MemoInput
-        placeholder="메모 입력"
+        placeholder="메모 입력 (최대 40자)"
         value={memo}
-        onChange={(e) => setMemo(e.target.value)}
+        onChange={handleMemoChange}
       />
+      <CharCount>{memo.length}/40</CharCount>
+
       <ButtonContainer>
         <PreviousButton onClick={onPrevious}>이전</PreviousButton>
         <SaveButton
@@ -125,12 +134,19 @@ const Select = styled.select`
 
 const MemoInput = styled.textarea`
   width: 100%;
-  height: 60px;
-  resize: none;
+  height: 80px;
   padding: 10px;
   border: 1px solid #ccc;
-  border-radius: 8px;
-  margin-bottom: 20px;
+  border-radius: 4px;
+  resize: none;
+  margin-bottom: 5px;
+`;
+
+const CharCount = styled.div`
+  font-size: 0.9rem;
+  color: gray;
+  text-align: right;
+  margin-bottom: 15px;
 `;
 
 const ButtonContainer = styled.div`
