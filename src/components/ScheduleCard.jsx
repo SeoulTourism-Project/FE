@@ -32,6 +32,7 @@ const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  max-width: 100%;
   height: 190px;
   margin-top: 2px;
 `;
@@ -47,7 +48,7 @@ const ScheduleItem = styled.div`
   display: flex;
   align-items: center;
   flex: 1 1 auto;
-  width: 100%;
+  max-width: 100%;
   margin-left: 8px;
   overflow: hidden;
   border-radius: 5px;
@@ -57,6 +58,8 @@ const ScheduleItem = styled.div`
 const ScheduleImage = styled.img`
   aspect-ratio: 1 / 1;
   height: 100%;
+  max-width: 100%;
+  max-height: 100%;
   margin-right: 18px;
   object-fit: cover;
 `;
