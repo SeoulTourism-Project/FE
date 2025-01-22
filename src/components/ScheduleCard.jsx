@@ -49,7 +49,6 @@ const ScheduleItem = styled.div`
   align-items: center;
   flex: 1 1 auto;
   max-width: 100%;
-  margin-left: 8px;
   overflow: hidden;
   border-radius: 5px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
@@ -71,6 +70,7 @@ const ScheduleDetails = styled.div`
   height: 100%;
   padding-top: 20px;
   margin-right: 20px;
+  text-align: left;
 `;
 
 const ScheduleName = styled.p`
