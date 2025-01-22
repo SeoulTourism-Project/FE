@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { CartContext } from "./App";
 
 const Cart = () => {
   // 상품 목록과 장바구니 상태

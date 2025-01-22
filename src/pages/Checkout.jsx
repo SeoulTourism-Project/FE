@@ -6,6 +6,7 @@ const CheckoutPage = () => {
     name: "",
     phone: "",
     address: "",
+    paymentMethod: "",
     products: [
       {
         id: 1,
@@ -77,8 +78,41 @@ const CheckoutPage = () => {
   return (
     <Container>
       <Header>결제 페이지</Header>
+
+      {/* 주문 리스트 */}
       <Section>
-        <Title>회원 정보</Title>
+        <Title>주문 리스트</Title>
+        <ProductList>
+          {formData.products.map((product, index) => (
+            <ProductItem key={product.id}>
+              <img src={product.image} alt={product.name} />
+              <div className="details">
+                <div className="name">{product.name}</div>
+                <input
+                  type="number"
+                  min="0" // 최소값 0 설정
+                  value={product.quantity}
+                  onChange={(e) =>
+                    handleProductChange(index, "quantity", e.target.value)
+                  }
+                  placeholder="수량"
+                />
+                {errors[`product-${index}`] && (
+                  <ErrorMessage>{errors[`product-${index}`]}</ErrorMessage>
+                )}
+              </div>
+              <div>{product.price.toLocaleString()} 원</div>
+            </ProductItem>
+          ))}
+        </ProductList>
+      </Section>
+
+      {/* 경계선 추가 */}
+      <Divider />
+
+      {/* 주문자 정보 */}
+      <Section>
+        <Title>주문자 정보</Title>
         <FormGroup>
           <label htmlFor="name">이름</label>
           <input
@@ -114,46 +148,80 @@ const CheckoutPage = () => {
         </FormGroup>
       </Section>
 
-      <Section>
-        <Title>상품 정보</Title>
-        <ProductList>
-          {formData.products.map((product, index) => (
-            <ProductItem key={product.id}>
-              <img src={product.image} alt={product.name} />
-              <div className="details">
-                <div className="name">{product.name}</div>
-                <input
-                  type="number"
-                  min="0" // 최소값 0 설정
-                  value={product.quantity}
-                  onChange={(e) =>
-                    handleProductChange(index, "quantity", e.target.value)
-                  }
-                  placeholder="수량"
-                />
-                {errors[`product-${index}`] && (
-                  <ErrorMessage>{errors[`product-${index}`]}</ErrorMessage>
-                )}
-              </div>
-              <div>{product.price.toLocaleString()} 원</div>
-            </ProductItem>
-          ))}
-        </ProductList>
-        <Summary>
-          <div>
-            배송비:{" "}
-            {shippingFee === 0 ? "무료" : `${shippingFee.toLocaleString()} 원`}
-          </div>
-          <div className="total">총 합계: {finalPrice.toLocaleString()} 원</div>
-        </Summary>
-      </Section>
+      {/* 경계선 추가 */}
+      <Divider />
 
+      {/* 결제수단 */}
+      <PaymentMethod>
+        <label htmlFor="payment">결제수단</label>
+      </PaymentMethod>
+
+      {/* 경계선 추가 */}
+      <Divider />
+
+      {/* 최종 결제 금액 텍스트 */}
+      <FinalPriceTitle>최종 결제 금액</FinalPriceTitle>
+
+      {/* 주문상품  테이블 */}
+      <OrderSummary>
+        <thead>
+          <tr>
+            <th>상품금액</th>
+            <th>배송비</th>
+            <th>추가금액</th>
+            <th>결제 예정금액</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{totalPrice.toLocaleString()}원</td>
+            <td>
+              {shippingFee === 0 ? "무료" : `${shippingFee.toLocaleString()}원`}
+            </td>
+            <td>0원</td>
+            <td>
+              <FinalAmount>{finalPrice.toLocaleString()}원</FinalAmount>
+            </td>
+          </tr>
+        </tbody>
+      </OrderSummary>
+
+      {/* 경계선 */}
+      <Divider />
+
+      {/* 결제하기 버튼 */}
       <CheckoutButton onClick={handleSubmit}>
         {finalPrice.toLocaleString()} 원 결제하기
       </CheckoutButton>
     </Container>
   );
 };
+
+// 스타일 컴포넌트
+const OrderSummary = styled.table`
+  width: 100%;
+  margin-top: 40px;
+  margin-bottom: 40px; /* 테이블과 결제하기 버튼 사이 간격 추가 */
+  border-collapse: collapse;
+  text-align: center;
+
+  th {
+    background-color: #ddd;
+    border: 1px solid #ddd;
+    padding: 10px;
+  }
+
+  td {
+    border: 1px solid #ddd;
+    padding: 10px;
+  }
+`;
+
+const FinalAmount = styled.span`
+  color: black;
+  font-weight: bold;
+  font-size: 1.2rem;
+`;
 
 const Container = styled.div`
   max-width: 800px;
@@ -170,7 +238,14 @@ const Header = styled.header`
 `;
 
 const Section = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 40px;
+`;
+
+const Divider = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: #ddd;
+  margin: 20px 0; /* 위아래 여백 설정 */
 `;
 
 const Title = styled.h2`
@@ -179,7 +254,8 @@ const Title = styled.h2`
 `;
 
 const FormGroup = styled.div`
-  margin-bottom: 15px;
+  margin-bottom: 30px;
+  margin-top: 30px; /* 이름 필드 위에 간격 추가 */
 
   label {
     display: block;
@@ -210,11 +286,11 @@ const ProductList = styled.div`
 const ProductItem = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
 
   img {
-    width: 200px;
-    height: 200px;
+    width: 100px;
+    height: 100px;
     margin-right: 10px;
     object-fit: cover;
     border-radius: 5px;
@@ -253,14 +329,23 @@ const Summary = styled.div`
   }
 `;
 
+const PaymentMethod = styled.div`
+  margin: 20px 0; /* 위아래 여백 추가 */
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+`;
 const CheckoutButton = styled.button`
   background-color: #5555;
   color: #fff;
   border: none;
   padding: 10px 20px;
   font-size: 1rem;
-  border-radius: 5px;
+  border-radius: 20px;
   cursor: pointer;
+  margin-top: 20px; /* 테이블과 버튼 사이 간격을 설정 */
 
   &:hover {
     background-color: #3333;
@@ -271,6 +356,14 @@ const ErrorMessage = styled.p`
   color: red;
   font-size: 0.9rem;
   margin-top: 5px;
+`;
+
+const FinalPriceTitle = styled.h2`
+  text-align: left; /* 왼쪽 정렬 */
+  font-size: 1.2rem;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-weight: bold;
 `;
 
 export default CheckoutPage;
