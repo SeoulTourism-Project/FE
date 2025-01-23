@@ -94,13 +94,10 @@ const Itinerary = () => {
         console.log("startTime: ", scheduleData.scheduleDate.toISOString());
         console.log("endTime: ", scheduleData.scheduleEndDate.toISOString());
 
-        alert("일정이 추가되었습니다.");
+        return Promise.resolve(); // 모달 추가 버튼 handler로 반환환
       }
     } catch (err) {
-      console.error("테스트: Failed to save schedule:", err);
-      alert(
-        "테스트: 일정을 저장하는 중 문제가 발생했습니다. 다시 시도해주세요."
-      );
+      return Promise.reject(err);
     }
   };
 

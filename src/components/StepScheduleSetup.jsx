@@ -51,7 +51,7 @@ const StepScheduleSetup = ({
     validateTime(startTime, value); // 옵션 변경 시 유효성 검사
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!validateTime(startTime, endTime)) return; // 유효성 검사 실패 시 저장하지 않음
 
     const scheduleData = {
@@ -63,7 +63,15 @@ const StepScheduleSetup = ({
     };
 
     onAddSchedule(scheduleData);
-    onClose();
+
+    try {
+      await onAddSchedule(scheduleData); // onAddSchedule이 Promise를 반환한다고 가정
+      alert("일정이 추가되었습니다.");
+      onClose();
+    } catch (error) {
+      console.error("Failed to save schedule:", error);
+      alert("일정을 저장하는 중 문제가 발생했습니다. 다시 시도해주세요.");
+    }
   };
 
   const handleMemoChange = (e) => {
