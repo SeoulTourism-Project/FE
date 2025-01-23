@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import ScheduleCard from "./ScheduleCard";
+import { combineToUTC, formatDate } from "../utils/changeDateFormUtils";
 
 // select data
 const generateTimeOptions24 = () => {
@@ -53,13 +54,17 @@ const StepScheduleSetup = ({
   const handleSave = () => {
     if (!validateTime(startTime, endTime)) return; // 유효성 검사 실패 시 저장하지 않음
 
+    const formattedDate = formatDate(selectedDate);
+
     const scheduleData = {
-      date: selectedDate,
-      place: selectedPlace,
-      startTime,
-      endTime,
+      userId: 1,
+      mapId: selectedPlace.id,
+      tourStartDate: formattedDate,
+      scheduleDate: combineToUTC(formattedDate, startTime),
+      scheduleEndDate: combineToUTC(formattedDate, endTime),
       memo,
     };
+
     onSave(scheduleData);
   };
 

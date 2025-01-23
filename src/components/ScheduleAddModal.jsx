@@ -4,7 +4,7 @@ import StepPlaceSelection from "./StepPlaceSelection";
 import StepScheduleSetup from "./StepScheduleSetup";
 import axios from "axios";
 
-const ScheduleAddModal = ({ onClose, selectedDate }) => {
+const ScheduleAddModal = ({ onClose, selectedDate, onSaveSuccess }) => {
   const [step, setStep] = useState(1); // 단계 관리
   const [selectedPlace, setSelectedPlace] = useState(null); // 선택한 여행지
   const [locations, setLocations] = useState([]); // 서버에서 받아온 장소 데이터
@@ -34,9 +34,37 @@ const ScheduleAddModal = ({ onClose, selectedDate }) => {
   const handleNextStep = () => setStep((prev) => prev + 1);
   const handlePreviousStep = () => setStep((prev) => prev - 1);
 
-  const handleSave = (scheduleData) => {
-    console.log("Schedule saved:", scheduleData);
-    onClose();
+  const handleSave = async (scheduleData) => {
+    try {
+      // 서버 요청 대신 테스트용 Promise 사용
+      const mockPostRequest = (data) =>
+        new Promise((resolve, reject) => {
+          setTimeout(() => {
+            // 성공 확률 90%, 실패 확률 10%
+            Math.random() > 0.1
+              ? resolve({ status: 200, data })
+              : reject(new Error("테스트 실패"));
+          }, 1000); // 1초 지연
+        });
+
+      const response = await mockPostRequest(scheduleData);
+
+      if (response.status === 200) {
+        console.log("테스트: Schedule saved:", scheduleData);
+
+        // 부모 컴포넌트에 저장된 데이터 전달
+        if (onSaveSuccess) {
+          onSaveSuccess(scheduleData);
+        }
+        alert("일정이 추가되었습니다.");
+        onClose();
+      }
+    } catch (err) {
+      console.error("테스트: Failed to save schedule:", err);
+      alert(
+        "테스트: 일정을 저장하는 중 문제가 발생했습니다. 다시 시도해주세요."
+      );
+    }
   };
 
   const renderStep = () => {

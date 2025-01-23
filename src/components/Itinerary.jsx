@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Calendar from "./Calendar";
 import Timetable from "./Timetable";
 import styled from "styled-components";
-import { formatDate } from "../utils/koreaDateUtils";
+import { formatDate } from "../utils/changeDateFormUtils";
 
 const Itinerary = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -64,6 +64,10 @@ const Itinerary = () => {
     alert("일정이 삭제되었습니다.");
   };
 
+  const onAddSchedule = (savedData) => {
+    console.log("부모 컴포넌트에서 받은 데이터: ", savedData);
+  };
+
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
@@ -81,6 +85,7 @@ const Itinerary = () => {
           (schedule) => schedule.date === formatDate(selectedDate)
         )}
         onDeleteSchedule={onDeleteSchedule}
+        onAddSchedule={onAddSchedule}
       />
     </Container>
   );

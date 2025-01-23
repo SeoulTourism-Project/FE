@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { convertToKoreaDate, formatDate } from "../utils/koreaDateUtils";
+import { convertToKoreaDate, formatDate } from "../utils/changeDateFormUtils";
 import ScheduleCard from "./ScheduleCard";
 import ScheduleAddModal from "./ScheduleAddModal";
 
-const Timetable = ({ date, schedules, onDeleteSchedule }) => {
+const Timetable = ({ date, schedules, onDeleteSchedule, onAddSchedule }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => {
@@ -44,7 +44,11 @@ const Timetable = ({ date, schedules, onDeleteSchedule }) => {
       </ScheduleAddContainer>
 
       {isModalOpen && (
-        <ScheduleAddModal onClose={handleCloseModal} selectedDate={date}>
+        <ScheduleAddModal
+          onClose={handleCloseModal}
+          selectedDate={date}
+          onSaveSuccess={onAddSchedule}
+        >
           <p>여기에 모달 내용을 추가하세요!</p>
         </ScheduleAddModal>
       )}

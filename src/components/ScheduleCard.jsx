@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { formatTime24 } from "../utils/koreaDateUtils";
+import { formatTime24 } from "../utils/changeDateFormUtils";
 
 const ScheduleCard = ({ schedule }) => {
   return (
