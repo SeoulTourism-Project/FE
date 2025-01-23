@@ -11,7 +11,7 @@ export const convertKoreaToUTCDate = (date) => {
 
 // YYYY-MM-DD 형식으로 변환 함수
 export const formatDate = (date) => {
-  return convertKoreaToUTCDate(date).toISOString().split("T")[0];
+  return convertToKoreaDate(date).toISOString().split("T")[0];
 };
 
 export const formatKoreaDate = (date) => {
@@ -19,7 +19,7 @@ export const formatKoreaDate = (date) => {
 };
 
 // 시간 포맷팅 함수
-export const formatKoreaTime24 = (isoString) => {
+export const formatTime24 = (isoString) => {
   return new Date(isoString).toLocaleTimeString("ko-KR", {
     hour: "2-digit",
     minute: "2-digit",
@@ -59,4 +59,9 @@ export const formatUTCDate = (date) => {
   const year = date.getUTCFullYear(); // Year
 
   return `${day} ${month} ${dayOfMonth} ${year}`;
+};
+
+// 날짜와 시간 문자열을 Date 타입의 UTC 형태로 변환
+export const combineToUTC = (date, time) => {
+  return new Date(`${date}T${time}:00Z`);
 };
