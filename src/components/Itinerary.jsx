@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Calendar from "./Calendar";
 import Timetable from "./Timetable";
 import styled from "styled-components";
-import { formatDate, formatKoreaDate } from "../utils/changeDateFormUtils";
+import { combineToUTC, formatKoreaDate } from "../utils/changeDateFormUtils";
 
 const Itinerary = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -62,10 +62,46 @@ const Itinerary = () => {
     alert("일정이 삭제되었습니다.");
   };
 
-  const onAddSchedule = (savedData) => {
-    console.log("부모 컴포넌트에서 받은 데이터: ", savedData);
-    console.log("startTime: ", savedData.scheduleDate.toISOString());
-    console.log("endTime: ", savedData.scheduleEndDate.toISOString());
+  const onAddSchedule = async (savedData) => {
+    try {
+      const formattedDate = formatKoreaDate(savedData.selectedDate);
+
+      const scheduleData = {
+        userId: 1,
+        mapId: savedData.selectedPlace.id,
+        tourStartDate: formattedDate,
+        scheduleDate: combineToUTC(formattedDate, savedData.startTime),
+        scheduleEndDate: combineToUTC(formattedDate, savedData.endTime),
+        memo: savedData.memo,
+      };
+
+      // 서버 요청 대신 테스트용 Promise 사용
+      const mockPostRequest = (data) =>
+        new Promise((resolve, reject) => {
+          setTimeout(() => {
+            // 성공 확률 90%, 실패 확률 10%
+            Math.random() > 0.1
+              ? resolve({ status: 200, data })
+              : reject(new Error("테스트 실패"));
+          }, 1000); // 1초 지연
+        });
+
+      const response = await mockPostRequest(scheduleData);
+
+      if (response.status === 200) {
+        console.log("자식 컴포넌트에서 받은 데이터: ", savedData);
+        console.log("테스트: Schedule saved:", scheduleData);
+        console.log("startTime: ", scheduleData.scheduleDate.toISOString());
+        console.log("endTime: ", scheduleData.scheduleEndDate.toISOString());
+
+        alert("일정이 추가되었습니다.");
+      }
+    } catch (err) {
+      console.error("테스트: Failed to save schedule:", err);
+      alert(
+        "테스트: 일정을 저장하는 중 문제가 발생했습니다. 다시 시도해주세요."
+      );
+    }
   };
 
   const handleDateChange = (date) => {

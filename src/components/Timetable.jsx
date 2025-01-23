@@ -49,7 +49,7 @@ const Timetable = ({ date, schedules, onDeleteSchedule, onAddSchedule }) => {
         <ScheduleAddModal
           onClose={handleCloseModal}
           selectedDate={date}
-          onSaveSuccess={onAddSchedule}
+          onAddSchedule={onAddSchedule}
         >
           <p>여기에 모달 내용을 추가하세요!</p>
         </ScheduleAddModal>
