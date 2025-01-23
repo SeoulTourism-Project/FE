@@ -55,8 +55,6 @@ const Itinerary = () => {
 
   // 일정 삭제
   const onDeleteSchedule = (id) => {
-    if (!window.confirm("정말로 삭제하시겠습니까?")) return;
-
     setTimeTableSchedules((prevSchedules) =>
       prevSchedules.filter((schedule) => schedule.id !== id)
     );
