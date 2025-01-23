@@ -32,8 +32,7 @@ const Calendar = ({ selectedDate, onDateChange, schedules = [] }) => {
   };
 
   const handleDateChange = (date) => {
-    const koreaDate = convertToKoreaDate(date); // UTC+9 변환
-    onDateChange(koreaDate);
+    onDateChange(date);
   };
 
   return (
