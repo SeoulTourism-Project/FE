@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { convertToKoreaDate, formatDate } from "../utils/changeDateFormUtils";
+import { formatKoreaDate } from "../utils/changeDateFormUtils";
 import ScheduleCard from "./ScheduleCard";
 import ScheduleAddModal from "./ScheduleAddModal";
 
@@ -21,7 +21,7 @@ const Timetable = ({ date, schedules, onDeleteSchedule, onAddSchedule }) => {
 
   return (
     <TimeTableContainer>
-      <h2>{formatDate(date)}</h2>
+      <h2>{formatKoreaDate(date)}</h2>
       {schedules.length > 0
         ? schedules.map((schedule, index) => (
             <ScheduleContainer key={index}>

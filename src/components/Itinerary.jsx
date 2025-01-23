@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Calendar from "./Calendar";
 import Timetable from "./Timetable";
 import styled from "styled-components";
-import { formatDate } from "../utils/changeDateFormUtils";
+import { formatDate, formatKoreaDate } from "../utils/changeDateFormUtils";
 
 const Itinerary = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -66,6 +66,8 @@ const Itinerary = () => {
 
   const onAddSchedule = (savedData) => {
     console.log("부모 컴포넌트에서 받은 데이터: ", savedData);
+    console.log("startTime: ", savedData.scheduleDate.toISOString());
+    console.log("endTime: ", savedData.scheduleEndDate.toISOString());
   };
 
   const handleDateChange = (date) => {
@@ -82,7 +84,7 @@ const Itinerary = () => {
       <Timetable
         date={selectedDate}
         schedules={timeTableSchedules.filter(
-          (schedule) => schedule.date === formatDate(selectedDate)
+          (schedule) => schedule.date === formatKoreaDate(selectedDate)
         )}
         onDeleteSchedule={onDeleteSchedule}
         onAddSchedule={onAddSchedule}
