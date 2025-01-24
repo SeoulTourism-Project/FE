@@ -1,0 +1,42 @@
+[
+  {
+    "calendarDetailsId": 1,
+    "mapId": 11,
+    "placeName": "광장시장",
+    "scheduleDate": "2025-01-18T09:30:00",
+    "scheduleEndDate": "2025-01-18T11:00:00",
+    "placeImage": "images/dummyImage.jpg",
+    "placeAddress": "서울특별시 종로구 창경궁로 88",
+    "memo": "전통 시장 탐방"
+  },
+  {
+    "calendarDetailsId": 2,
+    "mapId": 12,
+    "placeName": "코엑스",
+    "scheduleDate": "2025-01-18T12:30:00",
+    "scheduleEndDate": "2025-01-18T14:00:00",
+    "placeImage": "images/dummyImage.jpg",
+    "placeAddress": "서울특별시 강남구 영동대로 513",
+    "memo": "쇼핑 및 전시 관람"
+  },
+  {
+    "calendarDetailsId": 3,
+    "mapId": 13,
+    "placeName": "롯데월드",
+    "scheduleDate": "2025-01-18T15:30:00",
+    "scheduleEndDate": "2025-01-18T17:30:00",
+    "placeImage": "images/dummyImage.jpg",
+    "placeAddress": "서울특별시 송파구 올림픽로 240",
+    "memo": "테마파크 즐기기"
+  },
+  {
+    "calendarDetailsId": 4,
+    "mapId": 14,
+    "placeName": "서울숲",
+    "scheduleDate": "2025-01-18T18:30:00",
+    "scheduleEndDate": "2025-01-18T20:00:00",
+    "placeImage": "images/dummyImage.jpg",
+    "placeAddress": "서울특별시 성동구 뚝섬로 273",
+    "memo": "저녁 산책"
+  }
+]
