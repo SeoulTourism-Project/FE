@@ -1,57 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Calendar from "./Calendar";
 import Timetable from "./Timetable";
 import styled from "styled-components";
 import { combineToUTC, formatKoreaDate } from "../utils/changeDateFormUtils";
+import axios from "axios";
 
 const Itinerary = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   // 일정 데이터를 상태로 관리
-  const [timeTableSchedules, setTimeTableSchedules] = useState([
-    {
-      id: 1,
-      date: "2024-12-31",
-      name: "서울타워",
-      image: "/images/dummyImage.jpg",
-      address: "서울특별시 중구 남산공원길 105",
-      memo: "남산타워 야경 보기",
-      scheduleDate: "2024-12-31T18:00:00",
-      scheduleEndDate: "2024-12-31T21:00:00",
-    },
-    {
-      id: 2,
-      date: "2025-01-01",
-      name: "한강공원",
-      image: "/images/dummyImage.jpg",
-      address: "서울특별시 영등포구 여의동로 330",
-      memo: "한강에서 새해맞이",
-      scheduleDate: "2025-01-01T06:00:00",
-      scheduleEndDate: "2025-01-01T08:00:00",
-    },
-    {
-      id: 3,
-      date: "2025-01-01",
-      name: "어딘가...",
-      image: "/images/dummyImage.jpg",
-      address: "서울특별시 영등포구 여의동로 330",
-      memo: "뭐 넣어야 하지...",
-      scheduleDate: "2025-01-01T09:00:00",
-      scheduleEndDate: "2025-01-01T12:00:00",
-    },
-    {
-      id: 4,
-      date: "2025-01-12",
-      name: "광화문",
-      image: "/images/dummyImage.jpg",
-      address: "서울특별시 종로구 세종대로 175",
-      memo: "광화문 역사 탐방",
-      scheduleDate: "2025-01-12T10:00:00",
-      scheduleEndDate: "2025-01-12T12:00:00",
-    },
-  ]);
+  const [timeTableSchedules, setTimeTableSchedules] = useState([]);
 
   const calendarSchedules = ["2024-12-31", "2025-01-01", "2025-01-12"];
+
+  // 서버에서 일정 데이터 불러오기
+  const fetchScheduleData = async (date) => {
+    const formattedDate = formatKoreaDate(date);
+    const filePath = `/${formattedDate}.json`; // 공용 파일 경로
+    console.log(filePath);
+
+    try {
+      const response = await axios.get(filePath);
+      if (response.status === 200) {
+        setTimeTableSchedules(response.data || []);
+      }
+    } catch (error) {
+      // 파일이 없거나 오류 발생 시 빈 배열 반환
+      console.error("일정 데이터를 불러오는 중 오류 발생:", error);
+      setTimeTableSchedules([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchScheduleData(selectedDate);
+    console.log(timeTableSchedules);
+  }, [selectedDate]);
 
   // 일정 삭제
   const onDeleteSchedule = (id) => {
@@ -89,10 +72,7 @@ const Itinerary = () => {
       const response = await mockPostRequest(scheduleData);
 
       if (response.status === 200) {
-        console.log("자식 컴포넌트에서 받은 데이터: ", savedData);
         console.log("테스트: Schedule saved:", scheduleData);
-        console.log("startTime: ", scheduleData.scheduleDate.toISOString());
-        console.log("endTime: ", scheduleData.scheduleEndDate.toISOString());
 
         return Promise.resolve(); // 모달 추가 버튼 handler로 반환환
       }
