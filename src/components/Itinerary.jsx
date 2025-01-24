@@ -86,11 +86,27 @@ const Itinerary = () => {
       if (response.status === 200) {
         console.log("테스트: Schedule saved:", scheduleData);
 
+        addScheduleCard(formattedDate, savedData);
+
         return Promise.resolve(); // 모달 추가 버튼 handler로 반환환
       }
     } catch (err) {
       return Promise.reject(err);
     }
+  };
+
+  const addScheduleCard = (formattedDate, data) => {
+    const addCardData = {
+      id: data.selectedPlace.id,
+      name: data.selectedPlace.name,
+      address: data.selectedPlace.address,
+      scheduleDate: combineToUTC(formattedDate, data.startTime),
+      scheduleEndDate: combineToUTC(formattedDate, data.endTime),
+      image: data.selectedPlace.image,
+      memo: data.memo,
+    };
+
+    setTimeTableSchedules([...timeTableSchedules, addCardData]);
   };
 
   const handleDateChange = (date) => {
