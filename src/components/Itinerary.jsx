@@ -22,7 +22,19 @@ const Itinerary = () => {
     try {
       const response = await axios.get(filePath);
       if (response.status === 200) {
-        setTimeTableSchedules(response.data || []);
+        console.log("Response data:", response.data);
+
+        setTimeTableSchedules(
+          (response.data || []).map((schedule) => ({
+            id: schedule.calendarDetailsId,
+            name: schedule.placeName,
+            address: schedule.placeAddress,
+            scheduleDate: schedule.scheduleDate,
+            scheduleEndDate: schedule.scheduleEndDate,
+            image: schedule.placeImage,
+            memo: schedule.memo,
+          }))
+        );
       }
     } catch (error) {
       // 파일이 없거나 오류 발생 시 빈 배열 반환
@@ -94,9 +106,7 @@ const Itinerary = () => {
       />
       <Timetable
         date={selectedDate}
-        schedules={timeTableSchedules.filter(
-          (schedule) => schedule.date === formatKoreaDate(selectedDate)
-        )}
+        schedules={timeTableSchedules}
         onDeleteSchedule={onDeleteSchedule}
         onAddSchedule={onAddSchedule}
       />
