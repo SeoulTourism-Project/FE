@@ -7,14 +7,26 @@ import axios from "axios";
 
 const Itinerary = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
-
-  // 일정 데이터를 상태로 관리
+  const [calendarSchedules, setCalendarSchedules] = useState([]);
   const [timeTableSchedules, setTimeTableSchedules] = useState([]);
 
-  const calendarSchedules = ["2024-12-31", "2025-01-01", "2025-01-12"];
+  const fetchCalendarSchedules = async () => {
+    const filePath = `/calendarDate.json`; // 캘린더 일정이 들어 있는 파일 경로
+
+    try {
+      const response = await axios.get(filePath);
+      if (response.status === 200) {
+        setCalendarSchedules(response.data || []); // 데이터를 상태로 저장
+        console.log("Calendar schedules:", response.data);
+      }
+    } catch (error) {
+      console.error("캘린더 데이터를 불러오는 중 오류 발생:", error);
+      setCalendarSchedules([]); // 오류 발생 시 빈 배열 설정
+    }
+  };
 
   // 서버에서 일정 데이터 불러오기
-  const fetchScheduleData = async (date) => {
+  const fetchTimetableScheduleData = async (date) => {
     const formattedDate = formatKoreaDate(date);
     const filePath = `/${formattedDate}.json`; // 공용 파일 경로
     console.log(filePath);
@@ -44,7 +56,11 @@ const Itinerary = () => {
   };
 
   useEffect(() => {
-    fetchScheduleData(selectedDate);
+    fetchCalendarSchedules();
+  }, []);
+
+  useEffect(() => {
+    fetchTimetableScheduleData(selectedDate);
     console.log(timeTableSchedules);
   }, [selectedDate]);
 
