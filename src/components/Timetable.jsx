@@ -33,7 +33,7 @@ const Timetable = ({ date, schedules, onDeleteSchedule, onAddSchedule }) => {
               </Figure>
               <ContentContainer>
                 <ScheduleCard schedule={schedule} />
-                <DeleteButton onClick={() => handleDelete(schedule.id)}>
+                <DeleteButton onClick={() => handleDelete(schedule.scheduleId)}>
                   삭제
                 </DeleteButton>
               </ContentContainer>

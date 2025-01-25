@@ -29,7 +29,6 @@ const Itinerary = () => {
   const fetchTimetableScheduleData = async (date) => {
     const formattedDate = formatKoreaDate(date);
     const filePath = `/${formattedDate}.json`; // 공용 파일 경로
-    console.log(filePath);
 
     try {
       const response = await axios.get(filePath);
@@ -38,7 +37,8 @@ const Itinerary = () => {
 
         setTimeTableSchedules(
           (response.data || []).map((schedule) => ({
-            id: schedule.calendarDetailsId,
+            scheduleId: schedule.calendarDetailsId,
+            mapId: schedule.mapId,
             name: schedule.placeName,
             address: schedule.placeAddress,
             scheduleDate: schedule.scheduleDate,
@@ -67,7 +67,7 @@ const Itinerary = () => {
   // 일정 삭제
   const onDeleteSchedule = (id) => {
     setTimeTableSchedules((prevSchedules) =>
-      prevSchedules.filter((schedule) => schedule.id !== id)
+      prevSchedules.filter((schedule) => schedule.scheduleId !== id)
     );
 
     alert("일정이 삭제되었습니다.");
@@ -92,7 +92,10 @@ const Itinerary = () => {
           setTimeout(() => {
             // 성공 확률 90%, 실패 확률 10%
             Math.random() > 0.1
-              ? resolve({ status: 200, data })
+              ? resolve({
+                  status: 200,
+                  data: { ...data, scheduleId: Date.now() }, // 이후 calendarDetailsId가 들어갈 예정...
+                })
               : reject(new Error("테스트 실패"));
           }, 1000); // 1초 지연
         });
@@ -102,7 +105,7 @@ const Itinerary = () => {
       if (response.status === 200) {
         console.log("테스트: Schedule saved:", scheduleData);
 
-        addScheduleCard(formattedDate, savedData);
+        addScheduleCard(response.data, savedData);
 
         return Promise.resolve(); // 모달 추가 버튼 handler로 반환환
       }
@@ -111,18 +114,21 @@ const Itinerary = () => {
     }
   };
 
-  const addScheduleCard = (formattedDate, data) => {
+  console.log("Add: ", timeTableSchedules);
+
+  const addScheduleCard = (responseData, localData) => {
     const addCardData = {
-      id: data.selectedPlace.id,
-      name: data.selectedPlace.name,
-      address: data.selectedPlace.address,
-      scheduleDate: combineToUTC(formattedDate, data.startTime),
-      scheduleEndDate: combineToUTC(formattedDate, data.endTime),
-      image: data.selectedPlace.image,
-      memo: data.memo,
+      scheduleId: responseData.scheduleId,
+      mapId: responseData.mapId,
+      name: localData.selectedPlace.name,
+      address: localData.selectedPlace.address,
+      scheduleDate: responseData.scheduleDate,
+      scheduleEndDate: responseData.scheduleEndDate,
+      image: localData.selectedPlace.image,
+      memo: responseData.memo,
     };
 
-    setTimeTableSchedules([...timeTableSchedules, addCardData]);
+    setTimeTableSchedules((prevSchedules) => [...prevSchedules, addCardData]);
   };
 
   const handleDateChange = (date) => {
