@@ -62,10 +62,8 @@ const StepScheduleSetup = ({
       memo,
     };
 
-    onAddSchedule(scheduleData);
-
     try {
-      await onAddSchedule(scheduleData); // onAddSchedule이 Promise를 반환한다고 가정
+      await onAddSchedule(scheduleData); // Promise 반환
       alert("일정이 추가되었습니다.");
       onClose();
     } catch (error) {
