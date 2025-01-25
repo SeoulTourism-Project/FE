@@ -10,14 +10,16 @@ const Itinerary = () => {
   const [calendarSchedules, setCalendarSchedules] = useState([]);
   const [timeTableSchedules, setTimeTableSchedules] = useState([]);
 
+  console.log("timetableSchedules: ", timeTableSchedules);
+  console.log("calendarSchedule: ", calendarSchedules);
+
   const fetchCalendarSchedules = async () => {
-    const filePath = `/calendarDate.json`; // 캘린더 일정이 들어 있는 파일 경로
+    const filePath = `/calendarDate.json`;
 
     try {
       const response = await axios.get(filePath);
       if (response.status === 200) {
-        setCalendarSchedules(response.data || []); // 데이터를 상태로 저장
-        console.log("Calendar schedules:", response.data);
+        setCalendarSchedules(response.data || []);
       }
     } catch (error) {
       console.error("캘린더 데이터를 불러오는 중 오류 발생:", error);
@@ -25,16 +27,13 @@ const Itinerary = () => {
     }
   };
 
-  // 서버에서 일정 데이터 불러오기
   const fetchTimetableScheduleData = async (date) => {
     const formattedDate = formatKoreaDate(date);
-    const filePath = `/${formattedDate}.json`; // 공용 파일 경로
+    const filePath = `/${formattedDate}.json`;
 
     try {
       const response = await axios.get(filePath);
       if (response.status === 200) {
-        console.log("Response data:", response.data);
-
         setTimeTableSchedules(
           (response.data || []).map((schedule) => ({
             scheduleId: schedule.calendarDetailsId,
@@ -49,28 +48,9 @@ const Itinerary = () => {
         );
       }
     } catch (error) {
-      // 파일이 없거나 오류 발생 시 빈 배열 반환
       console.error("일정 데이터를 불러오는 중 오류 발생:", error);
       setTimeTableSchedules([]);
     }
-  };
-
-  useEffect(() => {
-    fetchCalendarSchedules();
-  }, []);
-
-  useEffect(() => {
-    fetchTimetableScheduleData(selectedDate);
-    console.log(timeTableSchedules);
-  }, [selectedDate]);
-
-  // 일정 삭제
-  const onDeleteSchedule = (id) => {
-    setTimeTableSchedules((prevSchedules) =>
-      prevSchedules.filter((schedule) => schedule.scheduleId !== id)
-    );
-
-    alert("일정이 삭제되었습니다.");
   };
 
   const onAddSchedule = async (savedData) => {
@@ -90,31 +70,53 @@ const Itinerary = () => {
       const mockPostRequest = (data) =>
         new Promise((resolve, reject) => {
           setTimeout(() => {
-            // 성공 확률 90%, 실패 확률 10%
             Math.random() > 0.1
               ? resolve({
                   status: 200,
-                  data: { ...data, scheduleId: Date.now() }, // 이후 calendarDetailsId가 들어갈 예정...
+                  data: { ...data, scheduleId: Date.now() },
                 })
               : reject(new Error("테스트 실패"));
-          }, 1000); // 1초 지연
+          }, 1000);
         });
 
       const response = await mockPostRequest(scheduleData);
 
       if (response.status === 200) {
-        console.log("테스트: Schedule saved:", scheduleData);
-
         addScheduleCard(response.data, savedData);
-
-        return Promise.resolve(); // 모달 추가 버튼 handler로 반환환
+        addDateToCalendar(response.data.tourStartDate); // 캘린더에 날짜 추가
+        return Promise.resolve();
       }
     } catch (err) {
       return Promise.reject(err);
     }
   };
 
-  console.log("Add: ", timeTableSchedules);
+  const onDeleteSchedule = (id) => {
+    setTimeTableSchedules((prevSchedules) => {
+      const updatedSchedules = prevSchedules.filter(
+        (schedule) => schedule.scheduleId !== id
+      );
+
+      if (updatedSchedules.length === 0) {
+        setCalendarSchedules((prevCalendar) =>
+          prevCalendar.filter((date) => date !== formatKoreaDate(selectedDate))
+        );
+      }
+
+      return updatedSchedules;
+    });
+
+    alert("일정이 삭제되었습니다.");
+  };
+
+  const addDateToCalendar = (date) => {
+    setCalendarSchedules((prev) => {
+      if (!prev.includes(date)) {
+        return [...prev, date];
+      }
+      return prev;
+    });
+  };
 
   const addScheduleCard = (responseData, localData) => {
     const addCardData = {
@@ -135,6 +137,14 @@ const Itinerary = () => {
     setSelectedDate(date);
   };
 
+  useEffect(() => {
+    fetchCalendarSchedules();
+  }, []);
+
+  useEffect(() => {
+    fetchTimetableScheduleData(selectedDate);
+  }, [selectedDate]);
+
   return (
     <Container>
       <Calendar
@@ -154,7 +164,7 @@ const Itinerary = () => {
 
 const Container = styled.div`
   padding: 20px;
-  background: #f9f9f9; // 임시
+  background: #f9f9f9;
   display: flex;
   justify-content: center;
   align-items: flex-start;
