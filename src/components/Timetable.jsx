@@ -34,7 +34,7 @@ const Timetable = ({ date, schedules, onDeleteSchedule, onAddSchedule }) => {
               <ContentContainer>
                 <ScheduleCard schedule={schedule} />
                 <DeleteButton onClick={() => handleDelete(schedule.scheduleId)}>
-                  삭제
+                  X
                 </DeleteButton>
               </ContentContainer>
             </ScheduleContainer>
@@ -77,11 +77,12 @@ const TimeTableContainer = styled.div`
 `;
 
 const ScheduleContainer = styled.div`
+  position: relative;
   display: flex;
   align-items: flex-start;
   margin: 0 0 50px 20px;
 
-  width: 80%;
+  width: 90%;
   height: 180px;
 `;
 
@@ -113,7 +114,7 @@ const ScheduleAddContainer = styled.div`
 const ScheduleAddButton = styled.button`
   width: 80px;
   height: 25px;
-  margin-left: 35px; // = figure - margin-right
+  margin-left: 35px;
 
   background: #f9f9f9;
   border: 1px solid black;
@@ -135,16 +136,24 @@ const ContentContainer = styled.div`
 `;
 
 const DeleteButton = styled.button`
-  margin-left: 20px;
-  padding: 10px 15px;
-  height: 180px;
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  width: 25px;
+  height: 25px;
 
   border: none;
-  background: #ff4d4d;
+
   color: white;
-  border-radius: 5px;
+  background: #eee;
+  border-radius: 25%;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     background: #e60000;
