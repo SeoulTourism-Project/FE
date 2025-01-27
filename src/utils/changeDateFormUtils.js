@@ -8,16 +8,12 @@ export const formatKoreaDate = (date) => {
   return convertToKoreaDate(date).toISOString().split("T")[0];
 };
 
-// ISO 문자열을 24시간 시간 포맷(HH:mm)으로 변환
+// ISO 문자열을 24시간 포맷(HH:mm)으로 변환
 export const formatTime24 = (isoString) => {
-  return new Date(isoString).toLocaleTimeString("ko-KR", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
+  return isoString.split("T")[1].slice(0, 5);
 };
 
 // 날짜(YYYY-MM-DD)와 시간(HH:mm)을 UTC Date 객체로 변환
 export const combineToUTC = (date, time) => {
-  return new Date(`${date}T${time}:00Z`);
+  return `${date}T${time}:00`;
 };

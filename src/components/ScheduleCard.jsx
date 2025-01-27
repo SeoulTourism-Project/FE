@@ -1,14 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import { formatTime24 } from "../utils/changeDateFormUtils";
 
 const ScheduleCard = ({ schedule }) => {
   return (
     <CardContainer>
-      {schedule.scheduleDate && schedule.scheduleEndDate && (
+      {schedule.startTime && schedule.endTime && (
         <ScheduleTime>
-          {formatTime24(schedule.scheduleDate)} -{" "}
-          {formatTime24(schedule.scheduleEndDate)}
+          {schedule.startTime} - {schedule.endTime}
         </ScheduleTime>
       )}
       <ScheduleItem>

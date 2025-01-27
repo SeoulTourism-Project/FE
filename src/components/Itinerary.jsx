@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import Calendar from "./Calendar";
 import Timetable from "./Timetable";
 import styled from "styled-components";
-import { combineToUTC, formatKoreaDate } from "../utils/changeDateFormUtils";
+import {
+  combineToUTC,
+  formatKoreaDate,
+  formatTime24,
+} from "../utils/changeDateFormUtils";
 import axios from "axios";
 
 const Itinerary = () => {
@@ -40,8 +44,8 @@ const Itinerary = () => {
             mapId: schedule.mapId,
             name: schedule.placeName,
             address: schedule.placeAddress,
-            scheduleDate: schedule.scheduleDate,
-            scheduleEndDate: schedule.scheduleEndDate,
+            startTime: formatTime24(schedule.scheduleDate),
+            endTime: formatTime24(schedule.scheduleEndDate),
             image: schedule.placeImage,
             memo: schedule.memo,
           }))
@@ -124,11 +128,13 @@ const Itinerary = () => {
       mapId: responseData.mapId,
       name: localData.selectedPlace.name,
       address: localData.selectedPlace.address,
-      scheduleDate: responseData.scheduleDate,
-      scheduleEndDate: responseData.scheduleEndDate,
+      startTime: formatTime24(responseData.scheduleDate),
+      endTime: formatTime24(responseData.scheduleEndDate),
       image: localData.selectedPlace.image,
       memo: responseData.memo,
     };
+
+    console.log("add: ", addCardData.startTime);
 
     setTimeTableSchedules((prevSchedules) => [...prevSchedules, addCardData]);
   };
