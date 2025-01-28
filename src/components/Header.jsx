@@ -84,7 +84,7 @@ const HeaderArea = styled.header`
   display: flex;
   align-items: center;
   gap: 30px;
-  z-index: 1;
+  z-index: 2;
 `;
 
 const TItle = styled.h1`

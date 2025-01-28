@@ -29,6 +29,15 @@ const FavoriteList = () => {
     fetchLocations();
   }, []);
 
+  const handleFavoriteToggle = (id) => {
+    setFavorites((prevFavorites) =>
+      prevFavorites.filter((item) => item.id !== id)
+    );
+  };
+
+  if (loading) return <p>로딩 중...</p>;
+  if (error) return <p>{error}</p>;
+
   return (
     <Container>
       {favorites.length === 0 ? (
@@ -40,6 +49,7 @@ const FavoriteList = () => {
               <FavoriteHeart
                 initialFavorite={item.likeStatus}
                 backgroundColor="#00000050"
+                onFavoriteToggle={() => handleFavoriteToggle(item.id)}
               />
               <TouristAttractionItem touristAttraction={item} width={"100%"} />
             </ItemWrapper>
@@ -62,7 +72,6 @@ const CardContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 20px;
   width: 100%;
 `;
 

@@ -8,11 +8,18 @@ const FavoriteHeart = ({
   initialFavorite = false,
   position = { top: "10px", right: "10px" },
   backgroundColor,
+  onFavoriteToggle,
 }) => {
   const [isFavorite, setIsFavorite] = useState(initialFavorite);
 
   const toggleFavorite = () => {
-    setIsFavorite((prev) => !prev);
+    setIsFavorite((prev) => {
+      const newFavorite = !prev;
+      if (!newFavorite) {
+        onFavoriteToggle();
+      }
+      return newFavorite;
+    });
   };
 
   return (
@@ -41,7 +48,7 @@ const HeartContainer = styled.div`
   border-radius: 8px;
 
   cursor: pointer;
-  z-index: 10;
+  z-index: 1;
   transition: color 0.2s ease;
 
   &:hover {
