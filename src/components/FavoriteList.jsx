@@ -66,16 +66,19 @@ export default FavoriteList;
 const Container = styled.div`
   padding: 20px;
   background: #f9f9f9;
+  display: flex;
+  justify-content: center;
 `;
 
 const CardContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 20px;
   width: 100%;
 `;
 
 const ItemWrapper = styled.div`
   position: relative;
-  width: calc(25% - 20px);
+  width: calc(25% - 15px);
 `;
