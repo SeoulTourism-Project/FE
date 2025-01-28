@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import ScheduleCard from "./ScheduleCard";
+import { formatKoreaDate } from "../utils/changeDateFormUtils";
 
 // select data
 const generateTimeOptions24 = () => {
@@ -89,7 +90,7 @@ const StepScheduleSetup = ({
         </Section>
         <Section>
           <h3>날짜</h3>
-          <DateDisplay>{selectedDate.toDateString()}</DateDisplay>
+          <DateDisplay>{formatKoreaDate(selectedDate)}</DateDisplay>
         </Section>
         <Section>
           <h3>시간</h3>
