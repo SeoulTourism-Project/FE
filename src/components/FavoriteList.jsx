@@ -4,7 +4,7 @@ import TouristAttractionItem from "./TouristAttractionItem";
 import FavoriteHeart from "./FavoriteHeart";
 import axios from "axios";
 
-const InterestList = () => {
+const FavoriteList = () => {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -50,7 +50,7 @@ const InterestList = () => {
   );
 };
 
-export default InterestList;
+export default FavoriteList;
 
 // 스타일 정의
 const Container = styled.div`
