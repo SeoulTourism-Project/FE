@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLocation, useNavigate } from "react-router";
 import styled from "styled-components";
 import GoogleMaps from "../components/GoogleMaps";
+import FavoriteHeart from "../components/FavoriteHeart";
 
 const TouristAttractionDetail = () => {
   const navigate = useNavigate();
@@ -48,7 +49,15 @@ const TouristAttractionDetail = () => {
             <img src={`/${image}`} alt="" />
           </LocationImage>
           <LocationInfo>
-            <h3>{name}</h3>
+            <TitleContainer>
+              <h3>{name}</h3>
+              <FavoriteHeart
+                initialFavorite={false}
+                mapId={id}
+                pageType="detail"
+                debounceTime={500}
+              />
+            </TitleContainer>
             <p>
               <FontAwesomeIcon icon={faLocationDot} />
               <span>{address}</span>
@@ -127,6 +136,16 @@ const LocationInfo = styled.div`
     max-height: 278px;
     overflow-y: auto;
     padding: 1px 0;
+  }
+`;
+
+const TitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  h3 {
+    margin-right: 10px;
   }
 `;
 
