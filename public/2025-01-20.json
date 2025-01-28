@@ -1,0 +1,42 @@
+[
+  {
+    "calendarDetailsId": 1,
+    "mapId": 19,
+    "placeName": "덕수궁",
+    "scheduleDate": "2025-01-20T10:00:00",
+    "scheduleEndDate": "2025-01-20T11:30:00",
+    "placeImage": "images/dummyImage.jpg",
+    "placeAddress": "서울특별시 중구 세종대로 99",
+    "memo": "전통 궁궐 탐방"
+  },
+  {
+    "calendarDetailsId": 2,
+    "mapId": 20,
+    "placeName": "국립중앙박물관",
+    "scheduleDate": "2025-01-20T12:30:00",
+    "scheduleEndDate": "2025-01-20T14:00:00",
+    "placeImage": "images/dummyImage.jpg",
+    "placeAddress": "서울특별시 용산구 서빙고로 137",
+    "memo": "문화재 관람"
+  },
+  {
+    "calendarDetailsId": 3,
+    "mapId": 6,
+    "placeName": "한강공원",
+    "scheduleDate": "2025-01-20T16:00:00",
+    "scheduleEndDate": "2025-01-20T17:30:00",
+    "placeImage": "images/dummyImage.jpg",
+    "placeAddress": "서울특별시 강남구 압구정로 39",
+    "memo": "자전거 타기"
+  },
+  {
+    "calendarDetailsId": 4,
+    "mapId": 7,
+    "placeName": "인사동",
+    "scheduleDate": "2025-01-20T18:00:00",
+    "scheduleEndDate": "2025-01-20T19:30:00",
+    "placeImage": "images/dummyImage.jpg",
+    "placeAddress": "서울특별시 종로구 인사동길",
+    "memo": "예술 거리 탐방"
+  }
+]

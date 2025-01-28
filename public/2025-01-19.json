@@ -1,0 +1,42 @@
+[
+  {
+    "calendarDetailsId": 1,
+    "mapId": 15,
+    "placeName": "명동",
+    "scheduleDate": "2025-01-19T10:00:00",
+    "scheduleEndDate": "2025-01-19T11:30:00",
+    "placeImage": "images/dummyImage.jpg",
+    "placeAddress": "서울특별시 중구 명동8길",
+    "memo": "쇼핑 및 거리 탐방"
+  },
+  {
+    "calendarDetailsId": 2,
+    "mapId": 16,
+    "placeName": "삼청동",
+    "scheduleDate": "2025-01-19T13:00:00",
+    "scheduleEndDate": "2025-01-19T14:30:00",
+    "placeImage": "images/dummyImage.jpg",
+    "placeAddress": "서울특별시 종로구 삼청로",
+    "memo": "전통과 현대의 조화"
+  },
+  {
+    "calendarDetailsId": 3,
+    "mapId": 17,
+    "placeName": "잠실 석촌호수",
+    "scheduleDate": "2025-01-19T16:00:00",
+    "scheduleEndDate": "2025-01-19T17:30:00",
+    "placeImage": "images/dummyImage.jpg",
+    "placeAddress": "서울특별시 송파구 잠실로 148",
+    "memo": "호수 산책"
+  },
+  {
+    "calendarDetailsId": 4,
+    "mapId": 18,
+    "placeName": "63빌딩",
+    "scheduleDate": "2025-01-19T19:00:00",
+    "scheduleEndDate": "2025-01-19T20:30:00",
+    "placeImage": "images/dummyImage.jpg",
+    "placeAddress": "서울특별시 영등포구 여의대로 50",
+    "memo": "전망대에서 야경 감상"
+  }
+]
