@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import InterestList from "../components/InterestList";
+import FavoriteList from "../components/FavoriteList";
 import Itinerary from "../components/Itinerary";
 
 const MyTravel = () => {
@@ -25,7 +25,7 @@ const MyTravel = () => {
         </TabButton>
       </Tabs>
       <div>
-        {activeTab === "interest" && <InterestList />}
+        {activeTab === "interest" && <FavoriteList />}
         {activeTab === "calendar" && <Itinerary />}
       </div>
     </Container>
