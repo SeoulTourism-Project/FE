@@ -48,8 +48,9 @@ const FavoriteList = () => {
             <ItemWrapper key={item.id}>
               <FavoriteHeart
                 initialFavorite={item.likeStatus}
-                backgroundColor="#00000050"
-                onFavoriteToggle={() => handleFavoriteToggle(item.id)}
+                mapId={item.id}
+                pageType="manage"
+                onCardDelete={() => handleFavoriteToggle(item.id)}
               />
               <TouristAttractionItem touristAttraction={item} width={"100%"} />
             </ItemWrapper>
