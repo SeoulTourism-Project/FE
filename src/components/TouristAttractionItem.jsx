@@ -13,7 +13,16 @@ const TouristAttractionItem = ({
   return (
     <Card
       width={width}
-      onClick={() => navigate(`/tourist-attraction/${touristAttraction.id}`)}
+      onClick={() => {
+        navigate(`/tourist-attraction/${touristAttraction.id}`, {
+          state: {
+            id: touristAttraction.id,
+            name: touristAttraction.name,
+            image: touristAttraction.image,
+            address: touristAttraction.address,
+          },
+        });
+      }}
     >
       <CardBadge>{touristAttraction.name}</CardBadge>
       <CardImage src={touristAttraction.image} alt="..." />
