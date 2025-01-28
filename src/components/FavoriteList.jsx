@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import TouristAttractionItem from "./TouristAttractionItem";
+import FavoriteHeart from "./FavoriteHeart";
 import axios from "axios";
 
 const InterestList = () => {
@@ -35,7 +36,13 @@ const InterestList = () => {
       ) : (
         <CardContainer>
           {favorites.map((item) => (
-            <TouristAttractionItem key={item.id} touristAttraction={item} />
+            <ItemWrapper key={item.id}>
+              <FavoriteHeart
+                initialFavorite={item.likeStatus}
+                backgroundColor="#00000050"
+              />
+              <TouristAttractionItem touristAttraction={item} width={"100%"} />
+            </ItemWrapper>
           ))}
         </CardContainer>
       )}
@@ -55,4 +62,11 @@ const CardContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+`;
+
+const ItemWrapper = styled.div`
+  position: relative;
+  width: calc(25% - 20px);
 `;
