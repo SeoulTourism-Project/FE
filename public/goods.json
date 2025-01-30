@@ -1,122 +1,242 @@
 [
   {
     "id": 1,
-    "image_url": "https://example.com/images/hanbok_keychain.jpg",
-    "title": "한복 키체인",
-    "price": 8000
+    "title": "한복 인형 세트",
+    "imgUrl": "https://thumbnail8.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/4a8c/91774e7d0e78f4a3e327f16b777c8ad131d91a92b016402b279ad34833a3.jpg",
+    "description": "한국 전통 한복을 입은 인형 세트입니다.",
+    "price": 57000,
+    "category": "공예품"
   },
   {
     "id": 2,
-    "image_url": "https://example.com/images/traditional_mask.jpg",
-    "title": "전통 탈 모형",
-    "price": 12000
+    "title": "전통 청사초롱",
+    "imgUrl": "https://thumbnail.10x10.co.kr/webimage/image/basic600/391/B003912527.jpg?cmd=thumb&w=400&h=400&fit=true&ws=false",
+    "description": "어두운 밤을 밝히는 한국 전통 청사초롱입니다.",
+    "price": 32000,
+    "category": "인테리어 소품"
   },
   {
     "id": 3,
-    "image_url": "https://example.com/images/korean_fan.jpg",
-    "title": "한국 전통 부채",
-    "price": 7000
+    "title": "조각보 손수건",
+    "imgUrl": "https://m.shopofkorea.com/data/goods/1/2021/10/34671_tmp_42d7a5f5d35ad259d21a94aa8649345c7759view.jpg",
+    "description": "전통 조각보 디자인이 들어간 손수건입니다.",
+    "price": 15000,
+    "category": "패션생활용품"
   },
   {
     "id": 4,
-    "image_url": "https://example.com/images/hanji_notebook.jpg",
-    "title": "한지 노트",
-    "price": 10000
+    "title": "나전칠기 보석함",
+    "imgUrl": "https://m.shopofkorea.com/shop/new/600/1563425435.jpg",
+    "description": "고급스러운 나전칠기 보석함입니다.",
+    "price": 98000,
+    "category": "공예품"
   },
   {
     "id": 5,
-    "image_url": "https://example.com/images/korean_tea_cup.jpg",
-    "title": "전통 다기 세트",
-    "price": 15000
+    "title": "전통 부채",
+    "imgUrl": "https://m.shopofkorea.com/data/goods/1/2020/05/34234_tmp_c3e2e2c1144f3dccc8060b81815d47c77938view.jpg",
+    "description": "한국의 전통 문양이 새겨진 부채입니다.",
+    "price": 22000,
+    "category": "패션생활용품"
   },
   {
     "id": 6,
-    "image_url": "https://example.com/images/lucky_pouch.jpg",
-    "title": "복주머니",
-    "price": 5000
+    "title": "한지 조명등",
+    "imgUrl": "https://m.damggo.com/web/product/big/201711/2108_shop1_794682.jpg",
+    "description": "은은한 분위기를 연출하는 한지 조명등입니다.",
+    "price": 87000,
+    "category": "인테리어 소품"
   },
   {
     "id": 7,
-    "image_url": "https://example.com/images/traditional_lantern.jpg",
-    "title": "전통 등 모형",
-    "price": 20000
+    "title": "대나무 죽부인",
+    "imgUrl": "https://sitem.ssgcdn.com/49/61/94/item/1000527946149_i1_750.jpg",
+    "description": "여름철 시원하게 사용할 수 있는 전통 죽부인입니다.",
+    "price": 45000,
+    "category": "패션생활용품"
   },
   {
     "id": 8,
-    "image_url": "https://example.com/images/bojagi_cloth.jpg",
-    "title": "보자기 천",
-    "price": 12000
+    "title": "도자기 찻잔 세트",
+    "imgUrl": "https://www.tovy.co.kr/data/goods/72/7288/15-1_1451261804.jpg",
+    "description": "한국 전통 도자기로 만든 찻잔 세트입니다.",
+    "price": 72000,
+    "category": "공예품"
   },
   {
     "id": 9,
-    "image_url": "https://example.com/images/hahoetal_magnet.jpg",
-    "title": "하회탈 자석",
-    "price": 6000
+    "title": "전통 자개 거울",
+    "imgUrl": "https://thumbnail8.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/ac40/64b4c347154ab406a7b191f789da8b7a5e3e6fd812d6ce64defd66b99ddc.jpg",
+    "description": "자개로 장식된 한국 전통 거울입니다.",
+    "price": 34000,
+    "category": "인테리어 소품"
   },
   {
     "id": 10,
-    "image_url": "https://example.com/images/hanok_model.jpg",
-    "title": "한옥 모형",
-    "price": 35000
+    "title": "전통 문양 쿠션",
+    "imgUrl": "https://thumbnail7.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/8b2a/63cfec8e245bf24f8e10d3713603226c0dfb802d19335992f3bc21269b45.jpg",
+    "description": "편안한 전통 문양이 새겨진 쿠션입니다.",
+    "price": 29000,
+    "category": "인테리어 소품"
   },
   {
     "id": 11,
-    "image_url": "https://example.com/images/korean_painting_poster.jpg",
-    "title": "민화 포스터",
-    "price": 8000
+    "title": "칠보 공예 브로치",
+    "imgUrl": "https://ari-atelier.com/web/product/big/ariatelier_141.jpg",
+    "description": "섬세한 칠보 공예로 만든 전통 브로치입니다.",
+    "price": 54000,
+    "category": "공예품"
   },
   {
     "id": 12,
-    "image_url": "https://example.com/images/traditional_stamp.jpg",
-    "title": "전통 도장 세트",
-    "price": 18000
+    "title": "한복 노리개",
+    "imgUrl": "https://sitem.ssgcdn.com/23/39/94/item/1000546943923_i1_750.jpg",
+    "description": "한복과 잘 어울리는 전통 노리개 장식입니다.",
+    "price": 33000,
+    "category": "패션생활용품"
   },
   {
     "id": 13,
-    "image_url": "https://example.com/images/korean_hat_pin.jpg",
-    "title": "갓 모양 브로치",
-    "price": 9000
+    "title": "한지 노트",
+    "imgUrl": "https://cafe24.poxo.com/ec01/fenomeno01/Xeym8gXyw/uNs04t9Tz1DlbOMvZV/s/Ce1K5/ceK9HA4yyDSem6S94P/nwN+Mu9c+1kkMghCH77k4vW4mWQHKw==/_/web/product/extra/big/202105/251c9e011f1495374495ff565c32bf42.jpg",
+    "description": "부드러운 질감의 전통 한지로 만든 노트입니다.",
+    "price": 18000,
+    "category": "공예품"
   },
   {
     "id": 14,
-    "image_url": "https://example.com/images/hanji_lamp.jpg",
-    "title": "한지 램프",
-    "price": 25000
+    "title": "전통 향낭",
+    "imgUrl": "https://onimg.onch3.co.kr/products/2024/09/04/1725442903_3ANSYNPKSTGP.jpg",
+    "description": "은은한 향이 퍼지는 한국 전통 향낭입니다.",
+    "price": 25000,
+    "category": "패션생활용품"
   },
   {
     "id": 15,
-    "image_url": "https://example.com/images/traditional_drum_model.jpg",
-    "title": "장구 모형",
-    "price": 22000
+    "title": "전통 문양 탁상시계",
+    "imgUrl": "https://m.shopofkorea.com/shop/new/600/1213676504.jpg",
+    "description": "전통 문양이 새겨진 탁상시계입니다.",
+    "price": 63000,
+    "category": "인테리어 소품"
   },
   {
     "id": 16,
-    "image_url": "https://example.com/images/korean_pattern_scarf.jpg",
-    "title": "전통 문양 스카프",
-    "price": 30000
+    "title": "전통 나무젓가락 세트",
+    "imgUrl": "https://cafe24.poxo.com/ec01/korea2660/YB5qk1E8qAyX4KsjnSbYJGlpRsz3Hc4LVYlaeTm3aWmQShLjzd8577xU9KnKjCsKyS+mFdb+2XF0GkzRWRvikg==/_/web/product/big/korea2660_6656.jpg",
+    "description": "한국 전통 무늬가 새겨진 나무젓가락 세트입니다.",
+    "price": 28000,
+    "category": "공예품"
   },
   {
     "id": 17,
-    "image_url": "https://example.com/images/blue_and_white_porcelain.jpg",
-    "title": "청화백자 미니어처",
-    "price": 40000
+    "title": "한지 등불",
+    "imgUrl": "https://thumbnail9.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/7419/074479e038cb8ae986722db8dc00eb557425f2c2a60de7d47dcc2f8cdb17.jpg",
+    "description": "한지로 만든 고풍스러운 전통 등불입니다.",
+    "price": 94000,
+    "category": "인테리어 소품"
   },
   {
     "id": 18,
-    "image_url": "https://example.com/images/korean_calligraphy_set.jpg",
-    "title": "서예 도구 세트",
-    "price": 28000
+    "title": "전통 매듭 키링",
+    "imgUrl": "https://image.idus.com/image/files/d68c9004df0f4c5384a811e0adf42e77_720.jpg",
+    "description": "전통 매듭 공예로 만든 키링입니다.",
+    "price": 16000,
+    "category": "패션생활용품"
   },
   {
     "id": 19,
-    "image_url": "https://example.com/images/traditional_mirror.jpg",
-    "title": "전통 손거울",
-    "price": 11000
+    "title": "전통 수저 세트",
+    "imgUrl": "https://th1.tmon.kr/thumbs/image/7c8/cfa/d0b/e08874d27_700x700_95_FIT.jpg",
+    "description": "한국 전통 디자인이 들어간 수저 세트입니다.",
+    "price": 37000,
+    "category": "공예품"
   },
   {
     "id": 20,
-    "image_url": "https://example.com/images/korean_doll.jpg",
-    "title": "전통 인형",
-    "price": 32000
+    "title": "단청 문양 액자",
+    "imgUrl": "https://contents.kyobobook.co.kr/sih/fit-in/400x0/gift/pdt/1202/S1509440146123.jpg",
+    "description": "전통 단청 문양이 새겨진 액자입니다.",
+    "price": 62000,
+    "category": "인테리어 소품"
+  },
+  {
+    "id": 21,
+    "title": "전통 방석",
+    "imgUrl": "https://sitem.ssgcdn.com/60/77/34/item/1000034347760_i1_336.jpg",
+    "description": "전통 문양이 들어간 방석입니다.",
+    "price": 41000,
+    "category": "패션생활용품"
+  },
+  {
+    "id": 22,
+    "title": "나무 손거울",
+    "imgUrl": "https://parkmisukchilbo.com/web/product/big/02200500000287.jpg",
+    "description": "한지와 나무로 만든 전통 손거울입니다.",
+    "price": 27000,
+    "category": "공예품"
+  },
+  {
+    "id": 23,
+    "title": "전통 도자기 화병",
+    "imgUrl": "https://image8.coupangcdn.com/image/vendor_inventory/b835/7fceceb5cfbcef5e7025e3693b612c4cba933d43d03aebdc871be34431f5.jpg",
+    "description": "고급스러운 전통 도자기 화병입니다.",
+    "price": 85000,
+    "category": "인테리어 소품"
+  },
+  {
+    "id": 24,
+    "title": "한복 머리핀",
+    "imgUrl": "https://thumbnail10.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/72f6/f0c4632f2e50e098d1fbd1aca9e5c2e7d55f704fa1963d4f4205f5ec4438.jpg",
+    "description": "한복과 잘 어울리는 전통 머리핀입니다.",
+    "price": 14000,
+    "category": "패션생활용품"
+  },
+  {
+    "id": 25,
+    "title": "한지 벽걸이 장식",
+    "imgUrl": "https://m.e-redpoint.com/web/product/big/202207/5d95809ff639391a33411c4a2aec6e15.jpg",
+    "description": "한지로 만든 한국 전통 벽걸이 장식입니다.",
+    "price": 56000,
+    "category": "인테리어 소품"
+  },
+  {
+    "id": 26,
+    "title": "전통 단청 무늬 접시",
+    "imgUrl": "https://cdn.oasis.co.kr:48581/product/8313/thumb/thumb_8313a747a42e-9921-480d-b4df-443c8d7ea211.jpg",
+    "description": "아름다운 전통 단청 문양이 들어간 접시입니다.",
+    "price": 49000,
+    "category": "공예품"
+  },
+  {
+    "id": 27,
+    "title": "자개 팔찌",
+    "imgUrl": "https://sitem.ssgcdn.com/91/31/42/item/1000360423191_i1_750.jpg",
+    "description": "전통 자개 공예로 제작된 팔찌입니다.",
+    "price": 38000,
+    "category": "패션생활용품"
+  },
+  {
+    "id": 28,
+    "title": "나무 책갈피",
+    "imgUrl": "https://img1a.coupangcdn.com/image/vendor_inventory/3a4d/46f2148d52f37b8094f77e5af1a5ec601d0466d91470833bcdca054d5aff.jpg",
+    "description": "전통 문양이 새겨진 나무 책갈피입니다.",
+    "price": 12000,
+    "category": "공예품"
+  },
+  {
+    "id": 29,
+    "title": "전통 병풍 미니어처",
+    "imgUrl": "https://thumbnail10.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/0dd7/07487da0a6d1a75e731d240d9b8034fc1b32f6779655b4d30d6c48d81c47.png",
+    "description": "고급스러운 전통 병풍을 축소 제작한 미니어처입니다.",
+    "price": 79000,
+    "category": "인테리어 소품"
+  },
+  {
+    "id": 30,
+    "title": "전통 매듭 팔찌",
+    "imgUrl": "https://thumbnail.10x10.co.kr/webimage/image/add1/497/A004972332_01.jpg?cmd=thumb&w=400&h=400&fit=true&ws=false",
+    "description": "정교한 전통 매듭 공예로 만든 팔찌입니다.",
+    "price": 25000,
+    "category": "패션생활용품"
   }
 ]
