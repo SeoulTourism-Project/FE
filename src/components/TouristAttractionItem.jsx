@@ -7,16 +7,26 @@ const TouristAttractionItem = ({ touristAttraction, width = '312px' }) => {
   const location = touristAttraction.address.slice(6, 9);
 
   return (
-    <LinkStyle to={`/tourist-attraction/${touristAttraction.id}`}>
-      <Card width={width}>
-        <CardBadge>{touristAttraction.name}</CardBadge>
-        <img src={touristAttraction.image} alt={touristAttraction.name} />
-        <CardLocation>
-          <FontAwesomeIcon icon={faLocationDot} size='lg' />
-          <span>{location}</span>
-        </CardLocation>
-      </Card>
-    </LinkStyle>
+    <Card
+      width={width}
+      onClick={() => {
+        navigate(`/tourist-attraction/${touristAttraction.id}`, {
+          state: {
+            id: touristAttraction.id,
+            name: touristAttraction.name,
+            image: touristAttraction.image,
+            address: touristAttraction.address,
+          },
+        });
+      }}
+    >
+      <CardBadge>{touristAttraction.name}</CardBadge>
+      <CardImage src={touristAttraction.image} alt="..." />
+      <CardLocation>
+        <FontAwesomeIcon icon={faLocationDot} size="lg" />
+        <span>{location}</span>
+      </CardLocation>
+    </Card>
   );
 };
 

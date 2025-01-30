@@ -1,14 +1,21 @@
-import { faAngleLeft, faLocationDot } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useNavigate } from 'react-router';
-import styled from 'styled-components';
-import GoogleMaps from '../components/GoogleMaps';
-import { useState } from 'react';
+import { faAngleLeft, faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useLocation, useNavigate } from "react-router";
+import styled from "styled-components";
+import GoogleMaps from "../components/GoogleMaps";
+import FavoriteHeart from "../components/FavoriteHeart";
 
 const TouristAttractionDetail = () => {
   const [like, setLike] = useState(false);
 
   const navigate = useNavigate();
+  const { state } = useLocation();
+
+  if (!state) {
+    return alert("데이터가 없습니다.");
+  }
+
+  const { id, name, image, address } = state;
 
   // 마커 생성
   const place = {
@@ -41,14 +48,21 @@ const TouristAttractionDetail = () => {
       <LocationContainer>
         <LocationInfoArea>
           <LocationImage>
-            <img src='/images/gyeongbokgung.jpg' alt='' />
+            <img src={`/${image}`} alt="" />
           </LocationImage>
           <LocationInfo>
-            <LikeButton></LikeButton>
-            <h3>경복궁</h3>
+            <TitleContainer>
+              <h3>{name}</h3>
+              <FavoriteHeart
+                initialFavorite={false}
+                mapId={id}
+                pageType="detail"
+                debounceTime={500}
+              />
+            </TitleContainer>
             <p>
               <FontAwesomeIcon icon={faLocationDot} />
-              <span>서울특별시 종로구 사직로 161</span>
+              <span>{address}</span>
             </p>
             <p>조선 시대의 대표 궁궐로, 한국 전통 건축물의 아름다움을 감상할 수 있는 곳입니다.</p>
           </LocationInfo>
@@ -122,17 +136,18 @@ const LocationInfo = styled.div`
   & p:last-child {
     max-height: 278px;
     overflow-y: auto;
-    padding: 2px 0;
+    padding: 1px 0;
   }
 `;
 
-const LikeButton = styled.button`
-  position: absolute;
-  top: 11px;
-  right: 0;
-  border: none;
-  background: transparent;
-  cursor: pointer;
+const TitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  h3 {
+    margin-right: 10px;
+  }
 `;
 
 const LocationMapArea = styled.div`
