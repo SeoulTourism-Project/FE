@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const Banner = () => {
   return (
@@ -8,7 +8,12 @@ const Banner = () => {
         <p>언제 방문하든 완벽한 여행을 위해 준비된 정보를 확인하세요</p>
       </BannerText>
       <BannerImage>
-        <img src='https://placehold.co/600x400' alt='...' width='100%' draggable='false' />
+        <img
+          src="/images/seoulNightscape.jpg"
+          alt="..."
+          width="100%"
+          draggable="false"
+        />
       </BannerImage>
     </BannerArea>
   );
