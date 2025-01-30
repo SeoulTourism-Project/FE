@@ -1,9 +1,12 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLocationDot, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import styled from 'styled-components';
-import { useNavigate } from 'react-router';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import styled from "styled-components";
+import { useNavigate } from "react-router";
 
-const TouristAttractionItem = ({ touristAttraction }) => {
+const TouristAttractionItem = ({
+  touristAttraction,
+  width = "calc(25% - 20px)",
+}) => {
   const navigate = useNavigate();
   const location = touristAttraction.address.slice(6, 9);
 
@@ -13,16 +16,14 @@ const TouristAttractionItem = ({ touristAttraction }) => {
   };
 
   return (
-    <Card>
-      <ButtonContainer>
-        <button onClick={handleMoveDetail}>
-          <FontAwesomeIcon icon={faMagnifyingGlass} style={{ color: '#fff' }} size='3x' />
-        </button>
-      </ButtonContainer>
-      <img src={touristAttraction.image} alt='...' />
-      <h4>{touristAttraction.name}</h4>
+    <Card
+      width={width}
+      onClick={() => navigate(`/tourist-attraction/${touristAttraction.id}`)}
+    >
+      <CardBadge>{touristAttraction.name}</CardBadge>
+      <CardImage src={touristAttraction.image} alt="..." />
       <CardLocation>
-        <FontAwesomeIcon icon={faLocationDot} />
+        <FontAwesomeIcon icon={faLocationDot} size="lg" />
         <span>{location}</span>
       </CardLocation>
     </Card>
@@ -34,8 +35,8 @@ export default TouristAttractionItem;
 const Card = styled.li`
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  width: calc(25% - 10px);
+  width: ${(props) => props.width};
+  max-height: 300px;
   position: relative;
   cursor: pointer;
   padding: 10px;
