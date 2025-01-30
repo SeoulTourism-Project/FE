@@ -11,24 +11,26 @@ const PaymentHistory = () => {
         <PaymentBlock key={payment.paymentId}>
           {/* 결제 ID & 구매 날짜 */}
           <PaymentHeader>
-            <p>결제 ID: {payment.paymentId}</p>
-            <p>구매 날짜: {payment.date}</p>
+            <p>주문 번호: {payment.paymentId}</p>
+            <p className="date">구매 날짜: {payment.date}</p>
           </PaymentHeader>
 
           {/* 구매자 정보 (이름, 주소, 전화번호) */}
+          <SectionTitle>배송지</SectionTitle>
           <BuyerInfo>
             <p>
               <strong>구매자:</strong> {payment.buyer}
             </p>
             <p>
-              <strong>주소:</strong> {payment.address}
+              <strong>전화번호:</strong> {payment.phone}
             </p>
             <p>
-              <strong>전화번호:</strong> {payment.phone}
+              <strong>주소:</strong> {payment.address}
             </p>
           </BuyerInfo>
 
           {/* 결제 상품 요약 */}
+          <SectionTitle>상품 정보</SectionTitle>
           <Summary>
             <p>{payment.summary}</p>
             <MoreButton
@@ -55,7 +57,6 @@ const PaymentHistory = () => {
   );
 };
 
-/* --- Styled Components --- */
 const Container = styled.div`
   width: 100%;
   margin: 20px auto;
@@ -78,6 +79,19 @@ const PaymentHeader = styled.div`
   font-weight: bold;
   border-bottom: 1px solid #ddd;
   padding-bottom: 10px;
+
+  .date {
+    color: #bbb;
+    font-weight: normal;
+  }
+`;
+
+const SectionTitle = styled.h2`
+  font-size: 18px;
+  font-weight: bold;
+  margin: 15px 0 10px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 5px;
 `;
 
 const BuyerInfo = styled.div`
