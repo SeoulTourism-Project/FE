@@ -26,56 +26,57 @@ const FavoriteHeart = ({
   onCardDelete, // 카드 삭제 콜백 (manage 전용)
 }) => {
   const [isFavorite, setIsFavorite] = useState(initialFavorite);
+  const [prevFavorite, setPrevFavorite] = useState(initialFavorite);
   const [loading, setLoading] = useState(false);
-  const [timer, setTimer] = useState(null);
 
-  // 요청 처리 로직
-  const handleRequest = async (newFavorite) => {
-    setLoading(true);
-    try {
-      if (newFavorite) {
-        await mockApi.add(mapId); // Add 요청
-        console.log("찜 추가 완료!");
-      } else {
-        await mockApi.delete(mapId); // Delete 요청
-        console.log("찜 삭제 완료!");
-      }
-
-      // manage 페이지에서 카드 삭제 처리
-      if (pageType === "manage" && !newFavorite) {
-        onCardDelete && onCardDelete();
-      }
-    } catch (error) {
-      console.error("요청 실패:", error);
-      setIsFavorite(!newFavorite); // 상태 롤백
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 클릭 핸들러
-  const handleClick = () => {
-    const newFavorite = !isFavorite;
-    setIsFavorite(newFavorite);
-
-    // Debounce 처리
-    if (timer) clearTimeout(timer);
-    const newTimer = setTimeout(() => handleRequest(newFavorite), debounceTime);
-    setTimer(newTimer);
-  };
-
-  // 타이머 정리
   useEffect(() => {
-    return () => {
-      if (timer) clearTimeout(timer);
-    };
-  }, [timer]);
+    const timer = setTimeout(() => {
+      if (isFavorite === prevFavorite) {
+        console.log("Debounce 후 상태가 동일하므로 요청 취소");
+        return;
+      }
+
+      const handleRequest = async () => {
+        setLoading(true);
+        try {
+          if (isFavorite) {
+            await mockApi.add(mapId);
+            console.log("찜 추가 완료!");
+          } else {
+            await mockApi.delete(mapId);
+            console.log("찜 삭제 완료!");
+          }
+
+          if (pageType === "manage" && !isFavorite) {
+            onCardDelete && onCardDelete();
+          }
+
+          setPrevFavorite(isFavorite);
+        } catch (error) {
+          console.error("요청 실패:", error);
+          setIsFavorite(prevFavorite);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      handleRequest();
+    }, debounceTime);
+
+    return () => clearTimeout(timer);
+  }, [isFavorite, debounceTime]);
+
+  const handleClick = () => {
+    if (loading) return;
+    setIsFavorite((prev) => !prev);
+  };
 
   return (
     <HeartContainer
-      onClick={!loading ? handleClick : undefined}
+      onClick={handleClick}
       isFavorite={isFavorite}
       isOverlay={pageType === "overlay" || pageType === "manage"}
+      loading={loading}
     >
       <FontAwesomeIcon icon={isFavorite ? filledHeart : emptyHeart} />
     </HeartContainer>
@@ -84,7 +85,6 @@ const FavoriteHeart = ({
 
 export default FavoriteHeart;
 
-// 스타일 정의
 const HeartContainer = styled.div`
   position: ${(props) => (props.isOverlay ? "absolute" : "static")};
   top: ${(props) => (props.isOverlay ? "10px" : "auto")};
