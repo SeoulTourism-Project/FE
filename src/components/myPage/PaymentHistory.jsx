@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import PaymentDetails from "./paymentHistory/PaymentDetails";
 
 const PaymentHistory = () => {
   const [selectedPayment, setSelectedPayment] = useState(null);
@@ -45,7 +46,9 @@ const PaymentHistory = () => {
           </Summary>
 
           {/* 더보기 클릭 시 상세 정보 표시 */}
-          {selectedPayment === payment.paymentId && <div>더보기</div>}
+          {selectedPayment === payment.paymentId && (
+            <PaymentDetails payment={payment} />
+          )}
         </PaymentBlock>
       ))}
     </Container>
@@ -117,7 +120,7 @@ const paymentInfoList = [
     products: [
       {
         productId: 1,
-        image: "https://via.placeholder.com/50",
+        image: "/images/ddp.jpg",
         name: "상품 A",
         quantity: 1,
         price: 50000,
@@ -125,7 +128,7 @@ const paymentInfoList = [
       },
       {
         productId: 2,
-        image: "https://via.placeholder.com/50",
+        image: "/images/dummyImage.jpg",
         name: "상품 B",
         quantity: 2,
         price: 100000,
@@ -146,7 +149,7 @@ const paymentInfoList = [
     products: [
       {
         productId: 3,
-        image: "https://via.placeholder.com/50",
+        image: "/images/gyeongbokgung.jpg",
         name: "상품 C",
         quantity: 1,
         price: 120000,
@@ -154,7 +157,7 @@ const paymentInfoList = [
       },
       {
         productId: 4,
-        image: "https://via.placeholder.com/50",
+        image: "/images/dummyImage.jpg",
         name: "상품 D",
         quantity: 1,
         price: 80000,
@@ -175,7 +178,7 @@ const paymentInfoList = [
     products: [
       {
         productId: 5,
-        image: "https://via.placeholder.com/50",
+        image: "/images/dummyImage.jpg",
         name: "상품 E",
         quantity: 1,
         price: 90000,
@@ -183,7 +186,7 @@ const paymentInfoList = [
       },
       {
         productId: 6,
-        image: "https://via.placeholder.com/50",
+        image: "/images/dummyImage.jpg",
         name: "상품 F",
         quantity: 1,
         price: 70000,
@@ -191,7 +194,7 @@ const paymentInfoList = [
       },
       {
         productId: 7,
-        image: "https://via.placeholder.com/50",
+        image: "/images/dummyImage.jpg",
         name: "상품 G",
         quantity: 2,
         price: 140000,
