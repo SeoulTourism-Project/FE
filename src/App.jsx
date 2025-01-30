@@ -9,6 +9,7 @@ import Layout from "./components/Layout";
 import TouristAttractionDetail from "./pages/TouristAttractionDetail";
 import MyTravel from "./pages/MyTravel";
 import MyPage from "./pages/MyPage";
+import GoodsDetail from "./pages/GoodsDetail";
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
           />
           <Route path="/statistics" element={<Statistics />} />
           <Route path="/goods" element={<Goods />} />
+          <Route path="/goods-detail/:id" element={<GoodsDetail />} />
           <Route path="/mytravel" element={<MyTravel />} />
           <Route path="/mypage" element={<MyPage />} />
         </Routes>
