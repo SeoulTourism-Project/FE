@@ -29,38 +29,36 @@ const FavoriteHeart = ({
   const [prevFavorite, setPrevFavorite] = useState(initialFavorite);
   const [loading, setLoading] = useState(false);
 
+  const handleRequest = async (newFavorite) => {
+    setLoading(true);
+    try {
+      if (newFavorite) {
+        await mockApi.add(mapId);
+        console.log("찜 추가 완료!");
+      } else {
+        await mockApi.delete(mapId);
+        console.log("찜 삭제 완료!");
+        if (pageType === "manage") {
+          onCardDelete && onCardDelete();
+        }
+      }
+      setPrevFavorite(newFavorite);
+    } catch (error) {
+      console.error("요청 실패:", error);
+      setIsFavorite(prevFavorite); // 상태 롤백
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
+    if (pageType === "manage") return; // manage 모드는 debounce X
     const timer = setTimeout(() => {
       if (isFavorite === prevFavorite) {
         console.log("Debounce 후 상태가 동일하므로 요청 취소");
         return;
       }
-
-      const handleRequest = async () => {
-        setLoading(true);
-        try {
-          if (isFavorite) {
-            await mockApi.add(mapId);
-            console.log("찜 추가 완료!");
-          } else {
-            await mockApi.delete(mapId);
-            console.log("찜 삭제 완료!");
-          }
-
-          if (pageType === "manage" && !isFavorite) {
-            onCardDelete && onCardDelete();
-          }
-
-          setPrevFavorite(isFavorite);
-        } catch (error) {
-          console.error("요청 실패:", error);
-          setIsFavorite(prevFavorite);
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      handleRequest();
+      handleRequest(isFavorite);
     }, debounceTime);
 
     return () => clearTimeout(timer);
@@ -68,7 +66,13 @@ const FavoriteHeart = ({
 
   const handleClick = () => {
     if (loading) return;
-    setIsFavorite((prev) => !prev);
+    const newFavorite = !isFavorite;
+    setIsFavorite(newFavorite);
+
+    if (pageType === "manage") {
+      // 즉시 API 요청 실행
+      handleRequest(newFavorite);
+    }
   };
 
   return (
@@ -85,6 +89,7 @@ const FavoriteHeart = ({
 
 export default FavoriteHeart;
 
+// 스타일 정의
 const HeartContainer = styled.div`
   position: ${(props) => (props.isOverlay ? "absolute" : "static")};
   top: ${(props) => (props.isOverlay ? "10px" : "auto")};
