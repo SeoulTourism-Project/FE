@@ -6,7 +6,7 @@ const ProductTable = ({ products }) => {
     <Table>
       <thead>
         <tr>
-          <th className="image-column">상품 이미지</th>
+          <th className="image-column">상품</th>
           <th className="name-column">상품명</th>
           <th>수량</th>
           <th>가격</th>
@@ -22,7 +22,9 @@ const ProductTable = ({ products }) => {
             <td className="name-column">{product.name}</td>
             <td>{product.quantity}개</td>
             <td>{product.price.toLocaleString()}원</td>
-            <td className="shipping-column">{product.shipping}</td>
+            <td className={`status ${getStatusClass(product.shipping)}`}>
+              {product.shipping}
+            </td>
           </tr>
         ))}
       </tbody>
@@ -30,24 +32,36 @@ const ProductTable = ({ products }) => {
   );
 };
 
-/* --- Styled Components --- */
+const getStatusClass = (status) => {
+  if (status.includes("배송 완료")) return "completed";
+  if (status.includes("배송중")) return "in-progress";
+  return "pending";
+};
+
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
+  font-size: 14px;
 
   th,
   td {
-    border: 1px solid #ddd;
-    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    padding: 12px;
     text-align: center;
-    height: 200px;
     vertical-align: middle;
+    height: 150px;
   }
 
   th {
-    background: #f8f8f8;
+    background: #f7f9fa;
     height: 30px;
+  }
+
+  .status {
+    font-weight: bold;
+    padding: 5px 8px;
+    border-radius: 6px;
   }
 
   .image-column {
@@ -55,18 +69,26 @@ const Table = styled.table`
   }
 
   .name-column {
-    width: 40%;
+    background: ;
   }
 
-  .shipping-column {
-    width: 15%;
+  .completed {
+    color: #2b8a3e;
+  }
+
+  .in-progress {
+    color: #d97706;
+  }
+
+  .pending {
+    color: #dc2626;
   }
 `;
 
 const Image = styled.img`
   width: 100%;
   height: 100%;
-  border-radius: 5px;
+  border-radius: 8px;
   object-fit: cover;
 `;
 

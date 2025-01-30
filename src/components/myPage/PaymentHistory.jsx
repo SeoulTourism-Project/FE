@@ -8,31 +8,31 @@ const PaymentHistory = () => {
   return (
     <Container>
       {paymentInfoList.map((payment) => (
-        <PaymentBlock key={payment.paymentId}>
-          {/* 결제 ID & 구매 날짜 */}
+        <PaymentCard key={payment.paymentId}>
           <PaymentHeader>
-            <p>주문 번호: {payment.paymentId}</p>
-            <p className="date">구매 날짜: {payment.date}</p>
+            <p>
+              🛒 주문 번호: <strong>{payment.paymentId}</strong>
+            </p>
+            <p className="date">📅 구매 날짜: {payment.date}</p>
           </PaymentHeader>
 
-          {/* 구매자 정보 (이름, 주소, 전화번호) */}
-          <SectionTitle>배송지</SectionTitle>
           <BuyerInfo>
             <p>
-              <strong>구매자:</strong> {payment.buyer}
+              <span className="icon">👤</span>
+              <strong>구매자:</strong> {payment.buyer} 님
             </p>
             <p>
+              <span className="icon">📞</span>
               <strong>전화번호:</strong> {payment.phone}
             </p>
             <p>
+              <span className="icon">📍</span>
               <strong>주소:</strong> {payment.address}
             </p>
           </BuyerInfo>
 
-          {/* 결제 상품 요약 */}
-          <SectionTitle>상품 정보</SectionTitle>
           <Summary>
-            <p>{payment.summary}</p>
+            <p>🛍 {payment.summary}</p>
             <MoreButton
               onClick={() =>
                 setSelectedPayment(
@@ -42,63 +42,75 @@ const PaymentHistory = () => {
                 )
               }
             >
-              결제 상품{" "}
-              {selectedPayment === payment.paymentId ? "닫기" : "더보기"}
+              {selectedPayment === payment.paymentId ? "▲ 닫기" : "▼ 더보기"}
             </MoreButton>
           </Summary>
 
-          {/* 더보기 클릭 시 상세 정보 표시 */}
           {selectedPayment === payment.paymentId && (
             <PaymentDetails payment={payment} />
           )}
-        </PaymentBlock>
+        </PaymentCard>
       ))}
     </Container>
   );
 };
 
 const Container = styled.div`
-  width: 100%;
+  max-width: 800px;
   margin: 20px auto;
   padding: 20px;
-  border-radius: 10px;
-  background: #fafafa;
+  border-radius: 12px;
+  background: #f9f9f9;
 `;
 
-const PaymentBlock = styled.div`
+const PaymentCard = styled.div`
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
   margin-bottom: 20px;
-  padding: 15px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  background: #fff;
 `;
 
 const PaymentHeader = styled.div`
   display: flex;
   justify-content: space-between;
+  font-size: 16px;
   font-weight: bold;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 2px solid #eee;
   padding-bottom: 10px;
 
   .date {
-    color: #bbb;
+    color: #888;
     font-weight: normal;
   }
 `;
 
-const SectionTitle = styled.h2`
-  font-size: 18px;
-  font-weight: bold;
-  margin: 15px 0 10px;
-  border-bottom: 2px solid #ddd;
-  padding-bottom: 5px;
-`;
-
 const BuyerInfo = styled.div`
-  padding: 10px 0;
-  border-bottom: 1px solid #ddd;
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 10px;
+  margin: 15px 0;
+  font-size: 15px;
+
   p {
-    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+  }
+
+  strong {
+    width: 90px;
+    display: inline-block;
+    color: #555;
+  }
+
+  .icon {
+    margin-right: 8px;
+    font-size: 16px;
+    color: #555;
   }
 `;
 
@@ -106,25 +118,31 @@ const Summary = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 10px;
-  margin-top: 10px;
+  margin-top: 15px;
+  font-size: 15px;
+  padding-top: 10px;
 `;
 
 const MoreButton = styled.button`
-  background: #000;
+  background: #aaa;
   color: white;
   border: none;
-  padding: 5px 10px;
+  padding: 8px 12px;
+  font-size: 14px;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: #000;
+  }
 `;
 
 const paymentInfoList = [
   {
     paymentId: "123456",
     date: "2025-01-01",
-    buyer: "OOO 님",
+    buyer: "OOO",
     address: "경상남도 창원시 의창구 ...",
     phone: "010-1234-5678",
     summary: "상품 A 외 2건",
@@ -135,7 +153,7 @@ const paymentInfoList = [
       {
         productId: 1,
         image: "/images/ddp.jpg",
-        name: "상품 A",
+        name: "전통 나무젓가락 세트",
         quantity: 1,
         price: 50000,
         shipping: "배송중",
