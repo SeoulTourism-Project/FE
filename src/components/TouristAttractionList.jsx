@@ -59,33 +59,14 @@ const TouristAttractionList = () => {
     content = <ErrorText>{error}</ErrorText>;
   }
 
-  return (
-    <section>
-      <SubTitleContainer>
-        <h2>관광지</h2>
-        <p>매력적인 장소를 지금 만나보세요</p>
-      </SubTitleContainer>
-      {content}
-    </section>
-  );
+  return <section>{content}</section>;
 };
 
 export default TouristAttractionList;
 
-const SubTitleContainer = styled.div`
-  text-align: center;
-  padding: 50px;
-
-  & h2 {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-`;
-
 const CardContainer = styled.div`
   width: 1280px;
-  min-height: 1110px;
+  min-height: 970px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

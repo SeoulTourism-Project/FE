@@ -1,36 +1,35 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
-import styled from "styled-components";
-import { useNavigate } from "react-router";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
+import styled from 'styled-components';
+import { Link } from 'react-router';
 
-const TouristAttractionItem = ({
-  touristAttraction,
-  width = "calc(25% - 20px)",
-}) => {
-  const navigate = useNavigate();
+const TouristAttractionItem = ({ touristAttraction, width = '312px' }) => {
   const location = touristAttraction.address.slice(6, 9);
 
-  const handleMoveDetail = () => {
-    navigate(`/tourist-attraction/${touristAttraction.id}`);
-    window.scrollTo(0, 0);
-  };
-
   return (
-    <Card
-      width={width}
-      onClick={() => navigate(`/tourist-attraction/${touristAttraction.id}`)}
-    >
-      <CardBadge>{touristAttraction.name}</CardBadge>
-      <CardImage src={touristAttraction.image} alt="..." />
-      <CardLocation>
-        <FontAwesomeIcon icon={faLocationDot} size="lg" />
-        <span>{location}</span>
-      </CardLocation>
-    </Card>
+    <LinkStyle to={`/tourist-attraction/${touristAttraction.id}`}>
+      <Card width={width}>
+        <CardBadge>{touristAttraction.name}</CardBadge>
+        <img src={touristAttraction.image} alt={touristAttraction.name} />
+        <CardLocation>
+          <FontAwesomeIcon icon={faLocationDot} size='lg' />
+          <span>{location}</span>
+        </CardLocation>
+      </Card>
+    </LinkStyle>
   );
 };
 
 export default TouristAttractionItem;
+
+const LinkStyle = styled(Link)`
+  color: black;
+  text-decoration: none;
+
+  &:visited {
+    color: black;
+  }
+`;
 
 const Card = styled.li`
   display: flex;
@@ -66,30 +65,22 @@ const Card = styled.li`
 `;
 
 const CardLocation = styled.div`
-  & span {
-    margin-left: 10px;
-  }
-`;
-
-const ButtonContainer = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #00000080;
-  border-radius: 10px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 20px;
-  visibility: hidden;
-  opacity: 0;
-  transition: all 0.5s;
+  gap: 10px;
+  margin-top: 10px;
+`;
 
-  & button {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-  }
+const CardBadge = styled.span`
+  position: absolute;
+  max-width: 271px;
+  top: 20px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
 `;
