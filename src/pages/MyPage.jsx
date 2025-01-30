@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import MemberInfo from "../components/MemberInfo";
-import PaymentHistory from "../components/PaymentHistory";
+import MemberInfo from "../components/myPage/MemberInfo";
+import PaymentHistory from "../components/myPage/PaymentHistory";
 import styled from "styled-components";
 
 const MyPage = () => {
