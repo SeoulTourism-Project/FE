@@ -1,9 +1,10 @@
-import { faAngleLeft, faLocationDot } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useLocation, useNavigate } from "react-router";
-import styled from "styled-components";
-import GoogleMaps from "../components/GoogleMaps";
-import FavoriteHeart from "../components/FavoriteHeart";
+import { faAngleLeft, faLocationDot } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useLocation, useNavigate } from 'react-router';
+import styled from 'styled-components';
+import GoogleMaps from '../components/GoogleMaps';
+import FavoriteHeart from '../components/FavoriteHeart';
+import { useState } from 'react';
 
 const TouristAttractionDetail = () => {
   const [like, setLike] = useState(false);
@@ -12,7 +13,7 @@ const TouristAttractionDetail = () => {
   const { state } = useLocation();
 
   if (!state) {
-    return alert("데이터가 없습니다.");
+    return alert('데이터가 없습니다.');
   }
 
   const { id, name, image, address } = state;
@@ -48,17 +49,12 @@ const TouristAttractionDetail = () => {
       <LocationContainer>
         <LocationInfoArea>
           <LocationImage>
-            <img src={`/${image}`} alt="" />
+            <img src={`/${image}`} alt='' />
           </LocationImage>
           <LocationInfo>
             <TitleContainer>
               <h3>{name}</h3>
-              <FavoriteHeart
-                initialFavorite={false}
-                mapId={id}
-                pageType="detail"
-                debounceTime={500}
-              />
+              <FavoriteHeart initialFavorite={false} mapId={id} pageType='detail' debounceTime={500} />
             </TitleContainer>
             <p>
               <FontAwesomeIcon icon={faLocationDot} />

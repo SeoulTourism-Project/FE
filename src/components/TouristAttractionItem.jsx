@@ -1,10 +1,12 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
-import { Link } from 'react-router';
+import { useNavigate } from 'react-router';
 
 const TouristAttractionItem = ({ touristAttraction, width = '312px' }) => {
   const location = touristAttraction.address.slice(6, 9);
+
+  const navigate = useNavigate();
 
   return (
     <Card
@@ -21,9 +23,9 @@ const TouristAttractionItem = ({ touristAttraction, width = '312px' }) => {
       }}
     >
       <CardBadge>{touristAttraction.name}</CardBadge>
-      <CardImage src={touristAttraction.image} alt="..." />
+      <img src={touristAttraction.image} alt={touristAttraction.name} />
       <CardLocation>
-        <FontAwesomeIcon icon={faLocationDot} size="lg" />
+        <FontAwesomeIcon icon={faLocationDot} size='lg' />
         <span>{location}</span>
       </CardLocation>
     </Card>
@@ -31,15 +33,6 @@ const TouristAttractionItem = ({ touristAttraction, width = '312px' }) => {
 };
 
 export default TouristAttractionItem;
-
-const LinkStyle = styled(Link)`
-  color: black;
-  text-decoration: none;
-
-  &:visited {
-    color: black;
-  }
-`;
 
 const Card = styled.li`
   display: flex;
