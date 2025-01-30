@@ -20,9 +20,11 @@ const Pagination = ({ currentPage, handleChangePage }) => {
 export default Pagination;
 
 const ButtonContainer = styled.div`
+  width: 1280px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin: 30px 0;
 
   & button {
     border: none;
