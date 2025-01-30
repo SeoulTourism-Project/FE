@@ -8,6 +8,7 @@ import Goods from "./pages/Goods";
 import Layout from "./components/Layout";
 import TouristAttractionDetail from "./pages/TouristAttractionDetail";
 import MyTravel from "./pages/MyTravel";
+import MyPage from "./pages/MyPage";
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
           <Route path="/statistics" element={<Statistics />} />
           <Route path="/goods" element={<Goods />} />
           <Route path="/mytravel" element={<MyTravel />} />
+          <Route path="/mypage" element={<MyPage />} />
         </Routes>
       </Layout>
     </>
