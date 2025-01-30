@@ -1,21 +1,22 @@
-import styled from 'styled-components';
-import TouristAttractionItem from './TouristAttractionItem';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import Pagination from './Pagination';
+import styled from "styled-components";
+import TouristAttractionItem from "./TouristAttractionItem";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Pagination from "./Pagination";
 
 const TouristAttractionList = () => {
   const [touristAttractions, setTouristAttractions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [touristAttractionsPerPage, setTouristAttractionsPerPage] = useState(12);
+  const [touristAttractionsPerPage, setTouristAttractionsPerPage] =
+    useState(12);
 
   const fetchTouristAttraction = async () => {
     try {
       setIsLoading(true);
 
-      const response = await axios.get('./location.json');
+      const response = await axios.get("./location.json");
       const result = response.data;
       setTouristAttractions(result);
     } catch (error) {
@@ -29,15 +30,22 @@ const TouristAttractionList = () => {
     fetchTouristAttraction();
   }, []);
 
-  const firstTouristAttractionIndex = (currentPage - 1) * touristAttractionsPerPage;
-  const lastTouristAttractionIndex = firstTouristAttractionIndex + touristAttractionsPerPage;
-  const currentTouristAttractions = touristAttractions.slice(firstTouristAttractionIndex, lastTouristAttractionIndex);
-  const pageCount = Math.ceil(touristAttractions.length / touristAttractionsPerPage);
+  const firstTouristAttractionIndex =
+    (currentPage - 1) * touristAttractionsPerPage;
+  const lastTouristAttractionIndex =
+    firstTouristAttractionIndex + touristAttractionsPerPage;
+  const currentTouristAttractions = touristAttractions.slice(
+    firstTouristAttractionIndex,
+    lastTouristAttractionIndex
+  );
+  const pageCount = Math.ceil(
+    touristAttractions.length / touristAttractionsPerPage
+  );
 
   const handleChangePage = (selectedButton) => {
-    if (selectedButton === 'prev' && currentPage !== 1) {
+    if (selectedButton === "prev" && currentPage !== 1) {
       setCurrentPage((prevCurrentPage) => prevCurrentPage - 1);
-    } else if (selectedButton === 'next' && currentPage !== pageCount) {
+    } else if (selectedButton === "next" && currentPage !== pageCount) {
       setCurrentPage((prevCurrentPage) => prevCurrentPage + 1);
     }
   };
@@ -46,10 +54,16 @@ const TouristAttractionList = () => {
     <CardContainer>
       <CardList>
         {currentTouristAttractions.map((touristAttraction) => (
-          <TouristAttractionItem key={touristAttraction.id} touristAttraction={touristAttraction} />
+          <TouristAttractionItem
+            key={touristAttraction.id}
+            touristAttraction={touristAttraction}
+          />
         ))}
       </CardList>
-      <Pagination currentPage={currentPage} handleChangePage={handleChangePage} />
+      <Pagination
+        currentPage={currentPage}
+        handleChangePage={handleChangePage}
+      />
     </CardContainer>
   );
 
