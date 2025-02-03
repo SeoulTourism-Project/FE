@@ -1,28 +1,71 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGlobe } from '@fortawesome/free-solid-svg-icons';
-import { Link, useLocation } from 'react-router';
-import styled from 'styled-components';
-import Navbar from './Navbar';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGlobe } from "@fortawesome/free-solid-svg-icons";
+import { Link, useLocation } from "react-router";
+import styled from "styled-components";
+import Navbar from "./Navbar";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setLanguage } from "../features/languageSlice";
 
 const Header = () => {
   const { pathname } = useLocation();
+  const dispatch = useDispatch();
+  const language = useSelector((state) => state.language.language);
 
   let navbar = <Navbar />;
 
-  if (pathname === '/login' || pathname === '/signup') {
+  if (pathname === "/login" || pathname === "/signup") {
     navbar = undefined;
   }
+
+  const googleTranslateElementInit = () => {
+    new window.google.translate.TranslateElement(
+      {
+        pageLanguage: "ko",
+        autoDisplay: false,
+        includedLanguages: "en,ko,ja,zh-CN,zh-TW",
+      },
+      "google_translate_element"
+    );
+
+    // 번역된 언어 추적
+    const observer = new MutationObserver(() => {
+      const langAttr = document.querySelector("html").getAttribute("lang");
+      if (langAttr) {
+        dispatch(setLanguage(langAttr));
+      }
+    });
+
+    // HTML lang 속성을 감시
+    observer.observe(document.querySelector("html"), {
+      attributes: true,
+      attributeFilter: ["lang"],
+    });
+  };
+
+  useEffect(() => {
+    let addScript = document.createElement("script");
+    addScript.setAttribute(
+      "src",
+      "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+    );
+    document.body.appendChild(addScript);
+    window.googleTranslateElementInit = googleTranslateElementInit;
+
+    return () => {
+      document.body.removeChild(addScript);
+    };
+  }, []);
+
   return (
     <>
       <HeaderArea>
         <TItle>
-          <Link to={'/'}>안녕 서울!</Link>
+          <Link to={"/"}>안녕 서울!</Link>
         </TItle>
         <LanguageArea>
-          <FontAwesomeIcon icon={faGlobe} size='2x' />
-          <select>
-            <option>번역 기능</option>
-          </select>
+          <FontAwesomeIcon icon={faGlobe} size="2x" />
+          <div id="google_translate_element"></div>
         </LanguageArea>
         {navbar}
       </HeaderArea>
