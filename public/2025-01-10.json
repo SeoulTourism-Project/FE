@@ -1,0 +1,52 @@
+[
+  {
+    "calendarDetailsId": 1,
+    "mapId": 1,
+    "placeName": "경복궁",
+    "scheduleDate": "2025-01-10T10:00:00",
+    "scheduleEndDate": "2025-01-10T11:30:00",
+    "placeImage": "images/gyeongbokgung.jpg",
+    "placeAddress": "서울특별시 종로구 사직로 161",
+    "memo": "궁궐 탐방"
+  },
+  {
+    "calendarDetailsId": 2,
+    "mapId": 2,
+    "placeName": "N서울타워",
+    "scheduleDate": "2025-01-10T13:00:00",
+    "scheduleEndDate": "2025-01-10T14:00:00",
+    "placeImage": "images/nseoultower.jpg",
+    "placeAddress": "서울특별시 용산구 남산공원길 105",
+    "memo": "서울 전망 감상"
+  },
+  {
+    "calendarDetailsId": 3,
+    "mapId": 3,
+    "placeName": "북촌 한옥마을",
+    "scheduleDate": "2025-01-10T15:00:00",
+    "scheduleEndDate": "2025-01-10T16:30:00",
+    "placeImage": "images/bukchon.jpg",
+    "placeAddress": "서울특별시 종로구 계동길 37",
+    "memo": "전통문화 체험"
+  },
+  {
+    "calendarDetailsId": 4,
+    "mapId": 4,
+    "placeName": "동대문 디자인 플라자(DDP)",
+    "scheduleDate": "2025-01-10T17:00:00",
+    "scheduleEndDate": "2025-01-10T18:00:00",
+    "placeImage": "images/ddp.jpg",
+    "placeAddress": "서울특별시 중구 을지로 281",
+    "memo": "현대 건축물 탐방"
+  },
+  {
+    "calendarDetailsId": 5,
+    "mapId": 5,
+    "placeName": "이태원",
+    "scheduleDate": "2025-01-10T19:00:00",
+    "scheduleEndDate": "2025-01-10T21:00:00",
+    "placeImage": "images/itaewon.jpg",
+    "placeAddress": "서울특별시 용산구 이태원로",
+    "memo": "저녁식사 및 거리 탐방"
+  }
+]
