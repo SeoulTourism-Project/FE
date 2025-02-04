@@ -1,5 +1,13 @@
+import Banner from '../components/Banner';
+import PageLink from '../components/PageLink';
+
 const Home = () => {
-  return <div>Home</div>;
+  return (
+    <>
+      <Banner />
+      <PageLink />
+    </>
+  );
 };
 
 export default Home;
