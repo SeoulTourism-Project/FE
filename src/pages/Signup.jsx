@@ -159,7 +159,7 @@ const Signup = () => {
               value="남"
               onChange={handleChange}
             />
-            <RadioLabel htmlFor="male">남</RadioLabel>
+            <RadioLabel htmlFor="male">남자</RadioLabel>
             <input
               type="radio"
               id="female"
@@ -167,12 +167,11 @@ const Signup = () => {
               value="여"
               onChange={handleChange}
             />
-            <RadioLabel htmlFor="female">여</RadioLabel>
+            <RadioLabel htmlFor="female">여자</RadioLabel>
           </div>
           {errors.gender && <ErrorMessage>{errors.gender}</ErrorMessage>}
         </RadioGroup>
 
-        {/* 국적 선택 */}
         <div style={{ width: "100%" }}>
           <Label htmlFor="country">국적</Label>
           <Select
@@ -224,6 +223,10 @@ const SignupContainer = styled.div`
   margin: 0 auto;
   text-align: center;
   padding: 40px 20px;
+
+  div {
+    margin-bottom: 20px;
+  }
 `;
 
 const Title = styled.h1`
@@ -249,6 +252,10 @@ const NameContainer = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 10px;
+
+  div {
+    margin-bottom: 0;
+  }
 `;
 
 const NameInput = styled.input`
@@ -266,16 +273,20 @@ const Select = styled.select`
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  margin: 5px 0;
 `;
 
 const RadioGroup = styled.div`
-  margin: 15px 0;
   text-align: left;
   width: 100%;
+
+  div {
+    margin: 5px 0;
+  }
 `;
 
 const RadioLabel = styled.label`
-  margin-left: 10px;
+  margin: 0 10px;
   font-size: 14px;
 `;
 
