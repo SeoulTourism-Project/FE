@@ -1,36 +1,69 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { Modal } from "../components/Modal";
 
 const Cart = () => {
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 관리
+
   // 상품 목록과 장바구니 상태
   const [cartItems, setCartItems] = useState([
     {
       id: 1,
-      name: "상품명",
-      price: 0,
+      name: "상품 A",
+      price: 10000,
       quantity: 1,
       image: "https://via.placeholder.com/150",
     },
     {
       id: 2,
-      name: "상품명",
-      price: 0,
-      quantity: 1,
+      name: "상품 B",
+      price: 20000,
+      quantity: 2,
       image: "https://via.placeholder.com/150",
     },
     {
       id: 3,
-      name: "상품명",
-      price: 0,
+      name: "상품 C",
+      price: 30000,
       quantity: 1,
       image: "https://via.placeholder.com/150",
     },
   ]);
-
   const [selectedItems, setSelectedItems] = useState([]);
+  const [showModal, setShowModal] = useState(false);
 
   // 결제 정보 영역의 레퍼런스를 설정
   const paymentSummaryRef = useRef(null);
+
+  // 장바구니 데이터를 API에서 가져오는 함수
+  const fetchCartItems = async () => {
+    try {
+      const response = await axios.get("https://api.example.com/cart");
+      setCartItems(response.data); // 받아온 데이터를 상태에 저장
+    } catch (error) {
+      console.error("Error fetching cart items:", error);
+    }
+  };
+
+  // 로그인 상태 확인 함수 (예제: 로컬 스토리지 활용)
+  useEffect(() => {
+    const userToken = localStorage.getItem("userToken");
+    setIsLoggedIn(!!userToken);
+  }, []);
+
+  // 컴포넌트가 처음 렌더링될 때 API 호출 (한 번만 실행)
+  useEffect(() => {
+    fetchCartItems();
+  }, []);
+
+  // 확인 버튼 클릭 시 페이지 이동
+  const handleConfirm = () => {
+    setShowModal(false); // 모달 닫기
+    navigate("/goods"); // 굿즈 페이지로 이동
+  };
 
   // 수량 증가 / 감소 함수
   const handleQuantityChange = (id, action) => {
@@ -93,13 +126,17 @@ const Cart = () => {
 
   const { orderAmount, shippingFee, totalAmount } = calculateTotal();
 
-  // 결제하기 버튼 클릭 시 처리
+  // 결제 버튼 클릭 시 로그인 여부 확인 후 이동
   const handlePayment = () => {
-    alert(`총 결제 금액은 ${totalAmount}원입니다. 결제를 진행합니다.`);
+    if (isLoggedIn) {
+      navigate("/checkout"); // 로그인 되어있으면 결제 페이지로 이동
+    } else {
+      alert("로그인이 필요합니다.");
+      navigate("/login"); // 로그인 페이지로 이동
+    }
   };
 
   // 결제 정보 영역 스크롤을 맨 오른쪽으로 이동
-  // 결제 정보 스크롤을 맨 오른쪽으로 이동
   useEffect(() => {
     if (paymentSummaryRef.current) {
       paymentSummaryRef.current.scrollLeft =
@@ -176,17 +213,23 @@ const Cart = () => {
         </CartItem>
         <Button onClick={handlePayment}>결제하기</Button>
       </PaymentSummary>
+      {showModal && (
+        <Modal>
+          <p>장바구니에 추가되었습니다!</p>
+          <button onClick={handleConfirm}>확인</button> {/* 확인 버튼 */}
+        </Modal>
+      )}
     </CartContainer>
   );
 };
-
+export default Cart;
 // 스타일 컴포넌트들
 const CartContainer = styled.div`
   display: flex;
   justify-content: flex-start; /* 가로 정렬을 시작점으로 변경 */
   align-items: flex-start; /* 세로 정렬을 시작점으로 설정 */
   max-width: 1200px; /* 장바구니 컨테이너 너비를 넓게 설정 */
-  margin: 0 auto;
+  margin: -10px auto; /* 장바구니 지체를 위로 이동 */
   padding: 20px;
   gap: 20px; /* 왼쪽과 오른쪽 사이에 여백을 추가 */
   flex-wrap: wrap; /* 화면 크기에 맞게 내용이 줄어들 때 항목들이 아래로 내려가도록 설정 */
@@ -210,7 +253,7 @@ const PaymentSummary = styled.div`
   min-width: 300px;
   height: auto; /* 높이를 자동 조정 */
   position: relative; /* 내부 요소를 기준으로 위치 설정 */
-  margin-top: 250px; /* 결제 정보를 아래로 내리기 위해 위쪽 여백 추가 */
+  margin-top: 70px; /* 70px으로 조정하여 왼쪽 금액란과 높이 맞추기 */
 
   &:before {
     content: "";
@@ -224,12 +267,13 @@ const PaymentSummary = styled.div`
 `;
 
 const Header = styled.h2`
-  height: 160px; /* 헤더 높이를 160px로 설정 */
+  height: 90px; /* 헤더 높이를 140px로 설정 */
   display: flex;
   justify-content: center; /* 가로 중앙 정렬 */
   align-items: center; /* 세로 중앙 정렬 */
-  margin-top: 120px; /* 헤더와 위쪽 사이의 여백 제거 */
-  font-size: 24px; /* 폰트 크기 설정 */
+  margin-top: 0px; /* 헤더와 위쪽 사이의 여백 제거 */
+  font-size: 26px; /* 폰트 크기 설정 */
+  font-weight: bold; /* 글씨체를 더 진하게 설정 */
 `;
 
 const PaymentHeader = styled.h2`
@@ -252,11 +296,11 @@ const CartItemHeader = styled.div`
   }
 
   & > div:nth-child(2) {
-    margin-left: 180px; /* 수량 글자를 오른쪽으로 이동 */
+    margin-left: 140px; /* 수량 글자를 오른쪽으로 이동 */
   }
 
   & > div:nth-child(3) {
-    margin-right: 20px; /* 금액 글자를 왼쪽으로 이동 */
+    margin-right: 40px; /* 금액 글자를 왼쪽으로 이동 */
   }
 `;
 const CartItem = styled.div`
@@ -337,5 +381,3 @@ const QuantityControls = styled.div`
   display: flex;
   align-items: center;
 `;
-
-export default Cart;
