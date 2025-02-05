@@ -1,119 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Link } from 'react-router';
-
-const SignupContainer = styled.div`
-  max-width: 425px;
-  margin: 0 auto;
-  text-align: center;
-  padding: 40px 20px;
-  font-family: "Arial", sans-serif;
-`;
-
-const Title = styled.h1`
-  font-size: 28px;
-  font-weight: bold;
-  margin-bottom: 20px;
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color:pink 
-  div{(margin-top: 10px;)}
-`;
-
-const InputGroup = styled.div`
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  width: 100%;
-`;
-
-const Label = styled.label`
-  font-size: 14px;
-  margin-bottom: 5px;
-  text-align: left;
-  display: block;
-`;
-const NameContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  gap: 10px; /* 이름과 성 사이 간격 */
-`;
-
-const NameInput = styled.input`
-  width: 100%; /* 원하는 너비로 설정 */
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-  height: 35px;
-  margin: 5px 0;
-
-  &:focus {
-    outline: none;
-    border-color: #007bff;
-  }
-`;
-
-const LastNameInput = styled(NameInput)``; // 동일한 스타일 사용
-
-
-const Input = styled.input`
-  flex: 1;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-  width: 100%;
-  margin-bottom: 15px;
-  height: 35px;
-
-
-  &:focus {
-    outline: none;
-    border-color: #007bff;
-  }
-`;
-
-const RadioGroup = styled.div`
-  margin: 15px 0;
-  text-align: left;
-  width: 100%;
-`;
-
-const RadioLabel = styled.label`
-  margin-left: 10px;
-  font-size: 14px;
-`;
-
-const SignupButton = styled.button`
-  padding: 12px 20px;
-  background-color: black;
-  color: white;
-  font-size: 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #333;
-  }
-`;
-
-const FooterText = styled.p`
-  font-size: 14px;
-  margin-top: 20px;
-`;
-
-const ErrorMessage = styled.p`
-  color: red;
-  font-size: 12px;
-  text-align: left;
-`;
-const LinkA = styled(Link) ``;
+import { Link } from "react-router";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -183,7 +70,9 @@ const Signup = () => {
               value={formData.firstName}
               onChange={handleChange}
             />
-            {errors.firstName && <ErrorMessage>{errors.firstName}</ErrorMessage>}
+            {errors.firstName && (
+              <ErrorMessage>{errors.firstName}</ErrorMessage>
+            )}
           </div>
           <div>
             <Label htmlFor="lastName">성</Label>
@@ -234,7 +123,9 @@ const Signup = () => {
             value={formData.confirmPassword}
             onChange={handleChange}
           />
-          {errors.confirmPassword && <ErrorMessage>{errors.confirmPassword}</ErrorMessage>}
+          {errors.confirmPassword && (
+            <ErrorMessage>{errors.confirmPassword}</ErrorMessage>
+          )}
         </div>
 
         <RadioGroup>
@@ -268,5 +159,116 @@ const Signup = () => {
     </SignupContainer>
   );
 };
+
+const SignupContainer = styled.div`
+  max-width: 425px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 40px 20px;
+  font-family: "Arial", sans-serif;
+`;
+
+const Title = styled.h1`
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color:pink 
+  div{(margin-top: 10px;)}
+`;
+
+const InputGroup = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+`;
+
+const Label = styled.label`
+  font-size: 14px;
+  margin-bottom: 5px;
+  text-align: left;
+  display: block;
+`;
+const NameContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 10px; /* 이름과 성 사이 간격 */
+`;
+
+const NameInput = styled.input`
+  width: 100%; /* 원하는 너비로 설정 */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  height: 35px;
+  margin: 5px 0;
+
+  &:focus {
+    outline: none;
+    border-color: #007bff;
+  }
+`;
+
+const LastNameInput = styled(NameInput)``; // 동일한 스타일 사용
+
+const Input = styled.input`
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  width: 100%;
+  margin-bottom: 15px;
+  height: 35px;
+
+  &:focus {
+    outline: none;
+    border-color: #007bff;
+  }
+`;
+
+const RadioGroup = styled.div`
+  margin: 15px 0;
+  text-align: left;
+  width: 100%;
+`;
+
+const RadioLabel = styled.label`
+  margin-left: 10px;
+  font-size: 14px;
+`;
+
+const SignupButton = styled.button`
+  padding: 12px 20px;
+  background-color: black;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #333;
+  }
+`;
+
+const FooterText = styled.p`
+  font-size: 14px;
+  margin-top: 20px;
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+  font-size: 12px;
+  text-align: left;
+`;
+const LinkA = styled(Link)``;
 
 export default Signup;
