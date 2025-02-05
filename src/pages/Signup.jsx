@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +10,8 @@ const Signup = () => {
     password: "",
     confirmPassword: "",
     gender: "",
+    country: "", // 선택한 국가
+    customCountry: "", // 직접 입력한 국가
   });
 
   const [errors, setErrors] = useState({});
@@ -37,6 +39,12 @@ const Signup = () => {
     if (!formData.gender) {
       newErrors.gender = "성별을 선택해주세요.";
     }
+    if (!formData.country) {
+      newErrors.country = "국적을 선택해주세요.";
+    }
+    if (formData.country === "직접 입력" && !formData.customCountry.trim()) {
+      newErrors.customCountry = "국적을 입력해주세요.";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -44,14 +52,27 @@ const Signup = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      console.log("회원가입 데이터:", formData);
+      const finalCountry =
+        formData.country === "직접 입력"
+          ? formData.customCountry
+          : formData.country;
+      console.log("회원가입 데이터:", {
+        ...formData,
+        country: finalCountry, // 최종 국적 값 설정
+      });
       alert("회원가입 성공!");
     }
   };
@@ -151,6 +172,43 @@ const Signup = () => {
           {errors.gender && <ErrorMessage>{errors.gender}</ErrorMessage>}
         </RadioGroup>
 
+        {/* 국적 선택 */}
+        <div style={{ width: "100%" }}>
+          <Label htmlFor="country">국적</Label>
+          <Select
+            id="country"
+            name="country"
+            value={formData.country}
+            onChange={handleChange}
+          >
+            <option value="">국적 선택</option>
+            <option value="한국">한국</option>
+            <option value="미국">미국</option>
+            <option value="중국">중국</option>
+            <option value="일본">일본</option>
+            <option value="직접 입력">직접 입력</option>
+          </Select>
+          {errors.country && <ErrorMessage>{errors.country}</ErrorMessage>}
+        </div>
+
+        {/* 직접 입력 필드 */}
+        {formData.country === "직접 입력" && (
+          <div style={{ width: "100%" }}>
+            <Label htmlFor="customCountry">국적 입력</Label>
+            <Input
+              id="customCountry"
+              name="customCountry"
+              type="text"
+              placeholder="국적을 입력해주세요"
+              value={formData.customCountry}
+              onChange={handleChange}
+            />
+            {errors.customCountry && (
+              <ErrorMessage>{errors.customCountry}</ErrorMessage>
+            )}
+          </div>
+        )}
+
         <SignupButton type="submit">회원가입</SignupButton>
       </Form>
       <FooterText>
@@ -160,12 +218,12 @@ const Signup = () => {
   );
 };
 
+/* Styled Components */
 const SignupContainer = styled.div`
   max-width: 425px;
   margin: 0 auto;
   text-align: center;
   padding: 40px 20px;
-  font-family: "Arial", sans-serif;
 `;
 
 const Title = styled.h1`
@@ -178,15 +236,6 @@ const Form = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color:pink 
-  div{(margin-top: 10px;)}
-`;
-
-const InputGroup = styled.div`
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  width: 100%;
 `;
 
 const Label = styled.label`
@@ -195,43 +244,28 @@ const Label = styled.label`
   text-align: left;
   display: block;
 `;
+
 const NameContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  gap: 10px; /* 이름과 성 사이 간격 */
+  gap: 10px;
 `;
 
 const NameInput = styled.input`
-  width: 100%; /* 원하는 너비로 설정 */
+  width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 14px;
-  height: 35px;
   margin: 5px 0;
-
-  &:focus {
-    outline: none;
-    border-color: #007bff;
-  }
 `;
 
-const LastNameInput = styled(NameInput)``; // 동일한 스타일 사용
+const Input = styled(NameInput)``;
 
-const Input = styled.input`
-  flex: 1;
+const Select = styled.select`
+  width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 14px;
-  width: 100%;
-  margin-bottom: 15px;
-  height: 35px;
-
-  &:focus {
-    outline: none;
-    border-color: #007bff;
-  }
 `;
 
 const RadioGroup = styled.div`
@@ -249,14 +283,6 @@ const SignupButton = styled.button`
   padding: 12px 20px;
   background-color: black;
   color: white;
-  font-size: 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #333;
-  }
 `;
 
 const FooterText = styled.p`
