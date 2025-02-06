@@ -80,7 +80,7 @@ const FavoriteHeart = ({
       onClick={handleClick}
       $isFavorite={isFavorite}
       $isOverlay={pageType === "overlay" || pageType === "manage"}
-      loading={loading}
+      loading={loading ? "true" : undefined}
     >
       <FontAwesomeIcon icon={isFavorite ? filledHeart : emptyHeart} />
     </HeartContainer>
