@@ -78,8 +78,8 @@ const FavoriteHeart = ({
   return (
     <HeartContainer
       onClick={handleClick}
-      isFavorite={isFavorite}
-      isOverlay={pageType === "overlay" || pageType === "manage"}
+      $isFavorite={isFavorite}
+      $isOverlay={pageType === "overlay" || pageType === "manage"}
       loading={loading}
     >
       <FontAwesomeIcon icon={isFavorite ? filledHeart : emptyHeart} />
