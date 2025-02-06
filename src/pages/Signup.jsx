@@ -10,13 +10,12 @@ const Signup = () => {
     password: "",
     confirmPassword: "",
     gender: "",
-    country: "", // 선택한 국가
-    customCountry: "", // 직접 입력한 국가
+    country: "",
+    customCountry: "",
   });
 
   const [errors, setErrors] = useState({});
 
-  // 유효성 검사 함수
   const validate = () => {
     const newErrors = {};
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -71,7 +70,7 @@ const Signup = () => {
           : formData.country;
       console.log("회원가입 데이터:", {
         ...formData,
-        country: finalCountry, // 최종 국적 값 설정
+        country: finalCountry,
       });
       alert("회원가입 성공!");
     }
