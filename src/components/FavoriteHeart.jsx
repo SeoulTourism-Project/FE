@@ -78,8 +78,8 @@ const FavoriteHeart = ({
   return (
     <HeartContainer
       onClick={handleClick}
-      isFavorite={isFavorite}
-      isOverlay={pageType === "overlay" || pageType === "manage"}
+      $isFavorite={isFavorite}
+      $isOverlay={pageType === "overlay" || pageType === "manage"}
       loading={loading}
     >
       <FontAwesomeIcon icon={isFavorite ? filledHeart : emptyHeart} />
@@ -89,19 +89,18 @@ const FavoriteHeart = ({
 
 export default FavoriteHeart;
 
-// 스타일 정의
 const HeartContainer = styled.div`
-  position: ${(props) => (props.isOverlay ? "absolute" : "static")};
-  top: ${(props) => (props.isOverlay ? "10px" : "auto")};
-  right: ${(props) => (props.isOverlay ? "10px" : "auto")};
+  position: ${(props) => (props.$isOverlay ? "absolute" : "static")};
+  top: ${(props) => (props.$isOverlay ? "10px" : "auto")};
+  right: ${(props) => (props.$isOverlay ? "10px" : "auto")};
   font-size: 1.5rem;
   color: ${(props) =>
-    props.isFavorite ? "red" : props.isOverlay ? "#fff" : "#ddd"};
-  padding: ${(props) => (props.isOverlay ? "5px" : "0")};
-  background: ${(props) => (props.isOverlay ? "#00000050" : "none")};
+    props.$isFavorite ? "red" : props.$isOverlay ? "#fff" : "#ddd"};
+  padding: ${(props) => (props.$isOverlay ? "5px" : "0")};
+  background: ${(props) => (props.$isOverlay ? "#00000050" : "none")};
   border-radius: 8px;
   cursor: ${(props) => (props.loading ? "not-allowed" : "pointer")};
-  z-index: ${(props) => (props.isOverlay ? "1" : "auto")};
+  z-index: ${(props) => (props.$isOverlay ? "1" : "auto")};
   transition: color 0.2s ease;
 
   &:hover {
