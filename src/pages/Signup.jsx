@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Link } from "react-router";
-import { checkEmailAPI } from "../api/signupAPI";
+import { Link, useNavigate } from "react-router";
+import { checkEmailAPI, signupAPI } from "../api/signupAPI";
 
 const Signup = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -35,8 +37,8 @@ const Signup = () => {
     } else if (!emailChecked) {
       newErrors.email = "이메일 중복 확인을 해주세요.";
     }
-    if (formData.password.length < 6) {
-      newErrors.password = "비밀번호는 최소 6자 이상이어야 합니다.";
+    if (formData.password.length < 8) {
+      newErrors.password = "비밀번호는 최소 8자 이상이어야 합니다.";
     }
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "비밀번호가 일치하지 않습니다.";
@@ -104,7 +106,7 @@ const Signup = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newErrors = validate();
@@ -115,11 +117,26 @@ const Signup = () => {
         formData.country === "직접 입력"
           ? formData.customCountry
           : formData.country;
-      console.log("회원가입 데이터:", {
-        ...formData,
+
+      const userName = `${formData.firstName.trim()} ${formData.lastName.trim()}`;
+
+      const signupData = {
+        email: formData.email,
+        password: formData.password,
+        userName: userName,
         country: finalCountry,
-      });
-      alert("회원가입 성공!");
+        gender: formData.gender,
+      };
+
+      console.log("회원가입 데이터:", signupData);
+
+      try {
+        const response = await signupAPI(signupData);
+        alert("회원가입 성공! 🎉");
+        navigate("/login");
+      } catch (error) {
+        alert(error.message || "회원가입 중 오류 발생");
+      }
     } else {
       alert(Object.values(newErrors)[0]);
     }
@@ -219,7 +236,7 @@ const Signup = () => {
               type="radio"
               id="male"
               name="gender"
-              value="남"
+              value="M"
               onChange={handleChange}
             />
             <RadioLabel htmlFor="male">남자</RadioLabel>
@@ -227,7 +244,7 @@ const Signup = () => {
               type="radio"
               id="female"
               name="gender"
-              value="여"
+              value="F"
               onChange={handleChange}
             />
             <RadioLabel htmlFor="female">여자</RadioLabel>
