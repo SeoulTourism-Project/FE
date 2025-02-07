@@ -16,6 +16,7 @@ const Signup = () => {
   });
 
   const [emailCheckStatus, setEmailCheckStatus] = useState(null);
+  const [emailChecked, setEmailChecked] = useState(false);
   const [emailCheckLoading, setEmailCheckLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -31,6 +32,8 @@ const Signup = () => {
     }
     if (!emailPattern.test(formData.email)) {
       newErrors.email = "올바른 이메일 형식을 입력해주세요.";
+    } else if (!emailChecked) {
+      newErrors.email = "이메일 중복 확인을 해주세요.";
     }
     if (formData.password.length < 6) {
       newErrors.password = "비밀번호는 최소 6자 이상이어야 합니다.";
@@ -62,6 +65,11 @@ const Signup = () => {
       ...prevErrors,
       [name]: "",
     }));
+
+    if (name === "email") {
+      setEmailChecked(false);
+      setEmailCheckStatus(null);
+    }
   };
 
   const handleEmailCheck = async () => {
@@ -77,13 +85,20 @@ const Signup = () => {
 
       if (response.isSuccess && response.result.success) {
         setEmailCheckStatus("사용 가능한 이메일입니다.");
+        setEmailChecked(true);
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          email: "",
+        }));
       } else {
         setEmailCheckStatus(
           response.result.message || "이미 사용 중인 이메일입니다."
         );
+        setEmailChecked(false);
       }
     } catch (error) {
       setEmailCheckStatus("이메일 중복 확인에 실패했습니다.");
+      setEmailChecked(false);
     } finally {
       setEmailCheckLoading(false);
     }
@@ -91,8 +106,8 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newErrors = validate();
 
+    const newErrors = validate();
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
@@ -162,8 +177,11 @@ const Signup = () => {
               {emailCheckLoading ? "확인 중..." : "중복 확인"}
             </CheckButton>
           </EmailRow>
-          {(errors.email && <ErrorMessage>{errors.email}</ErrorMessage>) ||
-            (emailCheckStatus && <EmailStatus>{emailCheckStatus}</EmailStatus>)}
+          {errors.email ? (
+            <ErrorMessage>{errors.email}</ErrorMessage>
+          ) : emailCheckStatus ? (
+            <EmailStatus>{emailCheckStatus}</EmailStatus>
+          ) : null}
         </EmailContainer>
 
         <div style={{ width: "100%" }}>
