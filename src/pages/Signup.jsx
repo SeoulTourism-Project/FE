@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
+import { checkEmailAPI } from "../api/signupAPI";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +15,8 @@ const Signup = () => {
     customCountry: "",
   });
 
+  const [emailCheckStatus, setEmailCheckStatus] = useState(null);
+  const [emailCheckLoading, setEmailCheckLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
   const validate = () => {
@@ -59,6 +62,31 @@ const Signup = () => {
       ...prevErrors,
       [name]: "",
     }));
+  };
+
+  const handleEmailCheck = async () => {
+    const email = formData.email.trim().toLowerCase();
+    if (!email) {
+      setEmailCheckStatus("이메일을 입력해주세요.");
+      return;
+    }
+
+    setEmailCheckLoading(true);
+    try {
+      const response = await checkEmailAPI(email);
+
+      if (response.isSuccess && response.result.success) {
+        setEmailCheckStatus("사용 가능한 이메일입니다.");
+      } else {
+        setEmailCheckStatus(
+          response.result.message || "이미 사용 중인 이메일입니다."
+        );
+      }
+    } catch (error) {
+      setEmailCheckStatus("이메일 중복 확인에 실패했습니다.");
+    } finally {
+      setEmailCheckLoading(false);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -107,18 +135,27 @@ const Signup = () => {
           </div>
         </NameContainer>
 
-        <div style={{ width: "100%" }}>
-          <Label htmlFor="email">이메일</Label>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            placeholder="이메일 주소"
-            value={formData.email}
-            onChange={handleChange}
-          />
-          {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
-        </div>
+        {/* 이메일 & 중복 확인 버튼 */}
+        <EmailContainer>
+          <div style={{ flex: 1 }}>
+            <Label htmlFor="email">이메일</Label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+            />
+          </div>
+          <CheckButton
+            type="button"
+            onClick={handleEmailCheck}
+            disabled={emailCheckLoading}
+          >
+            {emailCheckLoading ? "확인 중..." : "중복 확인"}
+          </CheckButton>
+        </EmailContainer>
+        {emailCheckStatus && <EmailStatus>{emailCheckStatus}</EmailStatus>}
 
         <div style={{ width: "100%" }}>
           <Label htmlFor="password">비밀번호</Label>
@@ -266,6 +303,40 @@ const NameInput = styled.input`
 `;
 
 const Input = styled(NameInput)``;
+
+const EmailContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+`;
+
+const CheckButton = styled.button`
+  height: 100%;
+  padding: 10px 15px;
+  background-color: #aaa;
+  color: white;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: #000;
+  }
+`;
+
+const EmailStatus = styled.p`
+  font-size: 12px;
+  color: ${({ children }) =>
+    children.includes("사용 가능") ? "green" : "red"};
+`;
 
 const Select = styled.select`
   width: 100%;
