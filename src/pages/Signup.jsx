@@ -135,27 +135,29 @@ const Signup = () => {
           </div>
         </NameContainer>
 
-        {/* 이메일 & 중복 확인 버튼 */}
         <EmailContainer>
-          <div style={{ flex: 1 }}>
-            <Label htmlFor="email">이메일</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-            />
-          </div>
-          <CheckButton
-            type="button"
-            onClick={handleEmailCheck}
-            disabled={emailCheckLoading}
-          >
-            {emailCheckLoading ? "확인 중..." : "중복 확인"}
-          </CheckButton>
+          <EmailRow>
+            <div style={{ flex: 1 }}>
+              <Label htmlFor="email">이메일</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+              />
+            </div>
+            <CheckButton
+              type="button"
+              onClick={handleEmailCheck}
+              disabled={emailCheckLoading}
+            >
+              {emailCheckLoading ? "확인 중..." : "중복 확인"}
+            </CheckButton>
+          </EmailRow>
+          {(errors.email && <ErrorMessage>{errors.email}</ErrorMessage>) ||
+            (emailCheckStatus && <EmailStatus>{emailCheckStatus}</EmailStatus>)}
         </EmailContainer>
-        {emailCheckStatus && <EmailStatus>{emailCheckStatus}</EmailStatus>}
 
         <div style={{ width: "100%" }}>
           <Label htmlFor="password">비밀번호</Label>
@@ -226,7 +228,6 @@ const Signup = () => {
           {errors.country && <ErrorMessage>{errors.country}</ErrorMessage>}
         </div>
 
-        {/* 직접 입력 필드 */}
         {formData.country === "직접 입력" && (
           <div style={{ width: "100%" }}>
             <Label htmlFor="customCountry">국적 입력</Label>
@@ -284,6 +285,12 @@ const Label = styled.label`
   display: block;
 `;
 
+const ErrorMessage = styled.p`
+  color: red;
+  font-size: 12px;
+  text-align: left;
+`;
+
 const NameContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -306,14 +313,24 @@ const Input = styled(NameInput)``;
 
 const EmailContainer = styled.div`
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
   width: 100%;
+
+  div {
+    margin: 0;
+  }
+`;
+
+const EmailRow = styled.div`
+  display: flex;
+  align-items: end;
+  gap: 8px;
 `;
 
 const CheckButton = styled.button`
   height: 100%;
   padding: 10px 15px;
+  margin: 5px 0;
   background-color: #aaa;
   color: white;
   font-size: 14px;
@@ -332,8 +349,7 @@ const CheckButton = styled.button`
   }
 `;
 
-const EmailStatus = styled.p`
-  font-size: 12px;
+const EmailStatus = styled(ErrorMessage)`
   color: ${({ children }) =>
     children.includes("사용 가능") ? "green" : "red"};
 `;
@@ -371,11 +387,6 @@ const FooterText = styled.p`
   margin-top: 20px;
 `;
 
-const ErrorMessage = styled.p`
-  color: red;
-  font-size: 12px;
-  text-align: left;
-`;
 const LinkA = styled(Link)``;
 
 export default Signup;
