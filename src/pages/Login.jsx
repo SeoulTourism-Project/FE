@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { loginAPI } from "../api/loginAPI";
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
   const clientId = "YOUR_GOOGLE_CLIENT_ID"; // Google Cloud에서 발급받은 Client ID
 
   const handleGoogleLoginSuccess = (response) => {
@@ -15,18 +21,46 @@ const Login = () => {
     console.error("Google Login Failure", response);
   };
 
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError(null);
+
+    try {
+      const response = await loginAPI(email, password);
+      navigate("/");
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
   return (
     <GoogleOAuthProvider clientId={clientId}>
       <LoginContainer>
         <Title>로그인</Title>
-        <Form>
+        <Form onSubmit={handleLogin}>
           <Label htmlFor="email">이메일</Label>
-          <Input type="email" id="email" placeholder="이메일" />
+          <Input
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="이메일"
+            required
+          />
 
           <Label htmlFor="password">비밀번호</Label>
-          <Input type="password" id="password" placeholder="비밀번호" />
+          <Input
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="비밀번호"
+            required
+          />
 
-          <Button bgColor="#7a7a7a">로그인</Button>
+          <Button type="submit" bgColor="#7a7a7a">
+            로그인
+          </Button>
           <GoogleLogin
             onSuccess={handleGoogleLoginSuccess}
             onError={handleGoogleLoginFailure}
