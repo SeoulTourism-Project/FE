@@ -49,7 +49,7 @@ const Signup = () => {
     }
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return newErrors;
   };
 
   const handleChange = (e) => {
@@ -91,7 +91,11 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (validate()) {
+    const newErrors = validate();
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
       const finalCountry =
         formData.country === "직접 입력"
           ? formData.customCountry
@@ -101,6 +105,8 @@ const Signup = () => {
         country: finalCountry,
       });
       alert("회원가입 성공!");
+    } else {
+      alert(Object.values(newErrors)[0]);
     }
   };
 
