@@ -115,18 +115,22 @@ const DropdownList = styled.div`
   top: 100%;
   background: white;
   border-radius: 5px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
   min-width: 150px;
+  margin-top: 20px;
   padding: 10px 0;
 `;
 
 const DropdownItem = styled(Link)`
   padding: 10px;
+  font-size: 1rem;
   text-align: center;
   color: black;
   text-decoration: none;
+  border: none;
+  background: #fff;
   &:hover {
     background: #ddd;
   }
