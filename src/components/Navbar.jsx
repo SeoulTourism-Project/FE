@@ -9,11 +9,11 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
+  const [isClickedMenu, setIsClickedMenu] = useState(false);
 
   useEffect(() => {
     const token = sessionStorage.getItem("accessToken");
     const storedUsername = getUserNameFromToken();
-    console.log(storedUsername);
     if (token) {
       setIsLoggedIn(true);
       setUsername(storedUsername || "사용자");
@@ -21,6 +21,14 @@ const Navbar = () => {
       setIsLoggedIn(false);
     }
   }, []);
+
+  const handleMenuButton = () => {
+    setIsClickedMenu((prev) => !prev);
+  };
+
+  const handleLogout = () => {
+    alert("로그아웃");
+  };
 
   return (
     <NavContainer>
@@ -32,15 +40,27 @@ const Navbar = () => {
         </>
       ) : (
         // 로그인한 경우 (마이페이지, 찜한 여행지, 캘린더, 로그아웃 등)
-        <MenuBar>
+        <MenuContainer>
           <WelcomeText>
             환영합니다
             <p>{username}</p>님!
           </WelcomeText>
-          <MenuButton>
-            <FontAwesomeIcon icon={faBars} size="2xl" />
-          </MenuButton>
-        </MenuBar>
+          <DropdownMenu>
+            <MenuButton onClick={handleMenuButton}>
+              <FontAwesomeIcon icon={faBars} size="2xl" />
+            </MenuButton>
+            {isClickedMenu ? (
+              <DropdownList>
+                <DropdownItem to="/cart">카트</DropdownItem>
+                <DropdownItem to="/mytravel">나의 여행</DropdownItem>
+                <DropdownItem to="/mypage">마이페이지</DropdownItem>
+                <DropdownItem as="button" onClick={handleLogout}>
+                  로그아웃
+                </DropdownItem>
+              </DropdownList>
+            ) : null}
+          </DropdownMenu>
+        </MenuContainer>
       )}
     </NavContainer>
   );
@@ -61,7 +81,7 @@ const StyledLink = styled(Link)`
   text-decoration: none;
 `;
 
-const MenuBar = styled.div`
+const MenuContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
@@ -81,4 +101,33 @@ const MenuButton = styled.button`
   background: #fff;
   border: none;
   cursor: pointer;
+`;
+
+const DropdownMenu = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+`;
+
+const DropdownList = styled.div`
+  position: absolute;
+  top: 100%;
+  background: white;
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  min-width: 150px;
+  padding: 10px 0;
+`;
+
+const DropdownItem = styled(Link)`
+  padding: 10px;
+  text-align: center;
+  color: black;
+  text-decoration: none;
+  &:hover {
+    background: #ddd;
+  }
 `;
