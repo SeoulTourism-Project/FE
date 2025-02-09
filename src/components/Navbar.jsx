@@ -1,4 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { getUserNameFromToken } from "../utils/decodeToken";
@@ -30,7 +32,15 @@ const Navbar = () => {
         </>
       ) : (
         // 로그인한 경우 (마이페이지, 찜한 여행지, 캘린더, 로그아웃 등)
-        <WelcomeText>환영합니다 {username}님</WelcomeText>
+        <MenuBar>
+          <WelcomeText>
+            환영합니다
+            <p>{username}</p>님!
+          </WelcomeText>
+          <MenuButton>
+            <FontAwesomeIcon icon={faBars} size="2xl" />
+          </MenuButton>
+        </MenuBar>
       )}
     </NavContainer>
   );
@@ -51,8 +61,24 @@ const StyledLink = styled(Link)`
   text-decoration: none;
 `;
 
+const MenuBar = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
+`;
+
 const WelcomeText = styled.div`
+  display: flex;
   font-size: 1.2rem;
-  font-weight: bold;
+  gap: 0.3rem;
+
+  p {
+    font-weight: bold;
+  }
+`;
+
+const MenuButton = styled.button`
+  background: #fff;
+  border: none;
   cursor: pointer;
 `;
