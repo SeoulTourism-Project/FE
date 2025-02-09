@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { getUserNameFromToken } from "../utils/decodeToken";
 
 const Navbar = () => {
-  const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
   const [isClickedMenu, setIsClickedMenu] = useState(false);
@@ -22,7 +21,7 @@ const Navbar = () => {
     }
   }, []);
 
-  const handleMenuButton = () => {
+  const handleMenuToggle = () => {
     setIsClickedMenu((prev) => !prev);
   };
 
@@ -46,11 +45,11 @@ const Navbar = () => {
             <p>{username}</p>님!
           </WelcomeText>
           <DropdownMenu>
-            <MenuButton onClick={handleMenuButton}>
+            <MenuButton onClick={handleMenuToggle}>
               <FontAwesomeIcon icon={faBars} size="2xl" />
             </MenuButton>
             {isClickedMenu ? (
-              <DropdownList>
+              <DropdownList onClick={handleMenuToggle}>
                 <DropdownItem to="/">홈페이지</DropdownItem>
                 <DropdownItem to="/cart">카트</DropdownItem>
                 <DropdownItem to="/mytravel">나의 여행</DropdownItem>
