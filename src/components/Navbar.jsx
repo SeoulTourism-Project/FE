@@ -51,6 +51,7 @@ const Navbar = () => {
             </MenuButton>
             {isClickedMenu ? (
               <DropdownList>
+                <DropdownItem to="/">홈페이지</DropdownItem>
                 <DropdownItem to="/cart">카트</DropdownItem>
                 <DropdownItem to="/mytravel">나의 여행</DropdownItem>
                 <DropdownItem to="/mypage">마이페이지</DropdownItem>
