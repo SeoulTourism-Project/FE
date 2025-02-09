@@ -4,6 +4,7 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { getUserNameFromToken } from "../utils/decodeToken";
+import { logoutAPI } from "../api/logoutAPI";
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -25,8 +26,16 @@ const Navbar = () => {
     setIsClickedMenu((prev) => !prev);
   };
 
-  const handleLogout = () => {
-    alert("로그아웃");
+  const handleLogout = async () => {
+    console.log("현재 쿠키:", document.cookie);
+
+    try {
+      await logoutAPI();
+      alert("로그아웃 되었습니다.");
+      window.location.reload(); // 새로고침으로 상태 초기화
+    } catch (error) {
+      alert("로그아웃 실패: " + error.message);
+    }
   };
 
   return (
