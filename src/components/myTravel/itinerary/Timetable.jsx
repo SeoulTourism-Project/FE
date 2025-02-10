@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { formatKoreaDate } from "../utils/changeDateFormUtils";
+import { formatKoreaDate } from "../../../utils/changeDateFormUtils";
 import ScheduleCard from "./ScheduleCard";
-import ScheduleAddModal from "./ScheduleAddModal";
+import ScheduleAddModal from "./addModal/ScheduleAddModal";
 
 const Timetable = ({ date, schedules, onDeleteSchedule, onAddSchedule }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);

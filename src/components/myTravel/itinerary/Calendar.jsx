@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import ReactCalendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import { formatKoreaDate } from "../utils/changeDateFormUtils"; // 한국 시간대로 변경
+import { formatKoreaDate } from "../../../utils/changeDateFormUtils"; // 한국 시간대로 변경
 
 const Calendar = ({ selectedDate, onDateChange, schedules = [] }) => {
   const tileContent = ({ date }) => {
