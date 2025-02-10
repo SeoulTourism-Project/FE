@@ -54,7 +54,7 @@
 이 프로젝트를 실행하기 위해 필요한 주요 패키지들은 다음과 같습니다:
 
 ```bash
-npm install react-calendar react-router-dom axios redux react-redux @reduxjs/toolkit styled-components tanstack-query @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/react-fontawesome
+npm install react-calendar react-router axios redux react-redux @reduxjs/toolkit styled-components tanstack-query @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/react-fontawesome
 ```
 
 ## 📌 프로젝트 구조
