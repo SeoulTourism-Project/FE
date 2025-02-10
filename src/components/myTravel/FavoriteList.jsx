@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import TouristAttractionItem from "./TouristAttractionItem";
-import FavoriteHeart from "./FavoriteHeart";
+import TouristAttractionItem from "../TouristAttractionItem";
+import FavoriteHeart from "../FavoriteHeart";
 import axios from "axios";
 
 const FavoriteList = () => {

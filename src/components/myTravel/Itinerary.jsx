@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Calendar from "./itinerary/Calendar";
-import Timetable from "../Timetable";
+import Timetable from "./itinerary/Timetable";
 import styled from "styled-components";
 import {
   combineToUTC,
