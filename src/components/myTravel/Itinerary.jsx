@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import Calendar from "./Calendar";
-import Timetable from "./Timetable";
+import Calendar from "./itinerary/Calendar";
+import Timetable from "./itinerary/Timetable";
 import styled from "styled-components";
 import {
   combineToUTC,
   formatKoreaDate,
   formatTime24,
-} from "../utils/changeDateFormUtils";
+} from "../../utils/changeDateFormUtils";
 import axios from "axios";
 
 const Itinerary = () => {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import FavoriteList from "../components/FavoriteList";
-import Itinerary from "../components/Itinerary";
+import FavoriteList from "../components/myTravel/FavoriteList";
+import Itinerary from "../components/myTravel/Itinerary";
 
 const MyTravel = () => {
   const [activeTab, setActiveTab] = useState("interest");

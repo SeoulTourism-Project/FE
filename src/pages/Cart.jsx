@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { Modal } from "../components/Modal";
 
 const Cart = () => {
