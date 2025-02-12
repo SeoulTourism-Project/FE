@@ -1,51 +1,41 @@
 import styled from "styled-components";
 import TouristAttractionItem from "./TouristAttractionItem";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import Pagination from "./Pagination";
+import { fetchTouristAttractions } from "../api/touristAttractionsAPI";
 
 const TouristAttractionList = () => {
   const [touristAttractions, setTouristAttractions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [touristAttractionsPerPage, setTouristAttractionsPerPage] =
-    useState(12);
-
-  const fetchTouristAttraction = async () => {
-    try {
-      setIsLoading(true);
-
-      const response = await axios.get("./location.json");
-      const result = response.data;
-      setTouristAttractions(result);
-    } catch (error) {
-      setError(`Error / ${error}`);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const touristAttractionsPerPage = 12;
 
   useEffect(() => {
-    fetchTouristAttraction();
-  }, []);
+    const loadTouristAttractions = async () => {
+      try {
+        setIsLoading(true);
+        const data = await fetchTouristAttractions(
+          currentPage,
+          touristAttractionsPerPage
+        );
+        setTouristAttractions(data.maps);
+        setTotalPages(data.totalPages);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const firstTouristAttractionIndex =
-    (currentPage - 1) * touristAttractionsPerPage;
-  const lastTouristAttractionIndex =
-    firstTouristAttractionIndex + touristAttractionsPerPage;
-  const currentTouristAttractions = touristAttractions.slice(
-    firstTouristAttractionIndex,
-    lastTouristAttractionIndex
-  );
-  const pageCount = Math.ceil(
-    touristAttractions.length / touristAttractionsPerPage
-  );
+    loadTouristAttractions();
+  }, [currentPage]);
 
   const handleChangePage = (selectedButton) => {
-    if (selectedButton === "prev" && currentPage !== 1) {
+    if (selectedButton === "prev" && currentPage > 1) {
       setCurrentPage((prevCurrentPage) => prevCurrentPage - 1);
-    } else if (selectedButton === "next" && currentPage !== pageCount) {
+    } else if (selectedButton === "next" && currentPage < totalPages) {
       setCurrentPage((prevCurrentPage) => prevCurrentPage + 1);
     }
   };
@@ -53,12 +43,16 @@ const TouristAttractionList = () => {
   let content = (
     <CardContainer>
       <CardList>
-        {currentTouristAttractions.map((touristAttraction) => (
-          <TouristAttractionItem
-            key={touristAttraction.id}
-            touristAttraction={touristAttraction}
-          />
-        ))}
+        {touristAttractions.length > 0 ? (
+          touristAttractions.map((touristAttraction) => (
+            <TouristAttractionItem
+              key={touristAttraction.id}
+              touristAttraction={touristAttraction}
+            />
+          ))
+        ) : (
+          <p>데이터가 없습니다.</p>
+        )}
       </CardList>
       <Pagination
         currentPage={currentPage}
