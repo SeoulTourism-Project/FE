@@ -1,206 +1,136 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useLocation, useNavigate } from "react-router"; //useNavigate 추가
+import axios from "axios";
+import PaymentResult from "../components/PaymentResult";
 
 const CheckoutPage = () => {
+  const location = useLocation();
+  const navigate = useNavigate(); //페이지 이동을 위한 navigate 추가
+  const selectedProducts = location.state?.selectedProducts || [];
+
+  const totalPrice = selectedProducts.reduce(
+    (sum, product) => sum + product.quantity * product.price,
+    0
+  );
+  const shippingFee = totalPrice <= 30000 ? 3000 : 0;
+  const finalPrice = totalPrice + shippingFee;
+
   const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    address: "",
-    paymentMethod: "",
-    products: [
-      {
-        id: 1,
-        name: "상품 A",
-        image: "https://via.placeholder.com/200",
-        quantity: 0,
-        price: 0,
-      },
-      {
-        id: 2,
-        name: "상품 B",
-        image: "https://via.placeholder.com/200",
-        quantity: 0,
-        price: 0,
-      },
-    ],
+    userId: 14,
+    orderId: 8,
+    impUid: null,
+    merchantUid: "order_123",
+    paymentCard: "1234-5678-9876-5432",
+    totalAmount: finalPrice,
+    paymentMethod: "카드",
   });
 
   const [errors, setErrors] = useState({});
+  const [paymentResult, setPaymentResult] = useState(null);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData({ ...formData, [id]: value });
   };
 
-  const handleProductChange = (index, field, value) => {
-    const updatedProducts = [...formData.products];
-    const newValue = Math.max(0, Number(value)); // 입력값이 0 이상인지 검증
-    updatedProducts[index][field] = newValue;
-    setFormData({ ...formData, products: updatedProducts });
-  };
-
   const validate = () => {
     const newErrors = {};
-    if (!formData.name) {
-      newErrors.name = "이름을 입력하세요.";
+    if (!formData.impUid) {
+      newErrors.impUid = "결제 인증 번호(impUid)를 입력하세요.";
     }
-    if (!formData.phone) {
-      newErrors.phone = "전화번호를 입력하세요.";
-    } else if (!/^\d{10,11}$/.test(formData.phone)) {
-      newErrors.phone = "유효한 전화번호를 입력하세요 (10-11자리 숫자).";
-    }
-    if (!formData.address) {
-      newErrors.address = "숙소 주소를 입력하세요.";
-    }
-    formData.products.forEach((product, index) => {
-      if (product.quantity <= 0) {
-        newErrors[`product-${index}`] = "수량을 1 이상 입력하세요.";
-      }
-    });
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = () => {
-    if (validate()) {
-      alert("결제가 완료되었습니다!");
-      // 결제 처리 로직 추가
-    }
-  };
+    if (!validate()) return;
 
-  const totalPrice = formData.products.reduce(
-    (sum, product) => sum + product.quantity * product.price,
-    0
-  );
-  const shippingFee = totalPrice <= 30000 ? 3000 : 0;
-  const finalPrice = totalPrice + shippingFee; // 총 결제 금액 계산
+    axios
+      .post("http://localhost:8080/payment/process", formData)
+      .then((response) => {
+        const { impUid, message, totalAmount } = response.data || {};
+
+        setPaymentResult({ impUid, message, totalAmount });
+
+        if (impUid) {
+          setFormData((prevData) => ({
+            ...prevData,
+            impUid,
+          }));
+
+          alert("결제가 성공적으로 완료되었습니다!");
+
+          //결제 성공 후 마이페이지로 이동
+          navigate("/mypage");
+        } else {
+          alert(`결제 실패: ${message || "알 수 없는 오류"}`);
+        }
+      })
+      .catch((error) => {
+        console.error("결제 요청 중 오류 발생:", error);
+        alert("결제 중 오류가 발생했습니다. 다시 시도해주세요.");
+      });
+  };
 
   return (
     <Container>
-      <Header>check out</Header>
+      <Header>Check Out</Header>
 
-      {/* 주문 리스트 */}
       <Section>
         <Title>주문 리스트</Title>
-        <ProductList>
-          {formData.products.map((product, index) => (
-            <ProductItem key={product.id}>
-              <img src={product.image} alt={product.name} />
-              <div className="details">
-                <div className="name">{product.name}</div>
-                <input
-                  type="number"
-                  min="0" // 최소값 0 설정
-                  value={product.quantity}
-                  onChange={(e) =>
-                    handleProductChange(index, "quantity", e.target.value)
-                  }
-                  placeholder="수량"
-                />
-                {errors[`product-${index}`] && (
-                  <ErrorMessage>{errors[`product-${index}`]}</ErrorMessage>
-                )}
-              </div>
-              <div>{product.price.toLocaleString()} 원</div>
-            </ProductItem>
-          ))}
-        </ProductList>
+        {selectedProducts.length > 0 ? (
+          <ProductList>
+            {selectedProducts.map((product) => (
+              <ProductItem key={product.id}>
+                <img src={product.image} alt={product.name} />
+                <div className="details">
+                  <div className="name">{product.name}</div>
+                  <div>{product.quantity}개</div>
+                  <div>{product.price.toLocaleString()} 원</div>
+                </div>
+              </ProductItem>
+            ))}
+          </ProductList>
+        ) : (
+          <ErrorMessage>결제할 상품이 없습니다.</ErrorMessage>
+        )}
       </Section>
 
-      {/* 경계선 추가 */}
-      <Divider className="black-divider" />
+      <Divider />
 
-      {/* 주문자 정보 */}
       <Section>
-        <Title>주문자 정보</Title>
+        <Title>결제 정보</Title>
         <FormGroup>
-          <label htmlFor="name">이름</label>
+          <label htmlFor="impUid">결제 인증 번호 (impUid)</label>
           <input
             type="text"
-            id="name"
-            placeholder="이름을 입력하세요"
-            value={formData.name}
+            id="impUid"
+            placeholder="impUid를 입력하세요"
+            value={formData.impUid || ""}
             onChange={handleChange}
           />
-          {errors.name && <ErrorMessage>{errors.name}</ErrorMessage>}
-        </FormGroup>
-        <FormGroup>
-          <label htmlFor="phone">전화번호</label>
-          <input
-            type="text"
-            id="phone"
-            placeholder="전화번호를 입력하세요"
-            value={formData.phone}
-            onChange={handleChange}
-          />
-          {errors.phone && <ErrorMessage>{errors.phone}</ErrorMessage>}
-        </FormGroup>
-        <FormGroup>
-          <label htmlFor="address">숙소 주소</label>
-          <input
-            type="text"
-            id="address"
-            placeholder="숙소 주소를 입력하세요"
-            value={formData.address}
-            onChange={handleChange}
-          />
-          {errors.address && <ErrorMessage>{errors.address}</ErrorMessage>}
+          {errors.impUid && <ErrorMessage>{errors.impUid}</ErrorMessage>}
         </FormGroup>
       </Section>
 
-      {/* 경계선 추가 */}
-      <Divider className="black-divider" />
+      <Divider />
 
-      {/* 결제수단 */}
-      <PaymentMethod>
-        <label htmlFor="payment">결제수단</label>
-      </PaymentMethod>
-
-      {/* 경계선 추가 */}
-      <Divider className="black-divider" />
-
-      {/* 최종 결제 금액 텍스트 */}
-      <FinalPriceTitle>최종 결제 금액</FinalPriceTitle>
-
-      {/* 주문상품  테이블 */}
-      <OrderSummary>
-        <thead>
-          <tr>
-            <th>상품금액</th>
-            <th>배송비</th>
-            <th>추가금액</th>
-            <th>결제 예정금액</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>{totalPrice.toLocaleString()}원</td>
-            <td>
-              {shippingFee === 0 ? "무료" : `${shippingFee.toLocaleString()}원`}
-            </td>
-            <td>0원</td>
-            <td>
-              <FinalAmount>{finalPrice.toLocaleString()}원</FinalAmount>
-            </td>
-          </tr>
-        </tbody>
-      </OrderSummary>
-
-      {/* 경계선 */}
-      <Divider className="black-divider" />
-
-      <AgreementSection>
-        <p>주문 내용을 확인했으며 결제에 동의합니다.</p>
-        <p>회원님의 개인정보는 안전하게 관리됩니다.</p>
-      </AgreementSection>
-
-      {/* 결제하기 버튼 */}
       <CheckoutButton onClick={handleSubmit}>
         {finalPrice.toLocaleString()} 원 결제하기
       </CheckoutButton>
+
+      {paymentResult && (
+        <PaymentResult
+          message={paymentResult.message}
+          impUid={paymentResult.impUid}
+          totalAmount={paymentResult.totalAmount}
+        />
+      )}
     </Container>
   );
 };
+
 export default CheckoutPage;
 
 // 스타일 컴포넌트
