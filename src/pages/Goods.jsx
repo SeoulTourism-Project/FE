@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
-import axios from 'axios';
-import Pagination from '../components/Pagination';
-import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
-import { addGoods } from '../features/goodsSlice';
-import GoodsList from '../components/GoodsList';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDown, faAngleRight } from '@fortawesome/free-solid-svg-icons';
+import { useEffect, useRef, useState } from "react";
+import axios from "axios";
+import Pagination from "../components/Pagination";
+import styled from "styled-components";
+import { useDispatch } from "react-redux";
+import { addGoods } from "../features/goodsSlice";
+import GoodsList from "../components/GoodsList";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleDown, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 
 const Goods = () => {
   const [allProducts, setAllProducts] = useState([]);
@@ -15,7 +15,7 @@ const Goods = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(12);
-  const [category, setCategory] = useState('전체');
+  const [category, setCategory] = useState("전체");
   const [showCategory, setShowCategory] = useState(false);
 
   const dispatch = useDispatch();
@@ -31,7 +31,7 @@ const Goods = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.get('goods.json');
+      const response = await axios.get("goods.json");
       const result = response.data;
       setAllProducts(result);
       // setFilteredProducts(result);
@@ -48,7 +48,7 @@ const Goods = () => {
   }
 
   function handleSelectedOption(e) {
-    if (e.target.tagName === 'LI') {
+    if (e.target.tagName === "LI") {
       setShowCategory(false);
       setCategory(e.target.textContent);
     }
@@ -59,10 +59,12 @@ const Goods = () => {
   }, []);
 
   useEffect(() => {
-    if (category === '전체') {
+    if (category === "전체") {
       setFilteredProducts(allProducts);
     } else {
-      const newProducts = allProducts.filter((item) => item.category === category);
+      const newProducts = allProducts.filter(
+        (item) => item.category === category
+      );
       setFilteredProducts(newProducts);
     }
 
@@ -71,22 +73,26 @@ const Goods = () => {
 
   useEffect(() => {
     function handleClickOutside(e) {
-      if (categoryRef.current && !categoryRef.current.contains(e.target) && e.target !== optionListRef.current) {
+      if (
+        categoryRef.current &&
+        !categoryRef.current.contains(e.target) &&
+        e.target !== optionListRef.current
+      ) {
         setShowCategory(false);
       }
     }
 
-    document.addEventListener('click', handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
 
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, []);
 
   const handleChangePage = (selectedButton) => {
-    if (selectedButton === 'prev' && currentPage !== 1) {
+    if (selectedButton === "prev" && currentPage !== 1) {
       setCurrentPage((prevCurrentPage) => prevCurrentPage - 1);
-    } else if (selectedButton === 'next' && currentPage !== pageCount) {
+    } else if (selectedButton === "next" && currentPage !== pageCount) {
       setCurrentPage((prevCurrentPage) => prevCurrentPage + 1);
     }
   };
@@ -106,7 +112,11 @@ const Goods = () => {
           <span>카테고리 : </span>
           <CurrentOption onClick={handleToggleCategory} ref={categoryRef}>
             <span>{category}</span>
-            {showCategory ? <FontAwesomeIcon icon={faAngleDown} /> : <FontAwesomeIcon icon={faAngleRight} />}
+            {showCategory ? (
+              <FontAwesomeIcon icon={faAngleDown} />
+            ) : (
+              <FontAwesomeIcon icon={faAngleRight} />
+            )}
           </CurrentOption>
           {showCategory && (
             <OptionList onClick={handleSelectedOption} ref={optionListRef}>
@@ -119,7 +129,10 @@ const Goods = () => {
         </Category>
         <GoodsList currentProducts={currentProducts} />
       </Container>
-      <Pagination currentPage={currentPage} handleChangePage={handleChangePage} />
+      <Pagination
+        currentPage={currentPage}
+        handleChangePage={handleChangePage}
+      />
     </>
   );
 };
