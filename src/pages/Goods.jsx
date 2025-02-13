@@ -1,41 +1,36 @@
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
 import Pagination from "../components/Pagination";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
-import { addGoods } from "../features/goodsSlice";
 import GoodsList from "../components/GoodsList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import { fetchGoods } from "../api/goodsAPI";
 
 const Goods = () => {
   const [allProducts, setAllProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(12);
+  const [currentPage, setCurrentPage] = useState(0);
   const [category, setCategory] = useState("전체");
   const [showCategory, setShowCategory] = useState(false);
 
-  const dispatch = useDispatch();
   const categoryRef = useRef(null);
   const optionListRef = useRef(null);
 
-  const startIndex = (currentPage - 1) * perPage;
-  const endIndex = startIndex + perPage;
-  const currentProducts = filteredProducts.slice(startIndex, endIndex);
-  const pageCount = Math.ceil(filteredProducts.length / perPage);
+  const goodsPerPage = 12;
 
-  async function fetchGoods() {
+  const startIndex = currentPage * goodsPerPage;
+  const endIndex = startIndex + goodsPerPage;
+  const currentProducts = filteredProducts.slice(startIndex, endIndex);
+  const pageCount = Math.ceil(filteredProducts.length / goodsPerPage);
+
+  async function fetchGoodsData() {
     setIsLoading(true);
 
     try {
-      const response = await axios.get("goods.json");
-      const result = response.data;
-      setAllProducts(result);
-      // setFilteredProducts(result);
-      dispatch(addGoods(result));
+      const data = await fetchGoods(currentPage, goodsPerPage);
+      setAllProducts(data.goods);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -55,8 +50,8 @@ const Goods = () => {
   }
 
   useEffect(() => {
-    fetchGoods();
-  }, []);
+    fetchGoodsData();
+  }, [currentPage]);
 
   useEffect(() => {
     if (category === "전체") {
@@ -68,7 +63,7 @@ const Goods = () => {
       setFilteredProducts(newProducts);
     }
 
-    setCurrentPage(1);
+    setCurrentPage(0);
   }, [category, allProducts]);
 
   useEffect(() => {
