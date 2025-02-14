@@ -1,7 +1,6 @@
 import axios from "axios";
 
-const BASE_URL =
-  "http://ec2-3-36-66-32.ap-northeast-2.compute.amazonaws.com:8080";
+const BASE_URL = "https://seoultourism.store/";
 
 // Axios 인스턴스 생성
 export const api = axios.create({
