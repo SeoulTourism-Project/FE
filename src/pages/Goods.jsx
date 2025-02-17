@@ -4,14 +4,14 @@ import styled from "styled-components";
 import GoodsList from "../components/GoodsList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faAngleRight } from "@fortawesome/free-solid-svg-icons";
-import { fetchGoods } from "../api/goodsAPI";
+import { fetchGoods, fetchCategoryGoods } from "../api/goodsAPI";
 
 const Goods = () => {
   const [allProducts, setAllProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const [category, setCategory] = useState("전체");
   const [showCategory, setShowCategory] = useState(false);
 
@@ -22,15 +22,22 @@ const Goods = () => {
 
   const startIndex = currentPage * goodsPerPage;
   const endIndex = startIndex + goodsPerPage;
-  const currentProducts = filteredProducts.slice(startIndex, endIndex);
-  const pageCount = Math.ceil(filteredProducts.length / goodsPerPage);
+  const currentProducts = allProducts.slice(startIndex, endIndex);
 
   async function fetchGoodsData() {
     setIsLoading(true);
-
     try {
-      const data = await fetchGoods(currentPage, goodsPerPage);
-      setAllProducts(data.goods);
+      let data;
+      if (category === "전체") {
+        data = await fetchGoods(currentPage, goodsPerPage);
+      } else {
+        data = await fetchCategoryGoods(currentPage, goodsPerPage, category);
+      }
+
+      setAllProducts((prevProducts) =>
+        currentPage === 0 ? data.goods : [...prevProducts, ...data.goods]
+      ); // 페이지가 0이면 새로 덮어쓰고, 아니면 기존 데이터에 추가
+      setTotalPages(data.totalPages);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -46,25 +53,13 @@ const Goods = () => {
     if (e.target.tagName === "LI") {
       setShowCategory(false);
       setCategory(e.target.textContent);
+      setCurrentPage(0);
     }
   }
 
   useEffect(() => {
     fetchGoodsData();
-  }, [currentPage]);
-
-  useEffect(() => {
-    if (category === "전체") {
-      setFilteredProducts(allProducts);
-    } else {
-      const newProducts = allProducts.filter(
-        (item) => item.category === category
-      );
-      setFilteredProducts(newProducts);
-    }
-
-    setCurrentPage(0);
-  }, [category, allProducts]);
+  }, [currentPage, category]);
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -85,9 +80,9 @@ const Goods = () => {
   }, []);
 
   const handleChangePage = (selectedButton) => {
-    if (selectedButton === "prev" && currentPage !== 1) {
+    if (selectedButton === "prev" && currentPage > 0) {
       setCurrentPage((prevCurrentPage) => prevCurrentPage - 1);
-    } else if (selectedButton === "next" && currentPage !== pageCount) {
+    } else if (selectedButton === "next" && currentPage < totalPages - 1) {
       setCurrentPage((prevCurrentPage) => prevCurrentPage + 1);
     }
   };
@@ -118,7 +113,7 @@ const Goods = () => {
               <Option>전체</Option>
               <Option>패션생활용품</Option>
               <Option>공예품</Option>
-              <Option>인테리어 소품</Option>
+              <Option>인테리어소품</Option>
             </OptionList>
           )}
         </Category>
