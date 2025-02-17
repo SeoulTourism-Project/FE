@@ -1,37 +1,19 @@
-import {
-  faAngleLeft,
-  faCartPlus,
-  faCreditCard,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router";
-import styled from "styled-components";
-import { Modal } from "../components/Modal";
-import { fetchGoodDetails } from "../api/goodDetailsAPI";
+import { faAngleLeft, faCartPlus, faCreditCard } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Link, useParams } from 'react-router';
+import styled from 'styled-components';
+import { Modal } from '../components/Modal';
 
 const GoodsDetail = () => {
   const [showModal, setShowModal] = useState(false);
   const [user, setUser] = useState(null);
-  const [goods, setGoods] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   const { id } = useParams();
+  const goods = useSelector((state) => state.goods);
 
-  useEffect(() => {
-    const getGoodsDetails = async () => {
-      setLoading(true);
-      try {
-        const data = await fetchGoodDetails(id);
-        setGoods(data);
-      } catch (error) {
-        console.error("굿즈 데이터를 가져오는 중 오류 발생:", error);
-      }
-      setLoading(false);
-    };
-
-    getGoodsDetails();
-  }, [id]);
+  const currentGoods = goods.find((item) => item.id === +id);
 
   function handleAddCart() {
     setShowModal(true);
@@ -40,9 +22,6 @@ const GoodsDetail = () => {
   function handleCloseModal() {
     setShowModal(false);
   }
-
-  if (loading) return <p>로딩 중...</p>;
-  if (!goods) return <p>상품 정보를 불러올 수 없습니다.</p>;
 
   return (
     <Container>
@@ -61,30 +40,29 @@ const GoodsDetail = () => {
               </>
             )}
           </Content>
-          <LinkStyle to={"/login"}>확인</LinkStyle>
+          <LinkStyle to={'/login'}>확인</LinkStyle>
           <button onClick={handleCloseModal}>취소</button>
         </Modal>
       )}
 
-      <ListLink to={"/goods"}>
-        <FontAwesomeIcon icon={faAngleLeft} size="2x" />
+      <ListLink to={'/goods'}>
+        <FontAwesomeIcon icon={faAngleLeft} size='2x' />
         <span>목록으로</span>
       </ListLink>
 
       <Product>
-        <img src={goods.imageUrl} alt={goods.name} />
+        <img src={currentGoods.imgUrl} alt={currentGoods.title} />
         <Info>
-          <Title>{goods.name}</Title>
-          <Category>{goods.category || "카테고리 없음"}</Category>
-          <p>{goods.description}</p>
-          <Price>가격 : {goods.price}원</Price>
-          <Stock>재고: {goods.stock}개</Stock>
+          <Title>{currentGoods.title}</Title>
+          <Category>{currentGoods.category}</Category>
+          <p>{currentGoods.description}</p>
+          <Price>가격 : {currentGoods.price}</Price>
           <Buttons>
             <button>
-              <FontAwesomeIcon icon={faCreditCard} size="2x" />
+              <FontAwesomeIcon icon={faCreditCard} size='2x' />
             </button>
             <button onClick={handleAddCart}>
-              <FontAwesomeIcon icon={faCartPlus} size="2x" />
+              <FontAwesomeIcon icon={faCartPlus} size='2x' />
             </button>
           </Buttons>
         </Info>
@@ -148,10 +126,6 @@ const Category = styled.p`
 
 const Price = styled.p`
   font-size: 20px;
-`;
-
-const Stock = styled.p`
-  opacity: 0.5;
 `;
 
 const Buttons = styled.div`
