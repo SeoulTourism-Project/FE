@@ -1,121 +1,92 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { Modal } from "../components/Modal";
 
 const Cart = () => {
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 관리
-
-  // 상품 목록과 장바구니 상태
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "상품 A",
-      price: 10000,
-      quantity: 1,
-      image: "https://via.placeholder.com/150",
-    },
-    {
-      id: 2,
-      name: "상품 B",
-      price: 20000,
-      quantity: 2,
-      image: "https://via.placeholder.com/150",
-    },
-    {
-      id: 3,
-      name: "상품 C",
-      price: 30000,
-      quantity: 1,
-      image: "https://via.placeholder.com/150",
-    },
-  ]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [showModal, setShowModal] = useState(false);
-
-  // 결제 정보 영역의 레퍼런스를 설정
+  const [modalMessage, setModalMessage] = useState("");
   const paymentSummaryRef = useRef(null);
+  const userId = localStorage.getItem("userId");
 
-  // 장바구니 데이터를 API에서 가져오는 함수
+  // 장바구니 데이터 가져오기 (GET /cart/check)
   const fetchCartItems = async () => {
     try {
-      const response = await axios.get("https://api.example.com/cart");
-      setCartItems(response.data); // 받아온 데이터를 상태에 저장
+      const response = await axios.get("http://localhost:8080/cart/check");
+      setCartItems(response.data);
     } catch (error) {
       console.error("Error fetching cart items:", error);
     }
   };
 
-  // 로그인 상태 확인 함수 (예제: 로컬 스토리지 활용)
   useEffect(() => {
     const userToken = localStorage.getItem("userToken");
     setIsLoggedIn(!!userToken);
-  }, []);
-
-  // 컴포넌트가 처음 렌더링될 때 API 호출 (한 번만 실행)
-  useEffect(() => {
     fetchCartItems();
   }, []);
 
-  // 확인 버튼 클릭 시 페이지 이동
   const handleConfirm = () => {
-    setShowModal(false); // 모달 닫기
-    navigate("/goods"); // 굿즈 페이지로 이동
+    setShowModal(false);
+    navigate("/goods");
   };
 
-  // 수량 증가 / 감소 함수
-  const handleQuantityChange = (id, action) => {
-    const updatedCart = cartItems.map((item) =>
-      item.id === id
-        ? {
-            ...item,
-            quantity:
-              action === "increment"
-                ? item.quantity + 1
-                : item.quantity > 1
-                ? item.quantity - 1
-                : item.quantity, // 수량이 1 이하로 내려가지 않도록 조건 추가
-          }
-        : item
-    );
-    setCartItems(updatedCart);
-  };
+  // 장바구니 상품 삭제 (API 요청)
+  const handleDeleteItem = async (cartId) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:8080/cart/delete/${cartId}`
+      );
 
-  // 상품 선택/해제
-  const handleItemSelect = (id) => {
-    setSelectedItems((prevSelected) =>
-      prevSelected.includes(id)
-        ? prevSelected.filter((item) => item !== id)
-        : [...prevSelected, id]
-    );
-  };
-
-  // 전체 선택 / 선택 삭제
-  const handleSelectAll = () => {
-    if (selectedItems.length === cartItems.length) {
-      setSelectedItems([]);
-    } else {
-      setSelectedItems(cartItems.map((item) => item.id));
+      if (response.data.message) {
+        setModalMessage(response.data.message);
+        setShowModal(true);
+        setCartItems((prevCart) =>
+          prevCart.filter((item) => item.cartId !== cartId)
+        ); // 삭제된 상품을 상태에서 제거
+      }
+    } catch (error) {
+      console.error("Error deleting cart item:", error);
     }
   };
 
-  const handleDeleteSelected = () => {
-    const filteredItems = cartItems.filter(
-      (item) => !selectedItems.includes(item.id)
+  // 상품 선택/해제
+  const handleItemSelect = (cartId) => {
+    setSelectedItems((prevSelected) =>
+      prevSelected.includes(cartId)
+        ? prevSelected.filter((id) => id !== cartId)
+        : [...prevSelected, cartId]
     );
-    setCartItems(filteredItems);
+  };
+
+  // 전체 선택 / 선택 해제
+  const handleSelectAll = () => {
+    setSelectedItems(
+      selectedItems.length === cartItems.length
+        ? []
+        : cartItems.map((item) => item.cartId)
+    );
+  };
+
+  // 선택한 상품 삭제
+  const handleDeleteSelected = async () => {
+    for (const cartId of selectedItems) {
+      await handleDeleteItem(cartId);
+    }
     setSelectedItems([]);
   };
 
-  // 결제 계산
+  // 결제 금액 계산
   const calculateTotal = () => {
     const selected = cartItems.filter((item) =>
-      selectedItems.includes(item.id)
+      selectedItems.includes(item.cartId)
     );
     const orderAmount = selected.reduce(
-      (acc, item) => acc + item.price * item.quantity,
+      (acc, item) => acc + item.goodPrice * item.goodQuantity,
       0
     );
     const shippingFee = orderAmount >= 30000 ? 0 : 3000;
@@ -142,11 +113,11 @@ const Cart = () => {
       paymentSummaryRef.current.scrollLeft =
         paymentSummaryRef.current.scrollWidth;
     }
-  }, [cartItems, selectedItems]); // cartItems 또는 selectedItems가 변경될 때마다 실행
+  }, [cartItems, selectedItems]);
 
   return (
     <CartContainer>
-      {/* 왼쪽 - 장바구니 상품 목록 */}
+      {/* 장바구니 목록 */}
       <CartItems>
         <Header>장바구니</Header>
         <CartItemHeader>
@@ -155,35 +126,38 @@ const Cart = () => {
           <div>금액</div>
         </CartItemHeader>
         {cartItems.map((item) => (
-          <CartItem key={item.id}>
+          <CartItem key={item.cartId}>
             <CartItemName>
               <input
                 type="checkbox"
-                checked={selectedItems.includes(item.id)}
-                onChange={() => handleItemSelect(item.id)}
+                checked={selectedItems.includes(item.cartId)}
+                onChange={() => handleItemSelect(item.cartId)}
               />
               <img
-                src={item.image}
-                alt={item.name}
+                src={item.goodImage}
+                alt={item.goodName}
                 style={{ width: "100px", height: "100px", marginRight: "10px" }}
               />
-              {item.name}
+              {item.goodName}
             </CartItemName>
             <CartItemQuantity>
               <QuantityButton
-                onClick={() => handleQuantityChange(item.id, "decrement")}
-                disabled={item.quantity <= 1}
+                onClick={() => handleQuantityChange(item.cartId, "decrement")}
+                disabled={item.goodQuantity <= 1}
               >
                 -
               </QuantityButton>
-              {item.quantity}
+              {item.goodQuantity}
               <QuantityButton
-                onClick={() => handleQuantityChange(item.id, "increment")}
+                onClick={() => handleQuantityChange(item.cartId, "increment")}
               >
                 +
               </QuantityButton>
             </CartItemQuantity>
-            <CartItemPrice>{item.price * item.quantity} 원</CartItemPrice>
+            <CartItemPrice>
+              {item.goodPrice * item.goodQuantity} 원
+            </CartItemPrice>
+            <Button onClick={() => handleDeleteItem(item.cartId)}>삭제</Button>
           </CartItem>
         ))}
         <ButtonsContainer>
@@ -192,7 +166,7 @@ const Cart = () => {
         </ButtonsContainer>
       </CartItems>
 
-      {/* 오른쪽 - 결제 정보 */}
+      {/* 결제 정보 */}
       <PaymentSummary ref={paymentSummaryRef}>
         <PaymentHeader>결제 정보</PaymentHeader>
         <CartItem>
@@ -215,14 +189,16 @@ const Cart = () => {
       </PaymentSummary>
       {showModal && (
         <Modal>
-          <p>장바구니에 추가되었습니다!</p>
-          <button onClick={handleConfirm}>확인</button> {/* 확인 버튼 */}
+          <p>{modalMessage}</p>
+          <button onClick={handleConfirm}>확인</button>
         </Modal>
       )}
     </CartContainer>
   );
 };
+
 export default Cart;
+
 // 스타일 컴포넌트들
 const CartContainer = styled.div`
   display: flex;

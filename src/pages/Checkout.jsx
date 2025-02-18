@@ -77,8 +77,7 @@ const CheckoutPage = () => {
 
   return (
     <Container>
-      <Header>결제 페이지</Header>
-
+      <Header>check out</Header>
       {/* 주문 리스트 */}
       <Section>
         <Title>주문 리스트</Title>
@@ -108,7 +107,7 @@ const CheckoutPage = () => {
       </Section>
 
       {/* 경계선 추가 */}
-      <Divider />
+      <Divider className="black-divider" />
 
       {/* 주문자 정보 */}
       <Section>
@@ -149,7 +148,7 @@ const CheckoutPage = () => {
       </Section>
 
       {/* 경계선 추가 */}
-      <Divider />
+      <Divider className="black-divider" />
 
       {/* 결제수단 */}
       <PaymentMethod>
@@ -157,7 +156,7 @@ const CheckoutPage = () => {
       </PaymentMethod>
 
       {/* 경계선 추가 */}
-      <Divider />
+      <Divider className="black-divider" />
 
       {/* 최종 결제 금액 텍스트 */}
       <FinalPriceTitle>최종 결제 금액</FinalPriceTitle>
@@ -187,7 +186,12 @@ const CheckoutPage = () => {
       </OrderSummary>
 
       {/* 경계선 */}
-      <Divider />
+      <Divider className="black-divider" />
+
+      <AgreementSection>
+        <p>주문 내용을 확인했으며 결제에 동의합니다.</p>
+        <p>회원님의 개인정보는 안전하게 관리됩니다.</p>
+      </AgreementSection>
 
       {/* 결제하기 버튼 */}
       <CheckoutButton onClick={handleSubmit}>
@@ -196,6 +200,7 @@ const CheckoutPage = () => {
     </Container>
   );
 };
+export default CheckoutPage;
 
 // 스타일 컴포넌트
 const OrderSummary = styled.table`
@@ -218,11 +223,10 @@ const OrderSummary = styled.table`
 `;
 
 const FinalAmount = styled.span`
-  color: black;
+  color: black; /* 색상을 검은색으로 변경 */
   font-weight: bold;
   font-size: 1.2rem;
 `;
-
 const Container = styled.div`
   max-width: 800px;
   margin: 0 auto;
@@ -234,7 +238,7 @@ const Header = styled.header`
   font-size: 2rem;
   font-weight: bold;
   text-align: center;
-  margin-bottom: 100px;
+  margin-bottom: 60px;
 `;
 
 const Section = styled.div`
@@ -329,6 +333,15 @@ const Summary = styled.div`
   }
 `;
 
+const AgreementSection = styled.div`
+  margin: 40px 0 20px 0; /* 위쪽 여백을 늘리고 아래쪽 여백을 추가 */
+  font-size: 0.9rem;
+  color: black;
+
+  p {
+    margin: 5px 0;
+  }
+`;
 const PaymentMethod = styled.div`
   margin: 20px 0; /* 위아래 여백 추가 */
   label {
@@ -337,6 +350,7 @@ const PaymentMethod = styled.div`
     margin-bottom: 5px;
   }
 `;
+
 const CheckoutButton = styled.button`
   background-color: #5555;
   color: #fff;
@@ -365,5 +379,3 @@ const FinalPriceTitle = styled.h2`
   margin-bottom: 10px;
   font-weight: bold;
 `;
-
-export default CheckoutPage;

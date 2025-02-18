@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import ScheduleCard from "./ScheduleCard";
-import { formatKoreaDate } from "../utils/changeDateFormUtils";
+import ScheduleCard from "../ScheduleCard";
+import { formatKoreaDate } from "../../../../utils/changeDateFormUtils";
 
 // select data
 const generateTimeOptions24 = () => {

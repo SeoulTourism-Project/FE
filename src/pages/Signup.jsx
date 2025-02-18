@@ -1,121 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Link } from 'react-router';
-
-const SignupContainer = styled.div`
-  max-width: 425px;
-  margin: 0 auto;
-  text-align: center;
-  padding: 40px 20px;
-  font-family: "Arial", sans-serif;
-`;
-
-const Title = styled.h1`
-  font-size: 28px;
-  font-weight: bold;
-  margin-bottom: 20px;
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color:pink 
-  div{(margin-top: 10px;)}
-`;
-
-const InputGroup = styled.div`
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  width: 100%;
-`;
-
-const Label = styled.label`
-  font-size: 14px;
-  margin-bottom: 5px;
-  text-align: left;
-  display: block;
-`;
-const NameContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  gap: 10px; /* 이름과 성 사이 간격 */
-`;
-
-const NameInput = styled.input`
-  width: 100%; /* 원하는 너비로 설정 */
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-  height: 35px;
-  margin: 5px 0;
-
-  &:focus {
-    outline: none;
-    border-color: #007bff;
-  }
-`;
-
-const LastNameInput = styled(NameInput)``; // 동일한 스타일 사용
-
-
-const Input = styled.input`
-  flex: 1;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-  width: 100%;
-  margin-bottom: 15px;
-  height: 35px;
-
-
-  &:focus {
-    outline: none;
-    border-color: #007bff;
-  }
-`;
-
-const RadioGroup = styled.div`
-  margin: 15px 0;
-  text-align: left;
-  width: 100%;
-`;
-
-const RadioLabel = styled.label`
-  margin-left: 10px;
-  font-size: 14px;
-`;
-
-const SignupButton = styled.button`
-  padding: 12px 20px;
-  background-color: black;
-  color: white;
-  font-size: 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #333;
-  }
-`;
-
-const FooterText = styled.p`
-  font-size: 14px;
-  margin-top: 20px;
-`;
-
-const ErrorMessage = styled.p`
-  color: red;
-  font-size: 12px;
-  text-align: left;
-`;
-const LinkA = styled(Link) ``;
+import { Link, useNavigate } from "react-router";
+import { checkEmailAPI, signupAPI } from "../api/signupAPI";
 
 const Signup = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -123,11 +13,15 @@ const Signup = () => {
     password: "",
     confirmPassword: "",
     gender: "",
+    country: "",
+    customCountry: "",
   });
 
+  const [emailCheckStatus, setEmailCheckStatus] = useState(null);
+  const [emailChecked, setEmailChecked] = useState(false);
+  const [emailCheckLoading, setEmailCheckLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
-  // 유효성 검사 함수
   const validate = () => {
     const newErrors = {};
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -140,9 +34,11 @@ const Signup = () => {
     }
     if (!emailPattern.test(formData.email)) {
       newErrors.email = "올바른 이메일 형식을 입력해주세요.";
+    } else if (!emailChecked) {
+      newErrors.email = "이메일 중복 확인을 해주세요.";
     }
-    if (formData.password.length < 6) {
-      newErrors.password = "비밀번호는 최소 6자 이상이어야 합니다.";
+    if (formData.password.length < 8) {
+      newErrors.password = "비밀번호는 최소 8자 이상이어야 합니다.";
     }
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "비밀번호가 일치하지 않습니다.";
@@ -150,22 +46,99 @@ const Signup = () => {
     if (!formData.gender) {
       newErrors.gender = "성별을 선택해주세요.";
     }
+    if (!formData.country) {
+      newErrors.country = "국적을 선택해주세요.";
+    }
+    if (formData.country === "직접 입력" && !formData.customCountry.trim()) {
+      newErrors.customCountry = "국적을 입력해주세요.";
+    }
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return newErrors;
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
+
+    if (name === "email") {
+      setEmailChecked(false);
+      setEmailCheckStatus(null);
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleEmailCheck = async () => {
+    const email = formData.email.trim().toLowerCase();
+    if (!email) {
+      setEmailCheckStatus("이메일을 입력해주세요.");
+      return;
+    }
+
+    setEmailCheckLoading(true);
+    try {
+      const response = await checkEmailAPI(email);
+
+      if (response.isSuccess && response.result.success) {
+        setEmailCheckStatus("사용 가능한 이메일입니다.");
+        setEmailChecked(true);
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          email: "",
+        }));
+      } else {
+        setEmailCheckStatus(
+          response.result.message || "이미 사용 중인 이메일입니다."
+        );
+        setEmailChecked(false);
+      }
+    } catch (error) {
+      setEmailCheckStatus("이메일 중복 확인에 실패했습니다.");
+      setEmailChecked(false);
+    } finally {
+      setEmailCheckLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validate()) {
-      console.log("회원가입 데이터:", formData);
-      alert("회원가입 성공!");
+
+    const newErrors = validate();
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      const finalCountry =
+        formData.country === "직접 입력"
+          ? formData.customCountry
+          : formData.country;
+
+      const userName = `${formData.firstName.trim()} ${formData.lastName.trim()}`;
+
+      const signupData = {
+        email: formData.email,
+        password: formData.password,
+        userName: userName,
+        country: finalCountry,
+        gender: formData.gender,
+      };
+
+      console.log("회원가입 데이터:", signupData);
+
+      try {
+        const response = await signupAPI(signupData);
+        alert("회원가입 성공! 🎉");
+        navigate("/login");
+      } catch (error) {
+        alert(error.message || "회원가입 중 오류 발생");
+      }
+    } else {
+      alert(Object.values(newErrors)[0]);
     }
   };
 
@@ -183,7 +156,9 @@ const Signup = () => {
               value={formData.firstName}
               onChange={handleChange}
             />
-            {errors.firstName && <ErrorMessage>{errors.firstName}</ErrorMessage>}
+            {errors.firstName && (
+              <ErrorMessage>{errors.firstName}</ErrorMessage>
+            )}
           </div>
           <div>
             <Label htmlFor="lastName">성</Label>
@@ -198,18 +173,33 @@ const Signup = () => {
           </div>
         </NameContainer>
 
-        <div style={{ width: "100%" }}>
-          <Label htmlFor="email">이메일</Label>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            placeholder="이메일 주소"
-            value={formData.email}
-            onChange={handleChange}
-          />
-          {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
-        </div>
+        <EmailContainer>
+          <EmailRow>
+            <div style={{ flex: 1 }}>
+              <Label htmlFor="email">이메일</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="이메일"
+                value={formData.email}
+                onChange={handleChange}
+              />
+            </div>
+            <CheckButton
+              type="button"
+              onClick={handleEmailCheck}
+              disabled={emailCheckLoading}
+            >
+              {emailCheckLoading ? "확인 중..." : "중복 확인"}
+            </CheckButton>
+          </EmailRow>
+          {errors.email ? (
+            <ErrorMessage>{errors.email}</ErrorMessage>
+          ) : emailCheckStatus ? (
+            <EmailStatus>{emailCheckStatus}</EmailStatus>
+          ) : null}
+        </EmailContainer>
 
         <div style={{ width: "100%" }}>
           <Label htmlFor="password">비밀번호</Label>
@@ -234,7 +224,9 @@ const Signup = () => {
             value={formData.confirmPassword}
             onChange={handleChange}
           />
-          {errors.confirmPassword && <ErrorMessage>{errors.confirmPassword}</ErrorMessage>}
+          {errors.confirmPassword && (
+            <ErrorMessage>{errors.confirmPassword}</ErrorMessage>
+          )}
         </div>
 
         <RadioGroup>
@@ -244,21 +236,56 @@ const Signup = () => {
               type="radio"
               id="male"
               name="gender"
-              value="남"
+              value="M"
               onChange={handleChange}
             />
-            <RadioLabel htmlFor="male">남</RadioLabel>
+            <RadioLabel htmlFor="male">남자</RadioLabel>
             <input
               type="radio"
               id="female"
               name="gender"
-              value="여"
+              value="F"
               onChange={handleChange}
             />
-            <RadioLabel htmlFor="female">여</RadioLabel>
+            <RadioLabel htmlFor="female">여자</RadioLabel>
           </div>
           {errors.gender && <ErrorMessage>{errors.gender}</ErrorMessage>}
         </RadioGroup>
+
+        <div style={{ width: "100%" }}>
+          <Label htmlFor="country">국적</Label>
+          <Select
+            id="country"
+            name="country"
+            value={formData.country}
+            onChange={handleChange}
+          >
+            <option value="">국적 선택</option>
+            <option value="한국">한국</option>
+            <option value="미국">미국</option>
+            <option value="중국">중국</option>
+            <option value="일본">일본</option>
+            <option value="직접 입력">직접 입력</option>
+          </Select>
+          {errors.country && <ErrorMessage>{errors.country}</ErrorMessage>}
+        </div>
+
+        {formData.country === "직접 입력" && (
+          <div style={{ width: "100%" }}>
+            <Label htmlFor="customCountry">국적 입력</Label>
+            <Input
+              id="customCountry"
+              name="customCountry"
+              type="text"
+              placeholder="국적을 입력해주세요"
+              value={formData.customCountry}
+              onChange={handleChange}
+            />
+            {errors.customCountry && (
+              <ErrorMessage>{errors.customCountry}</ErrorMessage>
+            )}
+          </div>
+        )}
 
         <SignupButton type="submit">회원가입</SignupButton>
       </Form>
@@ -268,5 +295,140 @@ const Signup = () => {
     </SignupContainer>
   );
 };
+
+/* Styled Components */
+const SignupContainer = styled.div`
+  max-width: 425px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 40px 20px;
+
+  div {
+    margin-bottom: 20px;
+  }
+`;
+
+const Title = styled.h1`
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const Label = styled.label`
+  font-size: 14px;
+  margin-bottom: 5px;
+  text-align: left;
+  display: block;
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+  font-size: 12px;
+  text-align: left;
+`;
+
+const NameContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+
+  div {
+    margin-bottom: 0;
+  }
+`;
+
+const NameInput = styled.input`
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 5px 0;
+`;
+
+const Input = styled(NameInput)``;
+
+const EmailContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  div {
+    margin: 0;
+  }
+`;
+
+const EmailRow = styled.div`
+  display: flex;
+  align-items: end;
+  gap: 8px;
+`;
+
+const CheckButton = styled.button`
+  height: 100%;
+  padding: 10px 15px;
+  margin: 5px 0;
+  background-color: #aaa;
+  color: white;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: #000;
+  }
+`;
+
+const EmailStatus = styled(ErrorMessage)`
+  color: ${({ children }) =>
+    children.includes("사용 가능") ? "green" : "red"};
+`;
+
+const Select = styled.select`
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 5px 0;
+`;
+
+const RadioGroup = styled.div`
+  text-align: left;
+  width: 100%;
+
+  div {
+    margin: 5px 0;
+  }
+`;
+
+const RadioLabel = styled.label`
+  margin: 0 10px;
+  font-size: 14px;
+`;
+
+const SignupButton = styled.button`
+  padding: 12px 20px;
+  background-color: black;
+  color: white;
+`;
+
+const FooterText = styled.p`
+  font-size: 14px;
+  margin-top: 20px;
+`;
+
+const LinkA = styled(Link)``;
 
 export default Signup;

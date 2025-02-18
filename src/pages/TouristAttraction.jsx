@@ -1,4 +1,4 @@
-import TouristAttractionList from '../components/TouristAttractionList';
+import TouristAttractionList from "../components/TouristAttractionList";
 
 const TouristAttraction = () => {
   return (
