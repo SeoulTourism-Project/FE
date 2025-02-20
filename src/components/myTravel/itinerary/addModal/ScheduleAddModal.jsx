@@ -2,33 +2,28 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import StepPlaceSelection from "./StepPlaceSelection";
 import StepScheduleSetup from "./StepScheduleSetup";
-import axios from "axios";
+import { fetchFavoriteList } from "../../../../api/favoriteListAPI";
 
 const ScheduleAddModal = ({ onClose, selectedDate, onAddSchedule }) => {
   const [step, setStep] = useState(1); // 단계 관리
   const [selectedPlace, setSelectedPlace] = useState(null); // 선택한 여행지
-  const [locations, setLocations] = useState([]); // 서버에서 받아온 장소 데이터
+  const [favoriteList, setFavoriteList] = useState([]); // 서버에서 받아온 장소 데이터
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchLocations = async () => {
+    const getFavoriteList = async () => {
       try {
-        const response = await axios.get("/location.json");
-        const data = response.data;
-
-        const likedLocations = data.filter(
-          (location) => location.likeStatus === true
-        );
-        setLocations(likedLocations);
+        const data = await fetchFavoriteList();
+        setFavoriteList(data);
       } catch (err) {
-        setError("데이터를 불러오는 중 문제가 발생했습니다.");
+        setError(err.message);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchLocations();
+    getFavoriteList();
   }, []);
 
   const handleNextStep = () => setStep((prev) => prev + 1);
@@ -42,7 +37,7 @@ const ScheduleAddModal = ({ onClose, selectedDate, onAddSchedule }) => {
       case 1:
         return (
           <StepPlaceSelection
-            locations={locations} // 장소 데이터를 자식에 전달
+            locations={favoriteList}
             selectedPlace={selectedPlace}
             setSelectedPlace={setSelectedPlace}
             onNext={handleNextStep}
