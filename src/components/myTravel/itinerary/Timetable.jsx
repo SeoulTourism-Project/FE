@@ -34,7 +34,7 @@ const Timetable = ({ date, schedules, onDeleteSchedule, onAddSchedule }) => {
               <ContentContainer>
                 <ScheduleCard schedule={schedule} />
                 <DeleteButton onClick={() => handleDelete(schedule.scheduleId)}>
-                  X
+                  ❌
                 </DeleteButton>
               </ContentContainer>
             </ScheduleContainer>
