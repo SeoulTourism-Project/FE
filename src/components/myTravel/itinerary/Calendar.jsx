@@ -42,6 +42,7 @@ const Calendar = ({ selectedDate, onDateChange, schedules = [] }) => {
         onChange={handleDateChange}
         tileContent={tileContent}
         tileClassName={tileClassName}
+        calendarType="gregory"
       />
     </CalendarContainer>
   );
