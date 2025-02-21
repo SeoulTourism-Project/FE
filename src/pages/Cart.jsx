@@ -3,6 +3,7 @@ import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { Modal } from "../components/Modal";
+import { api } from "../utils/api";
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -12,54 +13,48 @@ const Cart = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const paymentSummaryRef = useRef(null);
+  const userId = localStorage.getItem("userId");
 
-  // 사용자 로그인 여부 확인
-  useEffect(() => {
-    const userToken = localStorage.getItem("userToken");
-    setIsLoggedIn(!!userToken);
-    fetchCartItems();
-  }, []);
-
-  // 장바구니 데이터 가져오기
+  // 장바구니 데이터 가져오기 (GET /cart/check)
   const fetchCartItems = async () => {
+    const accessToken = sessionStorage.getItem("accessToken");
+
     try {
-      const response = await axios.get("http://localhost:8080/cart/check");
+      const response = await api.get("/cart/check", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`, // 인증 헤더 추가
+        },
+      });
       setCartItems(response.data);
     } catch (error) {
       console.error("Error fetching cart items:", error);
     }
   };
 
-  // 수량 변경 핸들러
-  const handleQuantityChange = async (cartId, action) => {
-    const updatedCart = cartItems.map((item) => {
-      if (item.cartId === cartId) {
-        return {
-          ...item,
-          goodQuantity:
-            action === "increment"
-              ? item.goodQuantity + 1
-              : Math.max(item.goodQuantity - 1, 1),
-        };
-      }
-      return item;
-    });
+  useEffect(() => {
+    const userToken = localStorage.getItem("userToken");
+    setIsLoggedIn(!!userToken);
+    fetchCartItems();
+  }, []);
 
-    setCartItems(updatedCart);
+  const handleConfirm = () => {
+    setShowModal(false);
+    navigate("/goods");
   };
 
-  // 상품 삭제
+  // 장바구니 상품 삭제 (API 요청)
   const handleDeleteItem = async (cartId) => {
     try {
       const response = await axios.delete(
         `http://localhost:8080/cart/delete/${cartId}`
       );
+
       if (response.data.message) {
         setModalMessage(response.data.message);
         setShowModal(true);
         setCartItems((prevCart) =>
           prevCart.filter((item) => item.cartId !== cartId)
-        );
+        ); // 삭제된 상품을 상태에서 제거
       }
     } catch (error) {
       console.error("Error deleting cart item:", error);
@@ -75,7 +70,7 @@ const Cart = () => {
     );
   };
 
-  // 전체 선택/해제
+  // 전체 선택 / 선택 해제
   const handleSelectAll = () => {
     setSelectedItems(
       selectedItems.length === cartItems.length
@@ -102,29 +97,40 @@ const Cart = () => {
       0
     );
     const shippingFee = orderAmount >= 30000 ? 0 : 3000;
-    return { orderAmount, shippingFee, totalAmount: orderAmount + shippingFee };
+    const totalAmount = orderAmount + shippingFee;
+
+    return { orderAmount, shippingFee, totalAmount };
   };
 
   const { orderAmount, shippingFee, totalAmount } = calculateTotal();
 
-  // 결제 버튼 클릭
+  // 결제하기 버튼 클릭
   const handlePayment = () => {
     if (isLoggedIn) {
-      navigate("/checkout");
+      navigate("/checkout", { state: { selectedItems } });
     } else {
       alert("로그인이 필요합니다.");
       navigate("/login");
     }
   };
 
+  useEffect(() => {
+    if (paymentSummaryRef.current) {
+      paymentSummaryRef.current.scrollLeft =
+        paymentSummaryRef.current.scrollWidth;
+    }
+  }, [cartItems, selectedItems]);
+
   return (
     <CartContainer>
+      {/* 장바구니 목록 */}
       <CartItems>
         <Header>장바구니</Header>
         <CartItemHeader>
           <div>상품명</div>
           <div>수량</div>
           <div>금액</div>
+          <div>삭제</div>
         </CartItemHeader>
         {cartItems.map((item) => (
           <CartItem key={item.cartId}>
@@ -141,20 +147,7 @@ const Cart = () => {
               />
               {item.goodName}
             </CartItemName>
-            <CartItemQuantity>
-              <QuantityButton
-                onClick={() => handleQuantityChange(item.cartId, "decrement")}
-                disabled={item.goodQuantity <= 1}
-              >
-                -
-              </QuantityButton>
-              {item.goodQuantity}
-              <QuantityButton
-                onClick={() => handleQuantityChange(item.cartId, "increment")}
-              >
-                +
-              </QuantityButton>
-            </CartItemQuantity>
+            <CartItemQuantity>{item.goodQuantity}</CartItemQuantity>
             <CartItemPrice>
               {item.goodPrice * item.goodQuantity} 원
             </CartItemPrice>
@@ -167,7 +160,8 @@ const Cart = () => {
         </ButtonsContainer>
       </CartItems>
 
-      <PaymentSummary>
+      {/* 결제 정보 */}
+      <PaymentSummary ref={paymentSummaryRef}>
         <PaymentHeader>결제 정보</PaymentHeader>
         <CartItem>
           <CartItemName>주문 금액</CartItemName>
@@ -187,10 +181,11 @@ const Cart = () => {
         </CartItem>
         <Button onClick={handlePayment}>결제하기</Button>
       </PaymentSummary>
+
       {showModal && (
         <Modal>
           <p>{modalMessage}</p>
-          <button onClick={() => setShowModal(false)}>확인</button>
+          <button onClick={handleConfirm}>확인</button>
         </Modal>
       )}
     </CartContainer>

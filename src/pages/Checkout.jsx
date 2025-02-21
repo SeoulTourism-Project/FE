@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router";
 import axios from "axios";
@@ -12,34 +12,65 @@ const CheckoutPage = () => {
     ? location.state.selectedProducts
     : [];
 
-  const totalPrice = selectedProducts.reduce(
-    (sum, product) => sum + product.quantity * product.price,
-    0
+  const totalProductPrice = useMemo(() => {
+    return selectedProducts.reduce(
+      (sum, product) => sum + product.quantity * product.price,
+      0
+    );
+  }, [selectedProducts]);
+
+  const shippingFee = useMemo(() => {
+    return totalProductPrice > 30000 ? 0 : totalProductPrice > 0 ? 3000 : 0;
+  }, [totalProductPrice]);
+
+  const finalAmount = useMemo(
+    () => totalProductPrice + shippingFee,
+    [totalProductPrice, shippingFee]
   );
-  const shippingFee = totalPrice > 30000 ? 0 : totalPrice > 0 ? 3000 : 0;
-  const finalPrice = totalPrice + shippingFee;
 
   const [formData, setFormData] = useState({
     impUid: "",
     merchantUid: `order_${Date.now()}`,
     paymentCard: "",
-    totalAmount: finalPrice,
+    totalAmount: finalAmount,
     paymentMethod: "카드",
+    name: "",
+    phoneNumber: "",
+    address: "",
   });
 
   const [errors, setErrors] = useState({});
   const [paymentResult, setPaymentResult] = useState(null);
 
+  useEffect(() => {
+    setFormData((prev) => ({ ...prev, totalAmount: finalAmount }));
+  }, [finalAmount]);
+
   const handleChange = (e) => {
-    const { id, value } = e.target;
-    setFormData((prev) => ({ ...prev, [id]: value }));
+    const { id, value, name } = e.target;
+    const fieldName = id || name; // `select` 요소는 `id`가 없을 수 있음
+
+    let newValue = value;
+    if (fieldName === "phoneNumber") {
+      newValue = value.replace(/\D/g, ""); // 숫자가 아닌 문자 제거
+    }
+
+    setFormData((prev) => ({ ...prev, [fieldName]: newValue }));
   };
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.paymentCard.trim()) {
-      newErrors.paymentCard = "결제 카드 정보를 입력하세요.";
+
+    if (!formData.name.trim()) newErrors.name = "이름을 입력하세요.";
+
+    if (!formData.phoneNumber.trim()) {
+      newErrors.phoneNumber = "전화번호를 입력하세요.";
+    } else if (!/^\d{10,11}$/.test(formData.phoneNumber)) {
+      newErrors.phoneNumber = "유효한 전화번호를 입력하세요. (10~11자리 숫자)";
     }
+
+    if (!formData.address.trim()) newErrors.address = "숙소 주소를 입력하세요.";
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -65,190 +96,118 @@ const CheckoutPage = () => {
     }
   };
 
-  const handleNavigate = useCallback(() => {
+  useEffect(() => {
     if (paymentResult) {
       alert("결제가 성공적으로 완료되었습니다!");
       navigate("/mypage");
     }
   }, [paymentResult, navigate]);
 
-  useEffect(() => {
-    handleNavigate();
-  }, [paymentResult, handleNavigate]);
+  // ✅ Form 컴포넌트 직접 정의
+  const Form = ({ children, ...props }) => {
+    return <form {...props}>{children}</form>;
+  };
 
   return (
     <Container>
-      <Header>Check Out</Header>
+      <Header>상품 B</Header>
 
       <Section>
-        <Title>주문 리스트</Title>
-        {selectedProducts.length > 0 ? (
-          <ProductList>
-            {selectedProducts.map((product) => (
-              <ProductItem key={product.id}>
-                <img src={product.image} alt={product.name} />
-                <div className="details">
-                  <div className="name">{product.name}</div>
-                  <div>{product.quantity}개</div>
-                  <div>
-                    {(product.quantity * product.price).toLocaleString()} 원
-                  </div>
-                </div>
-              </ProductItem>
-            ))}
-          </ProductList>
-        ) : (
-          <ErrorMessage>결제할 상품이 없습니다.</ErrorMessage>
-        )}
+        <Title>주문자 정보</Title>
+        <Form>
+          <FormGroup>
+            <label htmlFor="name">이름</label>
+            <input
+              type="text"
+              id="name"
+              placeholder="이름을 입력하세요"
+              value={formData.name}
+              onChange={handleChange}
+            />
+            {errors.name && <ErrorMessage>{errors.name}</ErrorMessage>}
+          </FormGroup>
+
+          <FormGroup>
+            <label htmlFor="phoneNumber">전화번호</label>
+            <input
+              type="text"
+              id="phoneNumber"
+              placeholder="전화번호를 입력하세요"
+              value={formData.phoneNumber}
+              onChange={handleChange}
+              maxLength="11"
+            />
+            {errors.phoneNumber && (
+              <ErrorMessage>{errors.phoneNumber}</ErrorMessage>
+            )}
+          </FormGroup>
+
+          <FormGroup>
+            <label htmlFor="address">숙소 주소</label>
+            <input
+              type="text"
+              id="address"
+              placeholder="숙소 주소를 입력하세요"
+              value={formData.address}
+              onChange={handleChange}
+            />
+            {errors.address && <ErrorMessage>{errors.address}</ErrorMessage>}
+          </FormGroup>
+        </Form>
       </Section>
-
-      <Divider />
-
-      <Section>
-        <Title>결제 정보</Title>
-        <FormGroup>
-          <label htmlFor="paymentCard">결제 카드 정보</label>
-          <input
-            type="text"
-            id="paymentCard"
-            placeholder="카드 정보를 입력하세요"
-            value={formData.paymentCard}
-            onChange={handleChange}
-          />
-          {errors.paymentCard && (
-            <ErrorMessage>{errors.paymentCard}</ErrorMessage>
-          )}
-        </FormGroup>
-      </Section>
-
-      <Divider />
 
       <CheckoutButton
         onClick={handleSubmit}
         disabled={selectedProducts.length === 0}
       >
-        {finalPrice.toLocaleString()} 원 결제하기
+        {finalAmount.toLocaleString()}원 결제하기
       </CheckoutButton>
-
-      {paymentResult && (
-        <PaymentResultBox>
-          <p>결제가 완료되었습니다!</p>
-          <p>결제 번호: {paymentResult.impUid}</p>
-          <p>결제 금액: {paymentResult.totalAmount.toLocaleString()} 원</p>
-        </PaymentResultBox>
-      )}
     </Container>
   );
 };
 
 export default CheckoutPage;
 
-// 스타일 컴포넌트 정리
+// ✅ 스타일 컴포넌트
 const Container = styled.div`
-  max-width: 800px;
+  max-width: 500px;
   margin: 0 auto;
   padding: 20px;
-  font-family: Arial, sans-serif;
 `;
 
-const Header = styled.header`
-  font-size: 2rem;
-  font-weight: bold;
+const Header = styled.h2`
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 `;
 
-const Section = styled.div`
-  margin-bottom: 40px;
+const Section = styled.section`
+  margin-bottom: 20px;
 `;
 
-const Divider = styled.div`
-  width: 100%;
-  height: 1px;
-  background-color: #ddd;
-  margin: 20px 0;
-`;
-
-const Title = styled.h2`
-  font-size: 1.5rem;
+const Title = styled.h3`
   margin-bottom: 10px;
 `;
 
 const FormGroup = styled.div`
-  margin-bottom: 30px;
-  margin-top: 30px;
-
-  label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-
-  input {
-    width: 50%;
-    padding: 10px;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-`;
-
-const ProductList = styled.div`
-  border-top: 1px solid #ccc;
-  padding-top: 10px;
-`;
-
-const ProductItem = styled.div`
-  display: flex;
-  align-items: center;
   margin-bottom: 10px;
-
-  img {
-    width: 100px;
-    height: 100px;
-    margin-right: 10px;
-    object-fit: cover;
-    border-radius: 5px;
-  }
-
-  .details {
-    flex-grow: 1;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .name {
-    font-weight: bold;
-  }
-`;
-
-const CheckoutButton = styled.button`
-  background-color: ${(props) => (props.disabled ? "#ccc" : "#555")};
-  color: #fff;
-  border: none;
-  padding: 12px 24px;
-  font-size: 1rem;
-  border-radius: 8px;
-  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
-  margin-top: 20px;
-  transition: background 0.3s;
-
-  &:hover {
-    background-color: ${(props) => (props.disabled ? "#ccc" : "#333")};
-  }
 `;
 
 const ErrorMessage = styled.p`
   color: red;
-  font-size: 0.9rem;
+  font-size: 14px;
   margin-top: 5px;
 `;
 
-const PaymentResultBox = styled.div`
-  margin-top: 20px;
-  padding: 15px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #f9f9f9;
+const CheckoutButton = styled.button`
+  width: 100%;
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
 `;
