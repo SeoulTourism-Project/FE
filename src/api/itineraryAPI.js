@@ -67,10 +67,11 @@ export const addSchedule = async (savedData) => {
   const scheduleData = {
     mapId: savedData.selectedPlace.id,
     tourStartDate: formattedDate,
-    scheduleDate: combineToUTC(formattedDate, savedData.startTime),
-    scheduleEndDate: combineToUTC(formattedDate, savedData.endTime),
+    scheduleTime: combineToUTC(formattedDate, savedData.startTime),
+    scheduleEndTime: combineToUTC(formattedDate, savedData.endTime),
     memo: savedData.memo,
   };
+  console.log("Add scheduleData: ", scheduleData);
 
   try {
     const response = await api.post(
@@ -80,13 +81,14 @@ export const addSchedule = async (savedData) => {
     );
 
     const resData = response.data;
+    console.log("Add Response", resData);
     return {
       scheduleId: resData.calendarDetailsId,
-      mapId: resData.mapId,
+      mapId: savedData.mapId,
       name: savedData.selectedPlace.name,
       address: savedData.selectedPlace.address,
-      startTime: formatTime24(resData.scheduleDate),
-      endTime: formatTime24(resData.scheduleEndDate),
+      startTime: formatTime24(scheduleData.scheduleTime),
+      endTime: formatTime24(scheduleData.scheduleEndTime),
       image: savedData.selectedPlace.image,
       memo: resData.memo,
     };
