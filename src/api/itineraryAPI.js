@@ -66,6 +66,7 @@ export const addSchedule = async (savedData) => {
 
   const scheduleData = {
     mapId: savedData.selectedPlace.id,
+    favPlaceId: savedData.selectedPlace.favPlaceId,
     tourStartDate: formattedDate,
     scheduleTime: combineToUTC(formattedDate, savedData.startTime),
     scheduleEndTime: combineToUTC(formattedDate, savedData.endTime),
@@ -98,11 +99,17 @@ export const addSchedule = async (savedData) => {
 };
 
 /** 📌 일정 삭제 */
-export const deleteSchedule = async (calendarId) => {
+export const deleteSchedule = async (calendarDetailsId) => {
   const { userId, headers } = getAuthHeaders();
+  console.log("calendarId: ", calendarDetailsId);
 
   try {
-    await api.delete(`/calendar/schedule/${calendarId}/${userId}`, { headers });
+    await api.delete(
+      `/calendar/schedule/${calendarDetailsId}?userId=${userId}`,
+      {
+        headers,
+      }
+    );
   } catch (error) {
     throw new Error("일정을 삭제하는 중 오류가 발생했습니다.");
   }
