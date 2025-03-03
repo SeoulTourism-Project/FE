@@ -46,15 +46,23 @@ const CheckoutPage = () => {
     setFormData((prev) => ({ ...prev, totalAmount: finalAmount }));
   }, [finalAmount]);
 
+  useEffect(() => {
+    if (!window.IMP) {
+      console.error(
+        "IMP 객체가 로드되지 않았습니다. 스크립트 추가를 확인하세요."
+      );
+    } else {
+      window.IMP.init("imp04760523");
+    }
+  }, []);
+
   const handleChange = (e) => {
     const { id, value, name } = e.target;
-    const fieldName = id || name; // `select` 요소는 `id`가 없을 수 있음
-
+    const fieldName = id || name;
     let newValue = value;
     if (fieldName === "phoneNumber") {
-      newValue = value.replace(/\D/g, ""); // 숫자가 아닌 문자 제거
+      newValue = value.replace(/\D/g, "");
     }
-
     setFormData((prev) => ({ ...prev, [fieldName]: newValue }));
   };
 
@@ -62,102 +70,96 @@ const CheckoutPage = () => {
     const newErrors = {};
 
     if (!formData.name.trim()) newErrors.name = "이름을 입력하세요.";
-
     if (!formData.phoneNumber.trim()) {
       newErrors.phoneNumber = "전화번호를 입력하세요.";
     } else if (!/^\d{10,11}$/.test(formData.phoneNumber)) {
       newErrors.phoneNumber = "유효한 전화번호를 입력하세요. (10~11자리 숫자)";
     }
-
     if (!formData.address.trim()) newErrors.address = "숙소 주소를 입력하세요.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async () => {
-    if (!validate()) return;
-
+  const createOrder = async () => {
     try {
-      const response = await axios.post(`${API_URL}/payment/process`, formData);
-      const { impUid, message, totalAmount } = response.data;
-
-      if (impUid) {
-        setPaymentResult({ impUid, message, totalAmount });
-      } else {
-        alert(`결제 실패: ${message || "알 수 없는 오류"}`);
-      }
+      const response = await axios.post(`${API_URL}/orders/create`, {
+        cartItemIds: selectedProducts.map((product) => product.id),
+        deliveryInfo: {
+          mainAddress: formData.address,
+          detailAddress: "",
+          zipCode: "12345",
+          receiverName: formData.name,
+          receiverPhone: formData.phoneNumber,
+        },
+      });
+      return response.data.orderId;
     } catch (error) {
-      console.error(
-        "❌ 결제 요청 오류:",
-        error.response?.data || error.message
-      );
-      alert("결제 중 오류가 발생했습니다. 다시 시도해주세요.");
+      console.error("주문 생성 실패:", error);
+      alert("주문 생성에 실패했습니다.");
+      return null;
     }
   };
 
-  useEffect(() => {
-    if (paymentResult) {
-      alert("결제가 성공적으로 완료되었습니다!");
-      navigate("/mypage");
-    }
-  }, [paymentResult, navigate]);
+  const processPayment = async (orderId, impUid) => {
+    try {
+      const response = await axios.post(`${API_URL}/payment/process`, {
+        userId: 14, // 사용자 ID (예시)
+        orderId,
+        impUid,
+        merchantUid: formData.merchantUid,
+        paymentCard: formData.paymentCard,
+        totalAmount: finalAmount,
+        paymentMethod: formData.paymentMethod,
+      });
 
-  // ✅ Form 컴포넌트 직접 정의
-  const Form = ({ children, ...props }) => {
-    return <form {...props}>{children}</form>;
+      alert("결제가 완료되었습니다!"); //명확한 메시지 추가
+      navigate("/mypage");
+    } catch (error) {
+      console.error("결제 처리 실패:", error);
+      alert("결제 처리 중 오류가 발생했습니다.");
+    }
+  };
+
+  const requestPayment = async () => {
+    if (!validate()) return;
+    if (!window.IMP) {
+      alert("결제 모듈이 로드되지 않았습니다. 새로고침 해주세요.");
+      return;
+    }
+
+    const orderId = await createOrder();
+    if (!orderId) return;
+
+    const IMP = window.IMP;
+    IMP.request_pay(
+      {
+        pg: "nice",
+        pay_method: "vbank",
+        merchant_uid: formData.merchantUid,
+        name: "테스트 상품",
+        amount: finalAmount,
+        buyer_name: formData.name,
+        buyer_tel: formData.phoneNumber,
+        buyer_addr: formData.address,
+        buyer_postcode: "",
+      },
+      async (response) => {
+        if (response.success) {
+          setPaymentResult(response);
+          await processPayment(orderId, response.imp_uid);
+        } else {
+          alert(`❌ 결제 실패: ${response.error_msg}`);
+        }
+      }
+    );
   };
 
   return (
     <Container>
-      <Header>상품 B</Header>
-
-      <Section>
-        <Title>주문자 정보</Title>
-        <Form>
-          <FormGroup>
-            <label htmlFor="name">이름</label>
-            <input
-              type="text"
-              id="name"
-              placeholder="이름을 입력하세요"
-              value={formData.name}
-              onChange={handleChange}
-            />
-            {errors.name && <ErrorMessage>{errors.name}</ErrorMessage>}
-          </FormGroup>
-
-          <FormGroup>
-            <label htmlFor="phoneNumber">전화번호</label>
-            <input
-              type="text"
-              id="phoneNumber"
-              placeholder="전화번호를 입력하세요"
-              value={formData.phoneNumber}
-              onChange={handleChange}
-              maxLength="11"
-            />
-            {errors.phoneNumber && (
-              <ErrorMessage>{errors.phoneNumber}</ErrorMessage>
-            )}
-          </FormGroup>
-
-          <FormGroup>
-            <label htmlFor="address">숙소 주소</label>
-            <input
-              type="text"
-              id="address"
-              placeholder="숙소 주소를 입력하세요"
-              value={formData.address}
-              onChange={handleChange}
-            />
-            {errors.address && <ErrorMessage>{errors.address}</ErrorMessage>}
-          </FormGroup>
-        </Form>
-      </Section>
-
+      <Header>결제 페이지</Header>
       <CheckoutButton
-        onClick={handleSubmit}
+        onClick={requestPayment}
         disabled={selectedProducts.length === 0}
       >
         {finalAmount.toLocaleString()}원 결제하기
@@ -168,7 +170,6 @@ const CheckoutPage = () => {
 
 export default CheckoutPage;
 
-// ✅ 스타일 컴포넌트
 const Container = styled.div`
   max-width: 500px;
   margin: 0 auto;
@@ -178,24 +179,6 @@ const Container = styled.div`
 const Header = styled.h2`
   text-align: center;
   margin-bottom: 20px;
-`;
-
-const Section = styled.section`
-  margin-bottom: 20px;
-`;
-
-const Title = styled.h3`
-  margin-bottom: 10px;
-`;
-
-const FormGroup = styled.div`
-  margin-bottom: 10px;
-`;
-
-const ErrorMessage = styled.p`
-  color: red;
-  font-size: 14px;
-  margin-top: 5px;
 `;
 
 const CheckoutButton = styled.button`
