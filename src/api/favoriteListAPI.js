@@ -19,6 +19,7 @@ export const fetchFavoriteList = async () => {
     // API 응답 데이터를 tourAttractionItem 구조에 맞게 변환
     return response.data.map((item) => ({
       id: item.mapId,
+      favPlaceId: item.favPlaceId,
       name: item.placeName,
       address: item.placeLocation,
       image: item.placeImage,
