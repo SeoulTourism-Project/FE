@@ -84,12 +84,13 @@ export const addSchedule = async (savedData) => {
     const resData = response.data;
     console.log("Add Response", resData);
     return {
-      scheduleId: resData.calendarDetailsId,
+      scheduleId: resData.calendarId,
       mapId: savedData.mapId,
       name: savedData.selectedPlace.name,
       address: savedData.selectedPlace.address,
-      startTime: formatTime24(scheduleData.scheduleTime),
-      endTime: formatTime24(scheduleData.scheduleEndTime),
+      scheduleDate: resData.tourStartDate,
+      startTime: formatTime24(resData.scheduleTime),
+      endTime: formatTime24(resData.scheduleEndTime),
       image: savedData.selectedPlace.image,
       memo: resData.memo,
     };

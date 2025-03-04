@@ -40,7 +40,7 @@ const Itinerary = () => {
     try {
       const newSchedule = await addSchedule(savedData);
       addScheduleCard(newSchedule);
-      addDateToCalendar(newSchedule.startTime);
+      addDateToCalendar(newSchedule.scheduleDate);
     } catch (error) {
       console.error("일정을 추가하는 중 오류 발생:", error);
     }
