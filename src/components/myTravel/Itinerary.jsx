@@ -2,55 +2,34 @@ import React, { useEffect, useState } from "react";
 import Calendar from "./itinerary/Calendar";
 import Timetable from "./itinerary/Timetable";
 import styled from "styled-components";
+import { formatKoreaDate } from "../../utils/changeDateFormUtils";
 import {
-  combineToUTC,
-  formatKoreaDate,
-  formatTime24,
-} from "../../utils/changeDateFormUtils";
-import axios from "axios";
+  getMarkedDates,
+  getTimetable,
+  addSchedule,
+  deleteSchedule,
+} from "../../api/itineraryAPI";
 
 const Itinerary = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [calendarSchedules, setCalendarSchedules] = useState([]);
   const [timeTableSchedules, setTimeTableSchedules] = useState([]);
 
-  console.log("timetableSchedules: ", timeTableSchedules);
-  console.log("calendarSchedule: ", calendarSchedules);
-
   const fetchCalendarSchedules = async () => {
-    const filePath = `/calendarDate.json`;
-
     try {
-      const response = await axios.get(filePath);
-      if (response.status === 200) {
-        setCalendarSchedules(response.data || []);
-      }
+      const data = await getMarkedDates();
+      setCalendarSchedules(data || []);
     } catch (error) {
       console.error("캘린더 데이터를 불러오는 중 오류 발생:", error);
-      setCalendarSchedules([]); // 오류 발생 시 빈 배열 설정
+      setCalendarSchedules([]);
     }
   };
 
   const fetchTimetableScheduleData = async (date) => {
-    const formattedDate = formatKoreaDate(date);
-    const filePath = `/${formattedDate}.json`;
-
     try {
-      const response = await axios.get(filePath);
-      if (response.status === 200) {
-        setTimeTableSchedules(
-          (response.data || []).map((schedule) => ({
-            scheduleId: schedule.calendarDetailsId,
-            mapId: schedule.mapId,
-            name: schedule.placeName,
-            address: schedule.placeAddress,
-            startTime: formatTime24(schedule.scheduleDate),
-            endTime: formatTime24(schedule.scheduleEndDate),
-            image: schedule.placeImage,
-            memo: schedule.memo,
-          }))
-        );
-      }
+      const formattedDate = formatKoreaDate(date);
+      const data = await getTimetable(formattedDate);
+      setTimeTableSchedules(data);
     } catch (error) {
       console.error("일정 데이터를 불러오는 중 오류 발생:", error);
       setTimeTableSchedules([]);
@@ -59,84 +38,55 @@ const Itinerary = () => {
 
   const onAddSchedule = async (savedData) => {
     try {
-      const formattedDate = formatKoreaDate(savedData.selectedDate);
-
-      const scheduleData = {
-        userId: 1,
-        mapId: savedData.selectedPlace.id,
-        tourStartDate: formattedDate,
-        scheduleDate: combineToUTC(formattedDate, savedData.startTime),
-        scheduleEndDate: combineToUTC(formattedDate, savedData.endTime),
-        memo: savedData.memo,
-      };
-
-      // 서버 요청 대신 테스트용 Promise 사용
-      const mockPostRequest = (data) =>
-        new Promise((resolve, reject) => {
-          setTimeout(() => {
-            Math.random() > 0.1
-              ? resolve({
-                  status: 200,
-                  data: { ...data, scheduleId: Date.now() },
-                })
-              : reject(new Error("테스트 실패"));
-          }, 1000);
-        });
-
-      const response = await mockPostRequest(scheduleData);
-
-      if (response.status === 200) {
-        addScheduleCard(response.data, savedData);
-        addDateToCalendar(response.data.tourStartDate); // 캘린더에 날짜 추가
-        return Promise.resolve();
-      }
-    } catch (err) {
-      return Promise.reject(err);
+      const newSchedule = await addSchedule(savedData);
+      addScheduleCard(newSchedule);
+      addDateToCalendar(newSchedule.startTime);
+    } catch (error) {
+      console.error("일정을 추가하는 중 오류 발생:", error);
     }
   };
 
-  const onDeleteSchedule = (id) => {
-    setTimeTableSchedules((prevSchedules) => {
-      const updatedSchedules = prevSchedules.filter(
-        (schedule) => schedule.scheduleId !== id
-      );
+  const onDeleteSchedule = async (scheduleId) => {
+    try {
+      await deleteSchedule(scheduleId);
 
-      if (updatedSchedules.length === 0) {
-        setCalendarSchedules((prevCalendar) =>
-          prevCalendar.filter((date) => date !== formatKoreaDate(selectedDate))
+      setTimeTableSchedules((prevSchedules) => {
+        const updatedSchedules = prevSchedules.filter(
+          (schedule) => schedule.scheduleId !== scheduleId
         );
-      }
 
-      return updatedSchedules;
-    });
+        if (updatedSchedules.length === 0) {
+          setCalendarSchedules((prevCalendar) =>
+            prevCalendar.filter(
+              (date) => date !== formatKoreaDate(selectedDate)
+            )
+          );
+        }
 
-    alert("일정이 삭제되었습니다.");
+        return updatedSchedules;
+      });
+
+      alert("일정이 삭제되었습니다.");
+    } catch (error) {
+      console.error("일정을 삭제하는 중 오류 발생:", error);
+    }
   };
 
   const addDateToCalendar = (date) => {
     setCalendarSchedules((prev) => {
+      console.log("이전 캘린더 상태:", prev);
+      console.log("추가할 날짜:", date);
       if (!prev.includes(date)) {
-        return [...prev, date];
+        const updatedCalendar = [...prev, date];
+        console.log("업데이트된 캘린더 상태:", updatedCalendar);
+        return updatedCalendar;
       }
       return prev;
     });
   };
 
-  const addScheduleCard = (responseData, localData) => {
-    const addCardData = {
-      scheduleId: responseData.scheduleId,
-      mapId: responseData.mapId,
-      name: localData.selectedPlace.name,
-      address: localData.selectedPlace.address,
-      startTime: formatTime24(responseData.scheduleDate),
-      endTime: formatTime24(responseData.scheduleEndDate),
-      image: localData.selectedPlace.image,
-      memo: responseData.memo,
-    };
-
-    console.log("add: ", addCardData.startTime);
-
-    setTimeTableSchedules((prevSchedules) => [...prevSchedules, addCardData]);
+  const addScheduleCard = (schedule) => {
+    setTimeTableSchedules((prevSchedules) => [...prevSchedules, schedule]);
   };
 
   const handleDateChange = (date) => {
