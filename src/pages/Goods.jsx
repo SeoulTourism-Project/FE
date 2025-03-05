@@ -5,6 +5,7 @@ import GoodsList from "../components/GoodsList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { fetchGoods, fetchCategoryGoods } from "../api/goodsAPI";
+import { useNavigate } from "react-router";
 
 const Goods = () => {
   const [allProducts, setAllProducts] = useState([]);
@@ -14,6 +15,8 @@ const Goods = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [category, setCategory] = useState("전체");
   const [showCategory, setShowCategory] = useState(false);
+
+  const navigate = useNavigate();
 
   const categoryRef = useRef(null);
   const optionListRef = useRef(null);
@@ -85,6 +88,10 @@ const Goods = () => {
     } else if (selectedButton === "next" && currentPage < totalPages - 1) {
       setCurrentPage((prevCurrentPage) => prevCurrentPage + 1);
     }
+  };
+
+  const goToCart = () => {
+    navigate("/cart");
   };
 
   if (isLoading) {
