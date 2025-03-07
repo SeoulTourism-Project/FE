@@ -160,7 +160,6 @@ const Cart = () => {
 
 export default Cart;
 
-// 스타일 컴포넌트
 const CartContainer = styled.div`
   display: flex;
   justify-content: flex-start;
