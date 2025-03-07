@@ -1,200 +1,171 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
+import { api } from "../utils/api";
 
 const Cart = () => {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "상품명1",
-      price: 10000,
-      quantity: 0,
-      image: "https://via.placeholder.com/150",
-    },
-    {
-      id: 2,
-      name: "상품명2",
-      price: 15000,
-      quantity: 0,
-      image: "https://via.placeholder.com/150",
-    },
-    {
-      id: 3,
-      name: "상품명3",
-      price: 20000,
-      quantity: 0,
-      image: "https://via.placeholder.com/150",
-    },
-  ]);
-
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
   const paymentSummaryRef = useRef(null);
 
-  // 페이지 이동을 위한 navigate 초기화
-  const navigate = useNavigate();
+  useEffect(() => {
+    const userToken = localStorage.getItem("userToken");
+    setIsLoggedIn(!!userToken);
+    fetchCartItems();
+  }, []);
 
-  // 수량 증가 / 감소 함수
-  const handleQuantityChange = (id, action) => {
-    const updatedCart = cartItems.map((item) =>
-      item.id === id
-        ? {
-            ...item,
-            quantity:
-              action === "increment"
-                ? item.quantity + 1
-                : item.quantity > 0
-                ? item.quantity - 1
-                : item.quantity,
-          }
-        : item
-    );
-    setCartItems(updatedCart);
+  // 장바구니 데이터 가져오기
+  const fetchCartItems = async () => {
+    const accessToken = sessionStorage.getItem("accessToken");
+    try {
+      const response = await api.get("/cart/check", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      setCartItems(response.data);
+    } catch (error) {
+      console.error("Error fetching cart items:", error);
+    }
   };
 
-  // 상품 선택/해제
-  const handleItemSelect = (id) => {
+  // 장바구니에 상품 추가
+  const handleAddToCart = async (goodId, quantity = 1) => {
+    try {
+      const userId = localStorage.getItem("userId");
+      const response = await api.post("/cart/add", {
+        userId,
+        goodId,
+        quantity,
+      });
+
+      if (response.data.message) {
+        setModalMessage(response.data.message);
+        setShowModal(true);
+        fetchCartItems();
+      }
+    } catch (error) {
+      console.error("Error adding item to cart:", error);
+    }
+  };
+
+  // 장바구니 수량 변경
+  const handleUpdateQuantity = async (cartId, newQuantity) => {
+    if (newQuantity < 1) return;
+
+    try {
+      const response = await api.post("/cart/update", {
+        cartId,
+        quantity: newQuantity,
+      });
+
+      if (response.data.status === "Success") {
+        setCartItems(response.data.cartList); // 최신 데이터 반영
+      }
+    } catch (error) {
+      console.error("Error updating cart quantity:", error);
+    }
+  };
+
+  // 장바구니 상품 삭제
+  const handleDeleteItem = async (cartId) => {
+    try {
+      const response = await api.delete(`/cart/delete/${cartId}`);
+      if (response.data.message) {
+        setModalMessage(response.data.message);
+        setShowModal(true);
+        setCartItems((prevCart) =>
+          prevCart.filter((item) => item.cartId !== cartId)
+        );
+      }
+    } catch (error) {
+      console.error("Error deleting cart item:", error);
+    }
+  };
+
+  // 상품 선택 핸들러
+  const handleItemSelect = (cartId) => {
     setSelectedItems((prevSelected) =>
-      prevSelected.includes(id)
-        ? prevSelected.filter((item) => item !== id)
-        : [...prevSelected, id]
+      prevSelected.includes(cartId)
+        ? prevSelected.filter((id) => id !== cartId)
+        : [...prevSelected, cartId]
     );
-  };
-
-  // 전체 선택 / 선택 삭제
-  const handleSelectAll = () => {
-    if (selectedItems.length === cartItems.length) {
-      setSelectedItems([]);
-    } else {
-      setSelectedItems(cartItems.map((item) => item.id));
-    }
-  };
-
-  const handleDeleteSelected = () => {
-    const filteredItems = cartItems.filter(
-      (item) => !selectedItems.includes(item.id)
-    );
-    setCartItems(filteredItems);
-    setSelectedItems([]);
-  };
-
-  // 결제 계산
-  const calculateTotal = () => {
-    const selected = cartItems.filter((item) =>
-      selectedItems.includes(item.id)
-    );
-    const orderAmount = selected.reduce(
-      (acc, item) => acc + item.price * item.quantity,
-      0
-    );
-    const shippingFee = orderAmount >= 30000 ? 0 : 3000;
-    const totalAmount = orderAmount + shippingFee;
-
-    return { orderAmount, shippingFee, totalAmount };
-  };
-
-  const { orderAmount, shippingFee, totalAmount } = calculateTotal();
-
-  // 결제하기 버튼 클릭 시 처리
-  const handlePayment = () => {
-    if (selectedItems.length === 0) {
-      alert("선택된 상품이 없습니다.");
-      return;
-    }
-
-    const selectedProducts = cartItems.filter((item) =>
-      selectedItems.includes(item.id)
-    );
-
-    navigate("/checkout", {
-      state: {
-        orderItems: selectedProducts,
-        orderAmount,
-        shippingFee,
-        totalAmount,
-      },
-    });
   };
 
   return (
     <CartContainer>
-      {/* 왼쪽 - 장바구니 상품 목록 */}
       <CartItems>
         <Header>장바구니</Header>
         <CartItemHeader>
           <div>상품명</div>
           <div>수량</div>
           <div>금액</div>
+          <div>삭제</div>
         </CartItemHeader>
-        {cartItems.map((item) => (
-          <CartItem key={item.id}>
-            <CartItemName>
-              <input
-                type="checkbox"
-                checked={selectedItems.includes(item.id)}
-                onChange={() => handleItemSelect(item.id)}
-              />
-              <img
-                src={item.image}
-                alt={item.name}
-                style={{ width: "100px", height: "100px", marginRight: "10px" }}
-              />
-              {item.name}
-            </CartItemName>
-            <CartItemQuantity>
-              <QuantityButton
-                onClick={() => handleQuantityChange(item.id, "decrement")}
-                disabled={item.quantity <= 1}
-              >
-                -
-              </QuantityButton>
-              {item.quantity}
-              <QuantityButton
-                onClick={() => handleQuantityChange(item.id, "increment")}
-              >
-                +
-              </QuantityButton>
-            </CartItemQuantity>
-            <CartItemPrice>{item.price * item.quantity} 원</CartItemPrice>
-          </CartItem>
-        ))}
-        <ButtonsContainer>
-          <Button onClick={handleSelectAll}>전체 선택</Button>
-          <Button onClick={handleDeleteSelected}>선택 삭제</Button>
-        </ButtonsContainer>
+        {cartItems.length === 0 ? (
+          <p>장바구니가 비어 있습니다.</p>
+        ) : (
+          cartItems.map((item) => (
+            <CartItem key={item.cartId}>
+              <CartItemName>
+                <input
+                  type="checkbox"
+                  checked={selectedItems.includes(item.cartId)}
+                  onChange={() => handleItemSelect(item.cartId)}
+                />
+                <img
+                  src={item.goodImage}
+                  alt={item.goodName}
+                  style={{
+                    width: "100px",
+                    height: "100px",
+                    marginRight: "10px",
+                  }}
+                />
+                {item.goodName}
+              </CartItemName>
+              <CartItemQuantity>
+                <button
+                  onClick={() =>
+                    handleUpdateQuantity(item.cartId, item.goodQuantity - 1)
+                  }
+                  disabled={item.goodQuantity <= 1}
+                >
+                  -
+                </button>
+                {item.goodQuantity}
+                <button
+                  onClick={() =>
+                    handleUpdateQuantity(item.cartId, item.goodQuantity + 1)
+                  }
+                >
+                  +
+                </button>
+              </CartItemQuantity>
+              <CartItemPrice>
+                {item.goodPrice * item.goodQuantity} 원
+              </CartItemPrice>
+              <Button onClick={() => handleDeleteItem(item.cartId)}>
+                삭제
+              </Button>
+            </CartItem>
+          ))
+        )}
       </CartItems>
-
-      {/* 오른쪽 - 결제 정보 */}
-      <PaymentSummary ref={paymentSummaryRef}>
-        <PaymentHeader>결제 정보</PaymentHeader>
-        <CartItem>
-          <CartItemName>주문 금액</CartItemName>
-          <CartItemPrice>{orderAmount} 원</CartItemPrice>
-        </CartItem>
-        <CartItem>
-          <CartItemName>배송비</CartItemName>
-          <CartItemPrice>{shippingFee} 원</CartItemPrice>
-        </CartItem>
-        <CartItem>
-          <CartItemName>
-            <strong>총 결제 금액</strong>
-          </CartItemName>
-          <CartItemPrice>
-            <strong>{totalAmount} 원</strong>
-          </CartItemPrice>
-        </CartItem>
-        <Button onClick={handlePayment}>결제하기</Button>
-      </PaymentSummary>
     </CartContainer>
   );
 };
+
 export default Cart;
-// 스타일 컴포넌트들
+
 const CartContainer = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: -10px auto;
   padding: 20px;
   gap: 20px;
   flex-wrap: wrap;
@@ -206,47 +177,13 @@ const CartItems = styled.div`
   min-width: 600px;
 `;
 
-const PaymentSummary = styled.div`
-  flex: 1;
-  border-left: 1px solid #ddd;
-  padding-left: 20px;
-  padding-right: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  min-width: 300px;
-  height: auto;
-  position: relative;
-  margin-top: 250px;
-
-  &:before {
-    content: "";
-    position: absolute;
-    top: 280px;
-    bottom: 0px;
-    left: 0;
-    width: 1px;
-    background-color: #ddd;
-  }
-`;
-
 const Header = styled.h2`
-  height: 160px;
+  height: 90px;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 120px;
-  font-size: 24px;
-`;
-
-const PaymentHeader = styled.h2`
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  margin: 20px;
-  font-size: 24px;
-  padding-bottom: 3px;
+  font-size: 26px;
+  font-weight: bold;
 `;
 
 const CartItemHeader = styled.div`
@@ -254,19 +191,8 @@ const CartItemHeader = styled.div`
   justify-content: space-between;
   font-weight: bold;
   margin-bottom: 10px;
-
-  & > div:nth-child(1) {
-    margin-left: 60px;
-  }
-
-  & > div:nth-child(2) {
-    margin-left: 180px;
-  }
-
-  & > div:nth-child(3) {
-    margin-right: 20px;
-  }
 `;
+
 const CartItem = styled.div`
   display: flex;
   align-items: center;
@@ -288,7 +214,6 @@ const CartItemQuantity = styled.div`
   align-items: center;
   justify-content: center;
   gap: 8px;
-  text-align: center;
   flex: 1;
 `;
 
@@ -298,14 +223,10 @@ const CartItemPrice = styled.div`
   width: 120px;
 `;
 
-const ButtonsContainer = styled.div`
-  margin-top: 20px;
-`;
-
 const Button = styled.button`
   padding: 6px 12px;
   font-size: 14px;
-  background-color: #5555;
+  background-color: #555;
   color: white;
   border: none;
   cursor: pointer;
@@ -314,7 +235,7 @@ const Button = styled.button`
   border-radius: 5px;
 
   &:hover {
-    background-color: #3333;
+    background-color: #333;
     transform: scale(1.05);
   }
 
@@ -322,10 +243,4 @@ const Button = styled.button`
     background-color: #cccccc;
     cursor: not-allowed;
   }
-`;
-
-const QuantityButton = styled(Button)`
-  padding: 6px 12px;
-  font-size: 14px;
-  margin: 0 8px;
 `;

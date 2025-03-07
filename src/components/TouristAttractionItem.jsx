@@ -1,9 +1,9 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
-import styled from 'styled-components';
-import { useNavigate } from 'react-router';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import styled from "styled-components";
+import { useNavigate } from "react-router";
 
-const TouristAttractionItem = ({ touristAttraction, width = '312px' }) => {
+const TouristAttractionItem = ({ touristAttraction, width = "312px" }) => {
   const location = touristAttraction.address.slice(6, 9);
 
   const navigate = useNavigate();
@@ -12,20 +12,13 @@ const TouristAttractionItem = ({ touristAttraction, width = '312px' }) => {
     <Card
       width={width}
       onClick={() => {
-        navigate(`/tourist-attraction/${touristAttraction.id}`, {
-          state: {
-            id: touristAttraction.id,
-            name: touristAttraction.name,
-            image: touristAttraction.image,
-            address: touristAttraction.address,
-          },
-        });
+        navigate(`/tourist-attraction/${touristAttraction.id}`);
       }}
     >
       <CardBadge>{touristAttraction.name}</CardBadge>
       <img src={touristAttraction.image} alt={touristAttraction.name} />
       <CardLocation>
-        <FontAwesomeIcon icon={faLocationDot} size='lg' />
+        <FontAwesomeIcon icon={faLocationDot} size="lg" />
         <span>{location}</span>
       </CardLocation>
     </Card>

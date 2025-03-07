@@ -1,17 +1,17 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
-import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
-import styled from 'styled-components';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
+import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import styled from "styled-components";
 
 const Pagination = ({ currentPage, handleChangePage }) => {
   return (
     <ButtonContainer>
-      <button onClick={() => handleChangePage('prev')}>
-        <FontAwesomeIcon icon={faAngleLeft} size='2x' />
+      <button onClick={() => handleChangePage("prev")}>
+        <FontAwesomeIcon icon={faAngleLeft} size="2x" />
       </button>
-      <p>{currentPage}</p>
-      <button onClick={() => handleChangePage('next')}>
-        <FontAwesomeIcon icon={faAngleRight} size='2x' />
+      <p>{currentPage + 1}</p>
+      <button onClick={() => handleChangePage("next")}>
+        <FontAwesomeIcon icon={faAngleRight} size="2x" />
       </button>
     </ButtonContainer>
   );
