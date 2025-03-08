@@ -1,10 +1,10 @@
-import { api } from "../utils/api";
 import { getUserIdFromToken, getAccessToken } from "../utils/decodeToken";
 import {
   formatKoreaDate,
   formatTime24,
   combineToUTC,
 } from "../utils/changeDateFormUtils";
+import { authApi } from "../utils/authApi";
 
 const getAuthHeaders = () => {
   const userId = getUserIdFromToken();
@@ -22,7 +22,9 @@ export const getMarkedDates = async () => {
   const { userId, headers } = getAuthHeaders();
 
   try {
-    const response = await api.get(`/calendar/dates/${userId}`, { headers });
+    const response = await authApi.get(`/calendar/dates/${userId}`, {
+      headers,
+    });
     console.log("calendar: ", response.data);
     return response.data || [];
   } catch (error) {
@@ -36,7 +38,7 @@ export const getTimetable = async (tourStartDate) => {
 
   console.log("tourStartDate: ", tourStartDate);
   try {
-    const response = await api.get(
+    const response = await authApi.get(
       `/calendar/schedule/${userId}?tourStartDate=${tourStartDate}`,
       { headers }
     );
@@ -75,7 +77,7 @@ export const addSchedule = async (savedData) => {
   console.log("Add scheduleData: ", scheduleData);
 
   try {
-    const response = await api.post(
+    const response = await authApi.post(
       `/calendar/schedule/${userId}`,
       scheduleData,
       { headers }
@@ -105,7 +107,7 @@ export const deleteSchedule = async (calendarDetailsId) => {
   console.log("calendarId: ", calendarDetailsId);
 
   try {
-    await api.delete(
+    await authApi.delete(
       `/calendar/schedule/${calendarDetailsId}?userId=${userId}`,
       {
         headers,

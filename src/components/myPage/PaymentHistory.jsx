@@ -1,57 +1,88 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import PaymentDetails from "./paymentHistory/PaymentDetails";
+import { fetchPaymentHistory } from "../../api/paymentHistoryAPI";
 
 const PaymentHistory = () => {
   const [selectedPayment, setSelectedPayment] = useState(null);
+  const [paymentHistory, setPaymentHistory] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const getPaymentHistory = async () => {
+      try {
+        const data = await fetchPaymentHistory();
+        setPaymentHistory(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getPaymentHistory();
+  }, []);
+
+  if (loading) return <p>로딩 중...</p>;
+  if (error) return <p>에러 발생: {error}</p>;
+  if (!paymentHistory) return <p>결제 내역을 불러올 수 없습니다.</p>;
 
   return (
-    <Container>
-      {paymentInfoList.map((payment) => (
-        <PaymentCard key={payment.paymentId}>
-          <PaymentHeader>
-            <p>
-              🛒 주문 번호: <strong>{payment.paymentId}</strong>
-            </p>
-            <p className="date">📅 구매 날짜: {payment.date}</p>
-          </PaymentHeader>
+    <>
+      {paymentHistory.length === 0 ? (
+        <p>결제 내역이 없습니다.</p>
+      ) : (
+        <Container>
+          {paymentHistory.map((payment) => (
+            <PaymentCard key={payment.paymentId}>
+              <PaymentHeader>
+                <p>
+                  🛒 주문 번호: <strong>{payment.paymentId}</strong>
+                </p>
+                <p className="date">📅 구매 날짜: {payment.date}</p>
+              </PaymentHeader>
 
-          <BuyerInfo>
-            <p>
-              <span className="icon">👤</span>
-              <strong>구매자:</strong> {payment.buyer} 님
-            </p>
-            <p>
-              <span className="icon">📞</span>
-              <strong>전화번호:</strong> {payment.phone}
-            </p>
-            <p>
-              <span className="icon">📍</span>
-              <strong>주소:</strong> {payment.address}
-            </p>
-          </BuyerInfo>
+              <BuyerInfo>
+                <p>
+                  <span className="icon">👤</span>
+                  <strong>구매자:</strong> {payment.buyer} 님
+                </p>
+                <p>
+                  <span className="icon">📞</span>
+                  <strong>전화번호:</strong> {payment.phone}
+                </p>
+                <p>
+                  <span className="icon">📍</span>
+                  <strong>주소:</strong> {payment.address}
+                </p>
+              </BuyerInfo>
 
-          <Summary>
-            <p>🛍 {payment.summary}</p>
-            <MoreButton
-              onClick={() =>
-                setSelectedPayment(
-                  selectedPayment === payment.paymentId
-                    ? null
-                    : payment.paymentId
-                )
-              }
-            >
-              {selectedPayment === payment.paymentId ? "▲ 닫기" : "▼ 더보기"}
-            </MoreButton>
-          </Summary>
+              <Summary>
+                <p>🛍 {payment.summary}</p>
+                <MoreButton
+                  onClick={() =>
+                    setSelectedPayment(
+                      selectedPayment === payment.paymentId
+                        ? null
+                        : payment.paymentId
+                    )
+                  }
+                >
+                  {selectedPayment === payment.paymentId
+                    ? "▲ 닫기"
+                    : "▼ 더보기"}
+                </MoreButton>
+              </Summary>
 
-          {selectedPayment === payment.paymentId && (
-            <PaymentDetails payment={payment} />
-          )}
-        </PaymentCard>
-      ))}
-    </Container>
+              {selectedPayment === payment.paymentId && (
+                <PaymentDetails payment={payment} />
+              )}
+            </PaymentCard>
+          ))}
+        </Container>
+      )}
+    </>
   );
 };
 
