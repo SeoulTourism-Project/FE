@@ -1,9 +1,9 @@
 import { api } from "../utils/api";
-import { getUserIdFromToken, getAccessToken } from "../utils/decodeToken"; // 토큰 관련 함수
+import { getUserIdFromToken, getAccessToken } from "../utils/decodeToken";
 
 export const fetchFavoriteList = async () => {
-  const userId = getUserIdFromToken(); // userId 가져오기
-  const accessToken = getAccessToken(); // accessToken 가져오기
+  const userId = getUserIdFromToken();
+  const accessToken = getAccessToken();
 
   if (!userId || !accessToken) {
     throw new Error("인증 정보가 없습니다. 로그인 후 다시 시도해주세요.");
@@ -12,11 +12,10 @@ export const fetchFavoriteList = async () => {
   try {
     const response = await api.get(`/fav-places/${userId}`, {
       headers: {
-        Authorization: `Bearer ${accessToken}`, // 인증 헤더 추가
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 
-    // API 응답 데이터를 tourAttractionItem 구조에 맞게 변환
     return response.data.map((item) => ({
       id: item.mapId,
       favPlaceId: item.favPlaceId,
