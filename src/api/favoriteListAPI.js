@@ -1,4 +1,4 @@
-import { api } from "../utils/api";
+import { authApi } from "../utils/authApi";
 import { getUserIdFromToken, getAccessToken } from "../utils/decodeToken";
 
 export const fetchFavoriteList = async () => {
@@ -10,7 +10,7 @@ export const fetchFavoriteList = async () => {
   }
 
   try {
-    const response = await api.get(`/fav-places/${userId}`, {
+    const response = await authApi.get(`/fav-places/${userId}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
