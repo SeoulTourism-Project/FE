@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { fetchGoods, fetchCategoryGoods } from "../api/goodsAPI";
 import { useNavigate } from "react-router";
+import { getAccessToken } from "../utils/decodeToken";
 
 const Goods = () => {
   const [allProducts, setAllProducts] = useState([]);
@@ -15,8 +16,7 @@ const Goods = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [category, setCategory] = useState("전체");
   const [showCategory, setShowCategory] = useState(false);
-
-  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
 
   const categoryRef = useRef(null);
   const optionListRef = useRef(null);
@@ -90,9 +90,9 @@ const Goods = () => {
     }
   };
 
-  const goToCart = () => {
-    navigate("/cart");
-  };
+  useEffect(() => {
+    setUser(getAccessToken() ? true : false);
+  }, []);
 
   if (isLoading) {
     return <div>로딩 중...</div>;
@@ -124,7 +124,7 @@ const Goods = () => {
             </OptionList>
           )}
         </Category>
-        <GoodsList currentProducts={currentProducts} />
+        <GoodsList currentProducts={currentProducts} user={user} />
       </Container>
       <Pagination
         currentPage={currentPage}
