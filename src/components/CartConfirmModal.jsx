@@ -3,7 +3,7 @@ import React from "react";
 import { Link } from "react-router";
 import styled from "styled-components";
 
-const CartConfirmModal = ({ user, handleCloseModal }) => {
+const CartConfirmModal = ({ user, handleCloseModal, message }) => {
   const page = user ? "/cart" : "/login";
 
   return (
@@ -11,8 +11,7 @@ const CartConfirmModal = ({ user, handleCloseModal }) => {
       <Content>
         {user ? (
           <>
-            <p>장바구니에 담았습니다</p>
-            <p>장바구니 페이지로 이동하시겠습니까?</p>
+            <p>{message}</p>
           </>
         ) : (
           <>
@@ -29,6 +28,7 @@ const CartConfirmModal = ({ user, handleCloseModal }) => {
 
 const Content = styled.div`
   line-height: 35px;
+  white-space: pre-line;
 `;
 
 const LinkStyle = styled(Link)`
