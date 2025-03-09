@@ -1,17 +1,20 @@
-import { faCartPlus, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link } from 'react-router';
-import styled from 'styled-components';
+import {
+  faCartPlus,
+  faMagnifyingGlass,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link } from "react-router";
+import styled from "styled-components";
 
 const GoodsItem = ({ item, handleOpenModal }) => {
   return (
     <Container key={item.id}>
       <Buttons>
         <DetailLink to={`/goods-detail/${item.id}`}>
-          <FontAwesomeIcon icon={faMagnifyingGlass} size='2x' />
+          <FontAwesomeIcon icon={faMagnifyingGlass} size="2x" />
         </DetailLink>
-        <button onClick={handleOpenModal}>
-          <FontAwesomeIcon icon={faCartPlus} size='2x' />
+        <button onClick={() => handleOpenModal(item.id, 1)}>
+          <FontAwesomeIcon icon={faCartPlus} size="2x" />
         </button>
       </Buttons>
       <Image src={item.imgUrl} alt={item.title} />
