@@ -1,4 +1,3 @@
-import axios from "axios";
 import { api } from "./api";
 
 // ✅ access token 재발급 함수 (API 요청 실패 시 호출됨)
