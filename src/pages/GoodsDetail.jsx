@@ -65,7 +65,7 @@ const GoodsDetail = () => {
         <Info>
           <Title>{goods.name}</Title>
           <Category>{goods.category || "카테고리 없음"}</Category>
-          <p>{goods.description}</p>
+          <Description>{goods.description}</Description>
           <Price>가격 : {goods.price}원</Price>
           <Stock>재고 : {goods.stock}개</Stock>
           <Buttons>
@@ -124,15 +124,24 @@ const Info = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  margin-top: 30px;
 `;
 
 const Title = styled.h4`
-  font-size: 30px;
+  font-size: 50px;
   font-weight: bold;
 `;
 
 const Category = styled.p`
   opacity: 0.5;
+`;
+
+const Description = styled.p`
+  height: 120px;
+  overflow: auto;
+  padding-right: 10px;
+  line-height: 1.4;
+  font-size: 16px;
 `;
 
 const Price = styled.p`
