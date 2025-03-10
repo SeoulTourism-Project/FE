@@ -8,6 +8,7 @@ export const fetchGoodDetails = async (goodId) => {
     return {
       id: data.goodId,
       name: data.goodName,
+      category: data.categoryName,
       imageUrl: data.goodImage,
       price: data.goodPrice,
       stock: data.goodStock,
