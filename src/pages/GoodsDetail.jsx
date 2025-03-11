@@ -2,6 +2,8 @@ import {
   faAngleLeft,
   faCartPlus,
   faCreditCard,
+  faPlus,
+  faMinus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
@@ -16,6 +18,7 @@ const GoodsDetail = () => {
   const [user, setUser] = useState(null);
   const [goods, setGoods] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [quantity, setQuantity] = useState(1);
 
   const { id } = useParams();
 
@@ -46,6 +49,34 @@ const GoodsDetail = () => {
     setShowModal(false);
   }
 
+  const handleIncrease = () => {
+    if (goods && quantity < goods.stock) {
+      setQuantity(quantity + 1);
+    }
+  };
+
+  const handleDecrease = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setQuantity(e.target.value); // 입력값 그대로 반영 (유효성 검사는 나중에!)
+  };
+
+  const handleInputBlur = () => {
+    let value = parseInt(quantity, 10);
+
+    if (isNaN(value) || value < 1) {
+      value = 1;
+    } else if (value > goods.stock) {
+      value = goods.stock;
+    }
+
+    setQuantity(value);
+  };
+
   if (loading) return <p>로딩 중...</p>;
   if (!goods) return <p>상품 정보를 불러올 수 없습니다.</p>;
 
@@ -68,6 +99,22 @@ const GoodsDetail = () => {
           <Description>{goods.description}</Description>
           <Price>가격 : {goods.price}원</Price>
           <Stock>재고 : {goods.stock}개</Stock>
+
+          <QuantityContainer>
+            <QuantityButton onClick={handleDecrease}>
+              <FontAwesomeIcon icon={faMinus} />
+            </QuantityButton>
+            <QuantityInput
+              type="number"
+              value={quantity}
+              onChange={handleInputChange}
+              onBlur={handleInputBlur}
+            />
+            <QuantityButton onClick={handleIncrease}>
+              <FontAwesomeIcon icon={faPlus} />
+            </QuantityButton>
+          </QuantityContainer>
+
           <Buttons>
             <button>
               <FontAwesomeIcon icon={faCreditCard} size="2x" />
@@ -150,6 +197,38 @@ const Price = styled.p`
 
 const Stock = styled.p`
   opacity: 0.5;
+`;
+
+const QuantityContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
+const QuantityButton = styled.button`
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 5px 10px;
+`;
+
+const QuantityInput = styled.input`
+  width: 50px;
+  text-align: center;
+  font-size: 18px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+
+  /* 스핀 버튼 제거 */
+  -moz-appearance: textfield; /* Firefox */
+  appearance: textfield; /* 기본 브라우저 스타일 제거 */
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none; /* Chrome, Safari */
+    margin: 0;
+  }
 `;
 
 const Buttons = styled.div`
