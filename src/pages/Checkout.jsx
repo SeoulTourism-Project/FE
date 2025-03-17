@@ -162,6 +162,14 @@ const CheckoutPage = () => {
       >
         {finalAmount.toLocaleString()}원 결제하기
       </CheckoutButton>
+
+      {paymentResult && (
+        <PaymentResult
+          message={paymentResult.message}
+          impUid={paymentResult.impUid}
+          totalAmount={paymentResult.totalAmount}
+        />
+      )}
     </Container>
   );
 };
