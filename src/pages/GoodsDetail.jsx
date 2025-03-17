@@ -98,11 +98,12 @@ const GoodsDetail = () => {
             <Title>{goods.name}</Title>
             <Category>{goods.category || "카테고리 없음"}</Category>
             <Description>{goods.description}</Description>
+            <Price>가격 : {goods.price}원</Price>
           </ProductInfo>
 
-          <PriceInfo>
-            <Price>가격 : {goods.price}원</Price>
+          <Line />
 
+          <PriceInfo>
             <QuantityContainer>
               <QuantityButton onClick={handleDecrease}>
                 <FontAwesomeIcon icon={faMinus} />
@@ -187,13 +188,19 @@ const ProductInfo = styled.div`
   gap: 20px;
 `;
 
+const Line = styled.div`
+  width: 100%;
+  height: 0;
+  border-bottom: 1px solid #000;
+  opacity: 0.2;
+`;
+
 const PriceInfo = styled.div`
   display: flex;
   flex-direction: column;
   // gap: 20px;
   align-items: flex-end;
   text-align: right;
-  margin-right: 20px;
 `;
 
 const Title = styled.h4`
@@ -214,7 +221,10 @@ const Description = styled.p`
 `;
 
 const Price = styled.p`
-  margin: 20px 0 40px 0;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  width: 100%;
   font-size: 23px;
 `;
 
