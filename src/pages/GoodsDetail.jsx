@@ -98,7 +98,10 @@ const GoodsDetail = () => {
             <Title>{goods.name}</Title>
             <Category>{goods.category || "카테고리 없음"}</Category>
             <Description>{goods.description}</Description>
-            <Price>가격 : {goods.price}원</Price>
+            <PriceStockWrapper>
+              <Price>가격 : {goods.price}원</Price>
+              <Stock>재고 : {goods.stock}개</Stock>
+            </PriceStockWrapper>
           </ProductInfo>
 
           <Line />
@@ -118,7 +121,13 @@ const GoodsDetail = () => {
                 <FontAwesomeIcon icon={faPlus} />
               </QuantityButton>
             </QuantityContainer>
-            <Stock>재고 : {goods.stock}개</Stock>
+
+            <TotalPrice>
+              <p>총 상품 금액</p>
+              <p>{goods.price * quantity}원</p>
+            </TotalPrice>
+
+            <Line />
 
             <Buttons>
               <button>
@@ -178,6 +187,7 @@ const Product = styled.div`
 const Info = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
   gap: 20px;
   margin-top: 30px;
 `;
@@ -198,8 +208,10 @@ const Line = styled.div`
 const PriceInfo = styled.div`
   display: flex;
   flex-direction: column;
-  // gap: 20px;
   align-items: flex-end;
+  width: 55%;
+  border: 1px solid #cccccc;
+  padding: 25px;
   text-align: right;
 `;
 
@@ -220,23 +232,45 @@ const Description = styled.p`
   font-size: 16px;
 `;
 
-const Price = styled.p`
+const PriceStockWrapper = styled.div`
   display: flex;
-  justify-content: flex-end;
-  margin-top: 20px;
-  width: 100%;
-  font-size: 23px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+`;
+
+const Price = styled.p`
+  font-size: 20px;
+  font-weight: bold;
 `;
 
 const Stock = styled.p`
-  margin-top: 5px;
   opacity: 0.5;
+`;
+
+const TotalPrice = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 22px;
+  font-weight: bold;
+
+  p:first-child {
+    font-size: 15px;
+  }
+
+  p:last-child {
+    color: #c2292e;
+  }
 `;
 
 const QuantityContainer = styled.div`
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  // margin: 20px 0 20px 0;
   gap: 10px;
 `;
 
@@ -268,16 +302,32 @@ const QuantityInput = styled.input`
 
 const Buttons = styled.div`
   display: flex;
-  gap: 20px;
+  justify-content: space-between;
+  width: 100%;
+  height: 55px;
   margin-top: 20px;
+  gap: 10px;
 
   & button {
     display: flex;
     align-items: center;
-    border: none;
+    justify-content: center;
+    flex-grow: 1;
+    border: 1px solid #cccccc;
+    border-radius: 3px;
     background: transparent;
     cursor: pointer;
     gap: 15px;
+  }
+
+  button:hover {
+    background: #cccccc;
+  }
+
+  button:active {
+    background: #000;
+    border-color: #000;
+    color: #fff;
   }
 
   p {
