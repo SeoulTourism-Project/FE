@@ -68,7 +68,6 @@ const CheckoutPage = () => {
 
   const validate = () => {
     const newErrors = {};
-
     if (!formData.name.trim()) newErrors.name = "이름을 입력하세요.";
     if (!formData.phoneNumber.trim()) {
       newErrors.phoneNumber = "전화번호를 입력하세요.";
@@ -76,7 +75,6 @@ const CheckoutPage = () => {
       newErrors.phoneNumber = "유효한 전화번호를 입력하세요. (10~11자리 숫자)";
     }
     if (!formData.address.trim()) newErrors.address = "숙소 주소를 입력하세요.";
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };

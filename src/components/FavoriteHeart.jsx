@@ -3,20 +3,7 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart as filledHeart } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as emptyHeart } from "@fortawesome/free-regular-svg-icons";
-
-// Mock API 요청
-const mockApi = {
-  add: (mapId) =>
-    new Promise((resolve) => {
-      console.log(`Mock Add 요청: mapId=${mapId}`);
-      setTimeout(() => resolve(`Add 요청 완료: mapId=${mapId}`), 2000);
-    }),
-  delete: (mapId) =>
-    new Promise((resolve) => {
-      console.log(`Mock Delete 요청: mapId=${mapId}`);
-      setTimeout(() => resolve(`Delete 요청 완료: mapId=${mapId}`), 2000);
-    }),
-};
+import { toggleFavorite } from "../api/favoriteHeartAPI";
 
 const FavoriteHeart = ({
   initialFavorite = false,
@@ -29,23 +16,19 @@ const FavoriteHeart = ({
   const [prevFavorite, setPrevFavorite] = useState(initialFavorite);
   const [loading, setLoading] = useState(false);
 
-  const handleRequest = async (newFavorite) => {
+  const handleRequest = async () => {
     setLoading(true);
     try {
-      if (newFavorite) {
-        await mockApi.add(mapId);
-        console.log("찜 추가 완료!");
-      } else {
-        await mockApi.delete(mapId);
-        console.log("찜 삭제 완료!");
-        if (pageType === "manage") {
-          onCardDelete && onCardDelete();
-        }
-      }
+      const newFavorite = await toggleFavorite(mapId);
+      setIsFavorite(newFavorite);
       setPrevFavorite(newFavorite);
+
+      if (!newFavorite && pageType === "manage") {
+        onCardDelete && onCardDelete();
+      }
     } catch (error) {
-      console.error("요청 실패:", error);
-      setIsFavorite(prevFavorite); // 상태 롤백
+      console.error(error.message);
+      setIsFavorite(prevFavorite); // 실패 시 상태 롤백
     } finally {
       setLoading(false);
     }
@@ -58,7 +41,7 @@ const FavoriteHeart = ({
         console.log("Debounce 후 상태가 동일하므로 요청 취소");
         return;
       }
-      handleRequest(isFavorite);
+      handleRequest();
     }, debounceTime);
 
     return () => clearTimeout(timer);
@@ -66,12 +49,11 @@ const FavoriteHeart = ({
 
   const handleClick = () => {
     if (loading) return;
-    const newFavorite = !isFavorite;
-    setIsFavorite(newFavorite);
+    setIsFavorite(!isFavorite);
 
     if (pageType === "manage") {
       // 즉시 API 요청 실행
-      handleRequest(newFavorite);
+      handleRequest();
     }
   };
 

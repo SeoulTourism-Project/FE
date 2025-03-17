@@ -1,9 +1,26 @@
 import { api } from "../utils/api";
+import { getAccessToken } from "../utils/decodeToken";
+
+const getAuthHeaders = () => {
+  const accessToken = getAccessToken();
+
+  const headers = accessToken
+    ? {
+        Authorization: `Bearer ${accessToken}`,
+      }
+    : null;
+
+  return headers;
+};
 
 export const fetchTouristAttractionById = async (mapId) => {
+  const headers = getAuthHeaders();
+  console.log("headers: ", headers);
+
   try {
-    const response = await api.get(`/api/maps/${mapId}`);
+    const response = await api.get(`/api/maps/${mapId}`, { headers });
     const data = response.data;
+    console.log("여행지 상세 페이지 정보: ", data);
 
     return {
       mapId: data.map_id,

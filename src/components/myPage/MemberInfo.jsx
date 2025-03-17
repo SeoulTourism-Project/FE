@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -8,26 +8,39 @@ import {
   faGlobe,
   faCalendarAlt,
 } from "@fortawesome/free-solid-svg-icons";
+import { fetchMemberInfo } from "../../api/memberInfoAPI";
 
 const MemberInfo = () => {
-  const userInfo = {
-    user_id: 123,
-    email: "hong@example.com",
-    username: "홍길동",
-    gender: "M",
-    country: "대한민국",
-    created_at: "2025-01-01T12:00:00",
-  };
+  const [userInfo, setUserInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      try {
+        const data = await fetchMemberInfo();
+        setUserInfo(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getUserInfo();
+  }, []);
+
+  if (loading) return <p>로딩 중...</p>;
+  if (error) return <p>에러 발생: {error}</p>;
+  if (!userInfo) return <p>회원 정보를 불러올 수 없습니다.</p>;
 
   const genderLabel = userInfo.gender === "M" ? "남성" : "여성";
-  const formattedDate = userInfo.created_at.split("T")[0];
 
   const infoList = [
-    { icon: faUser, label: "이름", value: userInfo.username },
+    { icon: faUser, label: "이름", value: userInfo.userName },
     { icon: faEnvelope, label: "이메일", value: userInfo.email },
     { icon: faVenusMars, label: "성별", value: genderLabel },
     { icon: faGlobe, label: "국가", value: userInfo.country },
-    { icon: faCalendarAlt, label: "가입일", value: formattedDate },
   ];
 
   return (

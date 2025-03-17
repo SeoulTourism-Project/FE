@@ -1,45 +1,64 @@
-import styled from 'styled-components';
-import { Modal } from './Modal';
-import { useState } from 'react';
-import { Link } from 'react-router';
-import GoodsItem from './GoodsItem';
+import styled from "styled-components";
+import { useState } from "react";
+import GoodsItem from "./GoodsItem";
+import CartConfirmModal from "./CartConfirmModal";
+import { addItemToCart } from "../api/cartAPI";
 
-const GoodsList = ({ currentProducts }) => {
+const GoodsList = ({ currentProducts, user }) => {
   const [showModal, setShowModal] = useState(false);
-  const [user, setUser] = useState(null);
+  const [apiMessage, setApiMessage] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  function handleOpenModal() {
-    setShowModal(true);
-  }
+  const postItemToCart = async (goodId, quantity) => {
+    try {
+      await addItemToCart(goodId, quantity);
+      setApiMessage("장바구니에 담았습니다. \n 장바구니로 이동하시겠습니까?");
+    } catch (err) {
+      setApiMessage(
+        "장바구니에 담는 것을 실패했습니다. \n 다시 시도해주십시오."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  function handleCloseModal() {
+  const handleOpenModal = async (goodId, quantity) => {
+    if (!user) {
+      setShowModal(true);
+      return;
+    }
+
+    try {
+      await postItemToCart(goodId, quantity);
+      setShowModal(true);
+    } catch (err) {
+      console.error("장바구니 추가 중 오류 발생:", err);
+      setShowModal(true);
+    }
+  };
+
+  const handleCloseModal = () => {
     setShowModal(false);
-  }
+    setApiMessage("");
+  };
 
   return (
     <>
       {showModal && (
-        <Modal>
-          <Content>
-            {!user ? (
-              <>
-                <p>로그인이 필요합니다</p>
-                <p>로그인 페이지로 이동하시겠습니까?</p>
-              </>
-            ) : (
-              <>
-                <p>장바구니에 담았습니다</p>
-                <p>장바구니 페이지로 이동하시겠습니까?</p>
-              </>
-            )}
-          </Content>
-          <LinkStyle to={'/login'}>확인</LinkStyle>
-          <button onClick={handleCloseModal}>취소</button>
-        </Modal>
+        <CartConfirmModal
+          user={user}
+          handleCloseModal={handleCloseModal}
+          message={apiMessage}
+        />
       )}
       <Container>
         {currentProducts.map((item) => (
-          <GoodsItem key={item.id} item={item} handleOpenModal={handleOpenModal} />
+          <GoodsItem
+            key={item.id}
+            item={item}
+            handleOpenModal={handleOpenModal}
+          />
         ))}
       </Container>
     </>
@@ -54,24 +73,4 @@ const Container = styled.ul`
   flex-wrap: wrap;
   gap: 10px;
   margin: auto;
-`;
-
-const Content = styled.div`
-  line-height: 35px;
-`;
-
-const LinkStyle = styled(Link)`
-  text-decoration: none;
-  color: black;
-  opacity: 0.5;
-  font-size: 20px;
-
-  &:hover {
-    opacity: 1;
-  }
-
-  &:visited {
-    color: black;
-    opacity: 0.5;
-  }
 `;
