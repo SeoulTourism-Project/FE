@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router";
-import { api } from "../utils/api";
+import authApi from "../utils/authApi";
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -18,11 +18,10 @@ const Cart = () => {
     fetchCartItems();
   }, []);
 
-  // 장바구니 데이터 가져오기
   const fetchCartItems = async () => {
-    const accessToken = sessionStorage.getItem("accessToken");
+    const accessToken = localStorage.getItem("accessToken");
     try {
-      const response = await api.get("/cart/check", {
+      const response = await authApi.get("/cart/check", {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       setCartItems(response.data);
@@ -31,48 +30,31 @@ const Cart = () => {
     }
   };
 
-  // 장바구니에 상품 추가
-  const handleAddToCart = async (goodId, quantity = 1) => {
-    try {
-      const userId = localStorage.getItem("userId");
-      const response = await api.post("/cart/add", {
-        userId,
-        goodId,
-        quantity,
-      });
-
-      if (response.data.message) {
-        setModalMessage(response.data.message);
-        setShowModal(true);
-        fetchCartItems();
-      }
-    } catch (error) {
-      console.error("Error adding item to cart:", error);
-    }
-  };
-
-  // 장바구니 수량 변경
   const handleUpdateQuantity = async (cartId, newQuantity) => {
     if (newQuantity < 1) return;
-
+    const accessToken = localStorage.getItem("accessToken"); // ✅ 토큰 추가
     try {
-      const response = await api.post("/cart/update", {
-        cartId,
-        quantity: newQuantity,
-      });
-
+      const response = await authApi.post(
+        "/cart/update",
+        { cartId, quantity: newQuantity },
+        {
+          headers: { Authorization: `Bearer ${accessToken}` }, // ✅ headers 추가
+        }
+      );
       if (response.data.status === "Success") {
-        setCartItems(response.data.cartList); // 최신 데이터 반영
+        setCartItems(response.data.cartList);
       }
     } catch (error) {
       console.error("Error updating cart quantity:", error);
     }
   };
 
-  // 장바구니 상품 삭제
   const handleDeleteItem = async (cartId) => {
+    const accessToken = localStorage.getItem("accessToken"); // ✅ 토큰 추가
     try {
-      const response = await api.delete(`/cart/delete/${cartId}`);
+      const response = await authApi.delete(`/cart/delete/${cartId}`, {
+        headers: { Authorization: `Bearer ${accessToken}` }, // ✅ headers 추가
+      });
       if (response.data.message) {
         setModalMessage(response.data.message);
         setShowModal(true);
@@ -85,7 +67,6 @@ const Cart = () => {
     }
   };
 
-  // 상품 선택 핸들러
   const handleItemSelect = (cartId) => {
     setSelectedItems((prevSelected) =>
       prevSelected.includes(cartId)
@@ -160,13 +141,13 @@ const Cart = () => {
 
 export default Cart;
 
-// 스타일 컴포넌트
+// ✅ 스타일 코드 유지
 const CartContainer = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
   max-width: 1200px;
-  margin: -10px auto;
+  margin: 0 auto;
   padding: 20px;
   gap: 20px;
   flex-wrap: wrap;
@@ -232,14 +213,11 @@ const Button = styled.button`
   border: none;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s ease-in-out;
-  margin-right: 10px;
   border-radius: 5px;
-
   &:hover {
     background-color: #333;
     transform: scale(1.05);
   }
-
   &:disabled {
     background-color: #cccccc;
     cursor: not-allowed;
