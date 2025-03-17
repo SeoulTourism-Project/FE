@@ -94,35 +94,42 @@ const GoodsDetail = () => {
       <Product>
         <img src={goods.imageUrl} alt={goods.name} />
         <Info>
-          <Title>{goods.name}</Title>
-          <Category>{goods.category || "카테고리 없음"}</Category>
-          <Description>{goods.description}</Description>
-          <Price>가격 : {goods.price}원</Price>
-          <Stock>재고 : {goods.stock}개</Stock>
+          <ProductInfo>
+            <Title>{goods.name}</Title>
+            <Category>{goods.category || "카테고리 없음"}</Category>
+            <Description>{goods.description}</Description>
+          </ProductInfo>
 
-          <QuantityContainer>
-            <QuantityButton onClick={handleDecrease}>
-              <FontAwesomeIcon icon={faMinus} />
-            </QuantityButton>
-            <QuantityInput
-              type="number"
-              value={quantity}
-              onChange={handleInputChange}
-              onBlur={handleInputBlur}
-            />
-            <QuantityButton onClick={handleIncrease}>
-              <FontAwesomeIcon icon={faPlus} />
-            </QuantityButton>
-          </QuantityContainer>
+          <PriceInfo>
+            <Price>가격 : {goods.price}원</Price>
 
-          <Buttons>
-            <button>
-              <FontAwesomeIcon icon={faCreditCard} size="2x" />
-            </button>
-            <button onClick={handleAddCart}>
-              <FontAwesomeIcon icon={faCartPlus} size="2x" />
-            </button>
-          </Buttons>
+            <QuantityContainer>
+              <QuantityButton onClick={handleDecrease}>
+                <FontAwesomeIcon icon={faMinus} />
+              </QuantityButton>
+              <QuantityInput
+                type="number"
+                value={quantity}
+                onChange={handleInputChange}
+                onBlur={handleInputBlur}
+              />
+              <QuantityButton onClick={handleIncrease}>
+                <FontAwesomeIcon icon={faPlus} />
+              </QuantityButton>
+            </QuantityContainer>
+            <Stock>재고 : {goods.stock}개</Stock>
+
+            <Buttons>
+              <button>
+                <FontAwesomeIcon icon={faCreditCard} size="2x" />
+                <p>구매하기</p>
+              </button>
+              <button onClick={handleAddCart}>
+                <FontAwesomeIcon icon={faCartPlus} size="2x" />
+                <p>장바구니</p>
+              </button>
+            </Buttons>
+          </PriceInfo>
         </Info>
       </Product>
     </Container>
@@ -174,6 +181,21 @@ const Info = styled.div`
   margin-top: 30px;
 `;
 
+const ProductInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+const PriceInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  // gap: 20px;
+  align-items: flex-end;
+  text-align: right;
+  margin-right: 20px;
+`;
+
 const Title = styled.h4`
   font-size: 50px;
   font-weight: bold;
@@ -192,16 +214,19 @@ const Description = styled.p`
 `;
 
 const Price = styled.p`
-  font-size: 20px;
+  margin: 20px 0 40px 0;
+  font-size: 23px;
 `;
 
 const Stock = styled.p`
+  margin-top: 5px;
   opacity: 0.5;
 `;
 
 const QuantityContainer = styled.div`
   display: flex;
   align-items: center;
+  // margin: 20px 0 20px 0;
   gap: 10px;
 `;
 
@@ -237,8 +262,15 @@ const Buttons = styled.div`
   margin-top: 20px;
 
   & button {
+    display: flex;
+    align-items: center;
     border: none;
     background: transparent;
     cursor: pointer;
+    gap: 15px;
+  }
+
+  p {
+    font-size: 15px;
   }
 `;
