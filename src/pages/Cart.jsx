@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router";
+import { authApi } from "../utils/authApi";
 import authApi from "../utils/authApi";
 
 const Cart = () => {
@@ -8,13 +9,11 @@ const Cart = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
-  const paymentSummaryRef = useRef(null);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
-    const userToken = localStorage.getItem("userToken");
-    setIsLoggedIn(!!userToken);
+    const accessToken = sessionStorage.getItem("accessToken");
+    setIsLoggedIn(!!accessToken);
     fetchCartItems();
   }, []);
 
@@ -31,26 +30,27 @@ const Cart = () => {
   };
 
   const handleUpdateQuantity = async (cartId, newQuantity) => {
-    if (newQuantity < 1) return;
-    const accessToken = localStorage.getItem("accessToken"); // ✅ 토큰 추가
+    if (newQuantity < 1 || isUpdating) return;
+    setIsUpdating(true);
+
     try {
+      const accessToken = sessionStorage.getItem("accessToken");
       const response = await authApi.post(
         "/cart/update",
         { cartId, quantity: newQuantity },
-        {
-          headers: { Authorization: `Bearer ${accessToken}` }, // ✅ headers 추가
-        }
+        { headers: { Authorization: `Bearer ${accessToken}` } }
       );
       if (response.data.status === "Success") {
         setCartItems(response.data.cartList);
       }
     } catch (error) {
       console.error("Error updating cart quantity:", error);
+    } finally {
+      setIsUpdating(false);
     }
   };
 
   const handleDeleteItem = async (cartId) => {
-    const accessToken = localStorage.getItem("accessToken"); // ✅ 토큰 추가
     try {
       const response = await authApi.delete(`/cart/delete/${cartId}`, {
         headers: { Authorization: `Bearer ${accessToken}` }, // ✅ headers 추가
@@ -62,6 +62,14 @@ const Cart = () => {
           prevCart.filter((item) => item.cartId !== cartId)
         );
       }
+    const accessToken = sessionStorage.getItem("accessToken");
+    try {
+      const response = await authApi.delete(`/cart/delete/${cartId}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      setCartItems((prevCart) =>
+        prevCart.filter((item) => item.cartId !== cartId)
+      );
     } catch (error) {
       console.error("Error deleting cart item:", error);
     }
@@ -75,6 +83,19 @@ const Cart = () => {
     );
   };
 
+  const handleSelectAll = () => {
+    if (selectedItems.length === cartItems.length) {
+      setSelectedItems([]);
+    } else {
+      setSelectedItems(cartItems.map((item) => item.cartId));
+    }
+  };
+
+  const handleDeleteSelected = () => {
+    selectedItems.forEach((cartId) => handleDeleteItem(cartId));
+    setSelectedItems([]);
+  };
+
   return (
     <CartContainer>
       <CartItems>
@@ -86,7 +107,7 @@ const Cart = () => {
           <div>삭제</div>
         </CartItemHeader>
         {cartItems.length === 0 ? (
-          <p>장바구니가 비어 있습니다.</p>
+          <EmptyCartMessage>장바구니가 비어 있습니다.</EmptyCartMessage>
         ) : (
           cartItems.map((item) => (
             <CartItem key={item.cartId}>
@@ -112,7 +133,7 @@ const Cart = () => {
                   onClick={() =>
                     handleUpdateQuantity(item.cartId, item.goodQuantity - 1)
                   }
-                  disabled={item.goodQuantity <= 1}
+                  disabled={item.goodQuantity <= 1 || isUpdating}
                 >
                   -
                 </button>
@@ -121,6 +142,7 @@ const Cart = () => {
                   onClick={() =>
                     handleUpdateQuantity(item.cartId, item.goodQuantity + 1)
                   }
+                  disabled={isUpdating}
                 >
                   +
                 </button>
@@ -128,20 +150,49 @@ const Cart = () => {
               <CartItemPrice>
                 {item.goodPrice * item.goodQuantity} 원
               </CartItemPrice>
-              <Button onClick={() => handleDeleteItem(item.cartId)}>
+              <Button
+                onClick={() => handleDeleteItem(item.cartId)}
+                disabled={isUpdating}
+              >
                 삭제
               </Button>
             </CartItem>
           ))
         )}
+        <ActionButtons>
+          <Button onClick={handleSelectAll}>전체 선택</Button>
+          <Button
+            onClick={handleDeleteSelected}
+            disabled={selectedItems.length === 0}
+          >
+            선택 삭제
+          </Button>
+        </ActionButtons>
       </CartItems>
+
+      {/* 결제 정보 섹션 */}
+      <PaymentInfo>
+        <h3>결제 정보</h3>
+        <PaymentDetail>
+          <span>주문 금액</span>
+          <span>0 원</span>
+        </PaymentDetail>
+        <PaymentDetail>
+          <span>배송비</span>
+          <span>3,000 원</span>
+        </PaymentDetail>
+        <TotalAmount>
+          <span>총 결제 금액</span>
+          <span>3,000 원</span>
+        </TotalAmount>
+        <PaymentButton disabled>결제하기</PaymentButton>
+      </PaymentInfo>
     </CartContainer>
   );
 };
 
 export default Cart;
 
-// ✅ 스타일 코드 유지
 const CartContainer = styled.div`
   display: flex;
   justify-content: flex-start;
@@ -212,14 +263,71 @@ const Button = styled.button`
   color: white;
   border: none;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s ease-in-out;
   border-radius: 5px;
   &:hover {
     background-color: #333;
-    transform: scale(1.05);
   }
   &:disabled {
-    background-color: #cccccc;
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+`;
+
+const ActionButtons = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+`;
+
+const EmptyCartMessage = styled.div`
+  text-align: center;
+  font-size: 18px;
+  color: #777;
+  margin-top: 20px;
+`;
+
+const PaymentInfo = styled.div`
+  flex: 1;
+  min-width: 250px;
+  max-width: 300px;
+  background: #f9f9f9;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+`;
+
+const PaymentDetail = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 16px;
+`;
+
+const TotalAmount = styled.div`
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  font-size: 18px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #ddd;
+`;
+
+const PaymentButton = styled.button`
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  font-size: 16px;
+  background-color: #555;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  &:hover {
+    background-color: #333;
+  }
+  &:disabled {
+    background-color: #ccc;
     cursor: not-allowed;
   }
 `;

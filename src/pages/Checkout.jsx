@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router";
 import axios from "axios";
+import PaymentResult from "../components/PaymentResult";
 
 const API_URL = process.env.REACT_APP_API_URL ?? "http://localhost:8080";
 
@@ -102,7 +103,7 @@ const CheckoutPage = () => {
   const processPayment = async (orderId, impUid) => {
     try {
       const response = await axios.post(`${API_URL}/payment/process`, {
-        userId: 14, // 사용자 ID (예시)
+        userId: 14,
         orderId,
         impUid,
         merchantUid: formData.merchantUid,
@@ -111,7 +112,7 @@ const CheckoutPage = () => {
         paymentMethod: formData.paymentMethod,
       });
 
-      alert("결제가 완료되었습니다!"); //명확한 메시지 추가
+      alert("결제가 완료되었습니다!");
       navigate("/mypage");
     } catch (error) {
       console.error("결제 처리 실패:", error);
