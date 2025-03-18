@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router";
-<<<<<<< Updated upstream
-import { api } from "../utils/api";
-=======
 import { authApi } from "../utils/authApi";
->>>>>>> Stashed changes
+import authApi from "../utils/authApi";
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -20,11 +17,10 @@ const Cart = () => {
     fetchCartItems();
   }, []);
 
-  // 장바구니 데이터 가져오기
   const fetchCartItems = async () => {
-    const accessToken = sessionStorage.getItem("accessToken");
+    const accessToken = localStorage.getItem("accessToken");
     try {
-      const response = await api.get("/cart/check", {
+      const response = await authApi.get("/cart/check", {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       setCartItems(response.data);
@@ -33,38 +29,7 @@ const Cart = () => {
     }
   };
 
-  // 장바구니에 상품 추가
-  const handleAddToCart = async (goodId, quantity = 1) => {
-    try {
-      const userId = localStorage.getItem("userId");
-      const response = await api.post("/cart/add", {
-        userId,
-        goodId,
-        quantity,
-      });
-
-      if (response.data.message) {
-        setModalMessage(response.data.message);
-        setShowModal(true);
-        fetchCartItems();
-      }
-    } catch (error) {
-      console.error("Error adding item to cart:", error);
-    }
-  };
-
-  // 장바구니 수량 변경
   const handleUpdateQuantity = async (cartId, newQuantity) => {
-<<<<<<< Updated upstream
-    if (newQuantity < 1) return;
-
-    try {
-      const response = await api.post("/cart/update", {
-        cartId,
-        quantity: newQuantity,
-      });
-
-=======
     if (newQuantity < 1 || isUpdating) return;
     setIsUpdating(true);
 
@@ -75,9 +40,8 @@ const Cart = () => {
         { cartId, quantity: newQuantity },
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
->>>>>>> Stashed changes
       if (response.data.status === "Success") {
-        setCartItems(response.data.cartList); // 최신 데이터 반영
+        setCartItems(response.data.cartList);
       }
     } catch (error) {
       console.error("Error updating cart quantity:", error);
@@ -86,11 +50,11 @@ const Cart = () => {
     }
   };
 
-  // 장바구니 상품 삭제
   const handleDeleteItem = async (cartId) => {
-<<<<<<< Updated upstream
     try {
-      const response = await api.delete(`/cart/delete/${cartId}`);
+      const response = await authApi.delete(`/cart/delete/${cartId}`, {
+        headers: { Authorization: `Bearer ${accessToken}` }, // ✅ headers 추가
+      });
       if (response.data.message) {
         setModalMessage(response.data.message);
         setShowModal(true);
@@ -98,7 +62,6 @@ const Cart = () => {
           prevCart.filter((item) => item.cartId !== cartId)
         );
       }
-=======
     const accessToken = sessionStorage.getItem("accessToken");
     try {
       const response = await authApi.delete(`/cart/delete/${cartId}`, {
@@ -107,13 +70,11 @@ const Cart = () => {
       setCartItems((prevCart) =>
         prevCart.filter((item) => item.cartId !== cartId)
       );
->>>>>>> Stashed changes
     } catch (error) {
       console.error("Error deleting cart item:", error);
     }
   };
 
-  // 상품 선택 핸들러
   const handleItemSelect = (cartId) => {
     setSelectedItems((prevSelected) =>
       prevSelected.includes(cartId)
@@ -232,17 +193,12 @@ const Cart = () => {
 
 export default Cart;
 
-<<<<<<< Updated upstream
-// 스타일 컴포넌트
-=======
-// 스타일 코드
->>>>>>> Stashed changes
 const CartContainer = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
   max-width: 1200px;
-  margin: -10px auto;
+  margin: 0 auto;
   padding: 20px;
   gap: 20px;
   flex-wrap: wrap;
@@ -307,17 +263,10 @@ const Button = styled.button`
   color: white;
   border: none;
   cursor: pointer;
-<<<<<<< Updated upstream
-  transition: background-color 0.3s, transform 0.2s ease-in-out;
-  margin-right: 10px;
-=======
->>>>>>> Stashed changes
   border-radius: 5px;
-
   &:hover {
     background-color: #333;
   }
-
   &:disabled {
     background-color: #ccc;
     cursor: not-allowed;

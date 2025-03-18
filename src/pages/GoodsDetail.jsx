@@ -7,8 +7,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import styled from "styled-components";
-import { Modal } from "../components/Modal";
 import { fetchGoodDetails } from "../api/goodDetailsAPI";
+import CartConfirmModal from "../components/CartConfirmModal";
+import { getAccessToken } from "../utils/decodeToken";
 
 const GoodsDetail = () => {
   const [showModal, setShowModal] = useState(false);
@@ -33,6 +34,10 @@ const GoodsDetail = () => {
     getGoodsDetails();
   }, [id]);
 
+  useEffect(() => {
+    setUser(getAccessToken() ? true : false);
+  }, []);
+
   function handleAddCart() {
     setShowModal(true);
   }
@@ -47,23 +52,7 @@ const GoodsDetail = () => {
   return (
     <Container>
       {showModal && (
-        <Modal>
-          <Content>
-            {!user ? (
-              <>
-                <p>로그인이 필요합니다</p>
-                <p>로그인 페이지로 이동하시겠습니까?</p>
-              </>
-            ) : (
-              <>
-                <p>장바구니에 담았습니다</p>
-                <p>장바구니 페이지로 이동하시겠습니까?</p>
-              </>
-            )}
-          </Content>
-          <LinkStyle to={"/login"}>확인</LinkStyle>
-          <button onClick={handleCloseModal}>취소</button>
-        </Modal>
+        <CartConfirmModal user={user} handleCloseModal={handleCloseModal} />
       )}
 
       <ListLink to={"/goods"}>
@@ -163,25 +152,5 @@ const Buttons = styled.div`
     border: none;
     background: transparent;
     cursor: pointer;
-  }
-`;
-
-const Content = styled.div`
-  line-height: 35px;
-`;
-
-const LinkStyle = styled(Link)`
-  text-decoration: none;
-  color: black;
-  opacity: 0.5;
-  font-size: 20px;
-
-  &:hover {
-    opacity: 1;
-  }
-
-  &:visited {
-    color: black;
-    opacity: 0.5;
   }
 `;

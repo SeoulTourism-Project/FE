@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import TouristAttractionItem from "../TouristAttractionItem";
 import FavoriteHeart from "../FavoriteHeart";
-import axios from "axios";
+import { fetchFavoriteList } from "../../api/favoriteListAPI";
 
 const FavoriteList = () => {
   const [favorites, setFavorites] = useState([]);
@@ -10,23 +10,18 @@ const FavoriteList = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchLocations = async () => {
+    const getFavoriteList = async () => {
       try {
-        const response = await axios.get("/location.json");
-        const data = response.data;
-
-        const likedLocations = data.filter(
-          (location) => location.likeStatus === true
-        );
-        setFavorites(likedLocations);
+        const data = await fetchFavoriteList();
+        setFavorites(data);
       } catch (err) {
-        setError("데이터를 불러오는 중 문제가 발생했습니다.");
+        setError(err.message);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchLocations();
+    getFavoriteList();
   }, []);
 
   const handleFavoriteToggle = (id) => {
@@ -63,7 +58,6 @@ const FavoriteList = () => {
 
 export default FavoriteList;
 
-// 스타일 정의
 const Container = styled.div`
   padding: 20px;
   background: #f9f9f9;
