@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router";
 import axios from "axios";
+import PaymentResult from "../components/PaymentResult";
 
 const API_URL = process.env.REACT_APP_API_URL ?? "http://localhost:8080";
 
@@ -68,7 +69,6 @@ const CheckoutPage = () => {
 
   const validate = () => {
     const newErrors = {};
-
     if (!formData.name.trim()) newErrors.name = "이름을 입력하세요.";
     if (!formData.phoneNumber.trim()) {
       newErrors.phoneNumber = "전화번호를 입력하세요.";
@@ -76,7 +76,6 @@ const CheckoutPage = () => {
       newErrors.phoneNumber = "유효한 전화번호를 입력하세요. (10~11자리 숫자)";
     }
     if (!formData.address.trim()) newErrors.address = "숙소 주소를 입력하세요.";
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -104,7 +103,7 @@ const CheckoutPage = () => {
   const processPayment = async (orderId, impUid) => {
     try {
       const response = await axios.post(`${API_URL}/payment/process`, {
-        userId: 14, // 사용자 ID (예시)
+        userId: 14,
         orderId,
         impUid,
         merchantUid: formData.merchantUid,
@@ -113,7 +112,7 @@ const CheckoutPage = () => {
         paymentMethod: formData.paymentMethod,
       });
 
-      alert("결제가 완료되었습니다!"); //명확한 메시지 추가
+      alert("결제가 완료되었습니다!");
       navigate("/mypage");
     } catch (error) {
       console.error("결제 처리 실패:", error);
@@ -164,6 +163,14 @@ const CheckoutPage = () => {
       >
         {finalAmount.toLocaleString()}원 결제하기
       </CheckoutButton>
+
+      {paymentResult && (
+        <PaymentResult
+          message={paymentResult.message}
+          impUid={paymentResult.impUid}
+          totalAmount={paymentResult.totalAmount}
+        />
+      )}
     </Container>
   );
 };
