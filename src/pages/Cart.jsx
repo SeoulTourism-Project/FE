@@ -9,12 +9,32 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [orderAmount, setOrderAmount] = useState(0);
+  const [shippingFee, setShippingFee] = useState(3000);
+  const [totalAmount, setTotalAmount] = useState(0);
 
   useEffect(() => {
     const accessToken = sessionStorage.getItem("accessToken");
     setIsLoggedIn(!!accessToken);
     fetchCartItems();
   }, []);
+
+  useEffect(() => {
+    const selectedProducts = cartItems.filter((item) =>
+      selectedItems.includes(item.cartId)
+    );
+
+    const newOrderAmount = selectedProducts.reduce(
+      (acc, item) => acc + item.goodPrice * item.goodQuantity,
+      0
+    );
+    setOrderAmount(newOrderAmount);
+
+    const newShippingFee = newOrderAmount >= 30000 ? 0 : 3000;
+    setShippingFee(newShippingFee);
+
+    setTotalAmount(newOrderAmount + newShippingFee);
+  }, [cartItems, selectedItems]);
 
   const fetchCartItems = async () => {
     const accessToken = sessionStorage.getItem("accessToken");
@@ -28,49 +48,6 @@ const Cart = () => {
     }
   };
 
-  const handleUpdateQuantity = async (cartId, newQuantity) => {
-    if (newQuantity < 1 || isUpdating) return;
-    setIsUpdating(true);
-
-    try {
-      const accessToken = sessionStorage.getItem("accessToken");
-      const response = await authApi.post(
-        "/cart/update",
-        { cartId, quantity: newQuantity },
-        { headers: { Authorization: `Bearer ${accessToken}` } }
-      );
-      if (response.data.status === "Success") {
-        setCartItems(response.data.cartList);
-      }
-    } catch (error) {
-      console.error("Error updating cart quantity:", error);
-    } finally {
-      setIsUpdating(false);
-    }
-  };
-
-  const handleDeleteItem = async (cartId) => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    try {
-      const response = await authApi.delete(`/cart/delete/${cartId}`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      setCartItems((prevCart) =>
-        prevCart.filter((item) => item.cartId !== cartId)
-      );
-    } catch (error) {
-      console.error("Error deleting cart item:", error);
-    }
-  };
-
-  const handleItemSelect = (cartId) => {
-    setSelectedItems((prevSelected) =>
-      prevSelected.includes(cartId)
-        ? prevSelected.filter((id) => id !== cartId)
-        : [...prevSelected, cartId]
-    );
-  };
-
   const handleSelectAll = () => {
     if (selectedItems.length === cartItems.length) {
       setSelectedItems([]);
@@ -79,9 +56,40 @@ const Cart = () => {
     }
   };
 
-  const handleDeleteSelected = () => {
-    selectedItems.forEach((cartId) => handleDeleteItem(cartId));
-    setSelectedItems([]);
+  const handleDeleteSelected = async () => {
+    if (selectedItems.length === 0) return;
+
+    const accessToken = sessionStorage.getItem("accessToken");
+    try {
+      await Promise.all(
+        selectedItems.map((cartId) =>
+          authApi.delete(`/cart/delete/${cartId}`, {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          })
+        )
+      );
+      setCartItems((prevCart) =>
+        prevCart.filter((item) => !selectedItems.includes(item.cartId))
+      );
+      setSelectedItems([]);
+    } catch (error) {
+      console.error("Error deleting selected cart items:", error);
+    }
+  };
+
+  const handleCheckout = () => {
+    const selectedProducts = cartItems.filter((item) =>
+      selectedItems.includes(item.cartId)
+    );
+
+    navigate("/checkout", {
+      state: {
+        items: selectedProducts,
+        orderAmount,
+        shippingFee,
+        totalAmount,
+      },
+    });
   };
 
   return (
@@ -103,7 +111,13 @@ const Cart = () => {
                 <input
                   type="checkbox"
                   checked={selectedItems.includes(item.cartId)}
-                  onChange={() => handleItemSelect(item.cartId)}
+                  onChange={() =>
+                    setSelectedItems((prevSelected) =>
+                      prevSelected.includes(item.cartId)
+                        ? prevSelected.filter((id) => id !== item.cartId)
+                        : [...prevSelected, item.cartId]
+                    )
+                  }
                 />
                 <img
                   src={item.goodImage}
@@ -116,38 +130,14 @@ const Cart = () => {
                 />
                 {item.goodName}
               </CartItemName>
-              <CartItemQuantity>
-                <button
-                  onClick={() =>
-                    handleUpdateQuantity(item.cartId, item.goodQuantity - 1)
-                  }
-                  disabled={item.goodQuantity <= 1 || isUpdating}
-                >
-                  -
-                </button>
-                {item.goodQuantity}
-                <button
-                  onClick={() =>
-                    handleUpdateQuantity(item.cartId, item.goodQuantity + 1)
-                  }
-                  disabled={isUpdating}
-                >
-                  +
-                </button>
-              </CartItemQuantity>
               <CartItemPrice>
                 {item.goodPrice * item.goodQuantity} 원
               </CartItemPrice>
-              <Button
-                onClick={() => handleDeleteItem(item.cartId)}
-                disabled={isUpdating}
-              >
-                삭제
-              </Button>
             </CartItem>
           ))
         )}
-        <ActionButtons>
+
+        <ActionButtonsContainer>
           <Button onClick={handleSelectAll}>전체 선택</Button>
           <Button
             onClick={handleDeleteSelected}
@@ -155,25 +145,26 @@ const Cart = () => {
           >
             선택 삭제
           </Button>
-        </ActionButtons>
+        </ActionButtonsContainer>
       </CartItems>
 
-      {/* 결제 정보 섹션 */}
       <PaymentInfo>
         <h3>결제 정보</h3>
         <PaymentDetail>
           <span>주문 금액</span>
-          <span>0 원</span>
+          <span>{orderAmount.toLocaleString()} 원</span>
         </PaymentDetail>
         <PaymentDetail>
           <span>배송비</span>
-          <span>3,000 원</span>
+          <span>{shippingFee.toLocaleString()} 원</span>
         </PaymentDetail>
         <TotalAmount>
           <span>총 결제 금액</span>
-          <span>3,000 원</span>
+          <span>{totalAmount.toLocaleString()} 원</span>
         </TotalAmount>
-        <PaymentButton disabled>결제하기</PaymentButton>
+        <PaymentButton disabled={orderAmount === 0} onClick={handleCheckout}>
+          결제하기
+        </PaymentButton>
       </PaymentInfo>
     </CartContainer>
   );
@@ -181,11 +172,18 @@ const Cart = () => {
 
 export default Cart;
 
-// 스타일 코드
+const ActionButtonsContainer = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-top: 20px;
+  margin-left: 10px;
+`;
+
 const CartContainer = styled.div`
   display: flex;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: stretch; /* 두 개의 박스를 같은 높이로 맞춤 */
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
@@ -283,6 +281,8 @@ const PaymentInfo = styled.div`
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 5px;
+  align-self: center;
+  margin-top: -520px;
 `;
 
 const PaymentDetail = styled.div`
